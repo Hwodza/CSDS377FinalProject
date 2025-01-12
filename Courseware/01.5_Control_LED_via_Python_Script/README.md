@@ -35,6 +35,7 @@ We will install the [pigpio](http://abyz.me.uk/rpi/pigpio/) library for controli
 	```
 
 	Paste this service definition into the file and save:
+
 	```
 	[Unit]
 	Description=Start and stop pigpio
@@ -51,13 +52,22 @@ We will install the [pigpio](http://abyz.me.uk/rpi/pigpio/) library for controli
 
 1. Start the service: `sudo systemctl start lampi_pigpio.service`
 
-> **Note on Systemd/Systemctl**: you just created a Systemd service! Systemd services help us automatically start or stop background processes based on system events, like boot up or shutdown. We won't go into too much detail here, but we'll talk more about systemd in Chapter 2. For now, you should know that:
+> **Note on Systemd/Systemctl**:
+>
+> You just created a Systemd service!
+>
+> Systemd services help us automatically start or stop background processes based on system events, like boot up or shutdown.
+>
+> We won't go into too much detail here, but we'll talk more about systemd in Chapter 2.
+>
+> For now, you should know that:
+>
 > - Systemd services are stored in `.service` files in the `/etc/systemd/system/` directory.
 > - The `systemctl` command can interact with services:
 > 	- `systemctl status some_service_name` checks service statuses
 >   - `sudo systemctl start some_service_name` starts a service
 >   - `sudo systemctl stop some_service_name` stops a service
-
+>
 1. Start up interactive Python interpreter: `python3`
 
 1. Import the pigpio library: `import pigpio`
