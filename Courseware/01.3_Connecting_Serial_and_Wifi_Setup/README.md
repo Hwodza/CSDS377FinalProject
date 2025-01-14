@@ -65,30 +65,40 @@ Each network inferface has a globally unique [MAC Adresss](https://en.wikipedia.
 #### Raspberry Pi Network Setup
 1. In the terminal, scan for WiFi networks via `sudo iwlist wlan0 scan`. You'll see networks listed. You'll want to find the name of the network and password.
 	* The name of the network is from either ssid or ESSID.
-2. Add the network details to your Raspberry Pi.  A configuration for connecting to "CaseGuest" and "csuguest" is shown below.
-	* Using whatever terminal text editor you prefer ([https://www.raspberrypi.org/documentation/linux/usage/text-editors.md](https://www.raspberrypi.org/documentation/linux/usage/text-editors.md) particularly the *Command-line editors*b section), open the `wpa_supplicant.conf` configuration file. The command will look something like: `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf`.
-	* The configuration file will open, add the information for your network below the existing content. 
+2. Add the network details to your Raspberry Pi. There are a two options for this, you only need to get one to work:
+	* Use `nmcli` as follows (skip the `password` section for networks without passwords, like `CaseRegistered`):
+	```bash
+	sudo nmcli radio wifi on
+	sudo nmcli dev wifi connect <wifi-ssid> password "<network-password>"
+	```
+	* Run `nmtui` and then configure your network using the arrow keys menu it provides (see a guide [here](https://raspberrytips.com/nmtui-linux-command/)).
 
-    ```
-    country=US
-    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-    update_config=1
-
-
-    network={
-        ssid="CaseRegistered"
-        key_mgmt=NONE
-    }
-
-    network={
-        ssid="csuguest"
-        key_mgmt=NONE
-    }
-    ```
-	* Save the updated `wpa_supplicant.conf` file.
-3. At this stage, reboot your Raspberry Pi via `sudo reboot` (a reboot is not strictly necessary, but it is the easiest way to ensure all of the network configurations are updated).
-4. After the pi reboots, login again via the serial console and test your network connection via `ping www.google.com` to verify that you are connected to the Internet.
-5. Test that ssh is working.  Get the IP address of your Pi via `ifconfig` which will have output like
+> **Older versions of Raspberry Pi OS used `wpa_supplicant.conf` to configure networks. If you're using the expected version of Raspberry Pi OS, you should be able to ignore this grayed-out section.**
+> 
+> A configuration for connecting to "CaseGuest" and "csuguest" is shown below.
+>	* Using whatever terminal text editor you prefer ([https://www.raspberrypi.org/documentation/linux/usage/text-editors.md](https://www.raspberrypi.org/documentation/linux/usage/text-editors.md) particularly the *Command-line editors*b section), open the `wpa_supplicant.conf` configuration file. The command will look something like: `sudo vi /etc/wpa_supplicant/wpa_supplicant.conf`.
+>	* The configuration file will open, add the information for your network below the existing content. 
+>
+>   ```
+>   country=US
+>   ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+>   update_config=1
+>
+>
+>   network={
+>       ssid="CaseRegistered"
+>       key_mgmt=NONE
+>   }
+>
+>   network={
+>       ssid="csuguest"
+>       key_mgmt=NONE
+>   }
+>   ```
+>	* Save the updated `wpa_supplicant.conf` file.
+7. At this stage, reboot your Raspberry Pi via `sudo reboot` (a reboot is not strictly necessary, but it is the easiest way to ensure all of the network configurations are updated).
+8. After the pi reboots, login again via the serial console and test your network connection via `ping www.google.com` to verify that you are connected to the Internet.
+9. Test that ssh is working.  Get the IP address of your Pi via `ifconfig` which will have output like
 
     ```
     nbarendt@nick-raspberrypi:~$ ifconfig
