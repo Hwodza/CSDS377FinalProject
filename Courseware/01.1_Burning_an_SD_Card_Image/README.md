@@ -32,7 +32,8 @@ The Raspberry Pi 3 uses Micro SD cards for its filesystem.  We have to put the O
   * Note: [Raspberry Pi Imager](https://www.raspberrypi.org/software/) is the recommended imaging tool for all platforms now.
   * Note: [Etcher](https://www.balena.io/etcher/) has become a popular GUI tool for "flashing" images to SD cards and works on multiple platforms.
   * Note: If using Mac, you might need to use the Unarchiver program mentioned on [https://www.raspberrypi.org/downloads/raspbian/](https://www.raspberrypi.org/downloads/raspbian/) to unzip the file due to the file sizes.
-	* Note: If using Mac and not using one of the GUI imaging tools, add "r" in front of terminal command: `diskn`, so that it's `rdiskn` (e.g., `/dev/rdisk2` or whatever disk number you SD Card shows up as). This will make things run substantially faster. 
+	* Note: If using Mac and not using one of the GUI imaging tools, add "r" in front of terminal command: `diskn`, so that it's `rdiskn` (e.g., `/dev/rdisk2` or whatever disk number you SD Card shows up as). This will make things run substantially faster.
+ 4. When using Raspberry Pi Imager, make sure to "edit settings" when prompted, and choose a username `pi` and a password you will remember. These are the credentials you will use to log into your Pi from now on.
 
 ### Enabling the Serial Console (UART)
 
