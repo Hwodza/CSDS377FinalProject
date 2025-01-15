@@ -50,7 +50,8 @@ We will install the [pigpio](http://abyz.me.uk/rpi/pigpio/) library for controli
 	WantedBy=multi-user.target
 	```
 
-1. Start the service: `sudo systemctl start lampi_pigpio.service`
+1. "Enable" the service so it will start on boot from now on: `sudo systemctl enable lampi_pigpio.service`
+2. Start the service: `sudo systemctl start lampi_pigpio.service`
 
 > **Note on Systemd/Systemctl**:
 >
