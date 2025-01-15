@@ -63,15 +63,15 @@ Each network inferface has a globally unique [MAC Adresss](https://en.wikipedia.
 	![Example Registered MyDevices Form](Images/MyDevices_Portal_after.png)		
 
 #### Raspberry Pi Network Setup
-1. In the terminal, scan for WiFi networks via `sudo iwlist wlan0 scan`. You'll see networks listed. You'll want to find the name of the network and password.
-	* The name of the network is from either ssid or ESSID.
-2. Add the network details to your Raspberry Pi. There are a two options for this, you only need to get one to work:
-	* Use `nmcli` as follows (skip the `password` section for networks without passwords, like `CaseRegistered`):
+There are two options. Try using `nmtui` first, and if that doesn't work use the second option.
+1. Run `nmtui` and then configure your network using the arrow keys menu it provides (see a guide [here](https://raspberrytips.com/nmtui-linux-command/)).
+2. In the terminal, scan for WiFi networks via `sudo iwlist wlan0 scan`. You'll see networks listed. You'll want to find the name of the network and password.
+    * The name of the network is from either ssid or ESSID.
+    * Use `nmcli` as follows (skip the `password` section for networks without passwords, like `CaseRegistered`):
 	```bash
 	sudo nmcli radio wifi on
 	sudo nmcli dev wifi connect <wifi-ssid> password "<network-password>"
 	```
-	* Run `nmtui` and then configure your network using the arrow keys menu it provides (see a guide [here](https://raspberrytips.com/nmtui-linux-command/)).
 
 > **Older versions of Raspberry Pi OS used `wpa_supplicant.conf` to configure networks. If you're using the expected version of Raspberry Pi OS, you should be able to ignore this grayed-out section.**
 > 
