@@ -1,0 +1,12 @@
+---
+# chapter 1 variables
+boot_file_path: /boot/firmware/config.txt
+cache_update_valid_secs: 900
+pigpio_archive: files/01_pigpio.zip
+pigpio_tmp_dir: /tmp/pigpio
+path_to_pigpiod: /usr/local/bin/pigpiod
+minimum_pigpiod_version: 68
+pigpio_service_file: "lampi_pigpio.service"
+apt_pkg_git: git=1:2.39.*
+apt_pkg_python3_distutils: python3-distutils=3.11.*
+

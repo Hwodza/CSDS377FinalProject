@@ -1,0 +1,4 @@
+# Ansible error retry file
+*.retry
+inventory.ini
+ansible_cache

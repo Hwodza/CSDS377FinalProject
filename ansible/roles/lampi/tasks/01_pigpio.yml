@@ -1,0 +1,63 @@
+- name: install Python3 distutils
+  become: True
+  apt:
+    name: "{{ apt_pkg_python3_distutils }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: see if pigpiod already installed
+  stat: path={{ path_to_pigpiod }}
+  register: pigpiod_binary
+
+- name: see if pigpiod is the correct version
+  command: "{{ path_to_pigpiod }} -v"
+  register: pigpiod_version
+  when: pigpiod_binary.stat.exists
+
+- name: stop any pigpiod - WILL LIKELY FAIL, BUT IGNORED
+  become: True
+  command: killall pigpiod
+  ignore_errors: true
+
+- name: remove temporary directory
+  become: True
+  file: path={{ pigpio_tmp_dir }} state=absent
+  ignore_errors: true
+
+- name: create temporary  directory
+  become: True
+  file: path={{ pigpio_tmp_dir }} state=directory
+
+- name: extract files from archive
+  become: True
+  when: (not pigpiod_binary.stat.exists) or pigpiod_version.stdout|int <  minimum_pigpiod_version
+  unarchive: src={{ pigpio_archive }} dest={{ pigpio_tmp_dir }}
+
+- name: make pigpio
+  become: True
+  when: (not pigpiod_binary.stat.exists) or pigpiod_version.stdout|int <  minimum_pigpiod_version
+  make: chdir={{ pigpio_tmp_dir }}/pigpio-master
+
+- name: install pigpio
+  become: True
+  when: (not pigpiod_binary.stat.exists) or pigpiod_version.stdout|int <  minimum_pigpiod_version
+  make: chdir={{ pigpio_tmp_dir }}/pigpio-master target=install
+
+- name: install pigpio systemd service
+  become: True
+  template:
+    dest: "/etc/systemd/system/{{ pigpio_service_file }}"
+    owner: root
+    mode: u+rw,g=r,o=r
+    src: "{{ pigpio_service_file }}"
+
+- name: start pigpio systemd service
+  become: True
+  systemd:
+    name: lampi_pigpio
+    state: started
+    enabled: True
+
+- name: remove temporary directory
+  become: True
+  file: path={{ pigpio_tmp_dir }} state=absent
+
