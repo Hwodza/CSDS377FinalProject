@@ -1,0 +1,57 @@
+#:kivy 1.9
+#:include lampi/controls/lampi_toggle.kv
+#:include lampi/controls/gradient_slider.kv
+#:include lampi/controls/color_box.kv
+#:include lampi/colors.kv
+
+BoxLayout:
+  orientation: 'vertical'
+#  Label:
+#    text: app.formula_text
+  canvas.before:
+    Color:
+      rgba: 1,1,1,1
+    Rectangle:
+      pos: self.pos
+      size: self.size
+
+  GradientSlider:
+    id: hue_slider
+    value: app.hue
+    pos_hint: {"x": 0.1, "center_y": 0.5}
+    size_hint: 0.8, .2
+    on_value: app.hue = self.value
+    colors: red, yellow, green, cyan, blue, magenta, red
+#    thumb_image_light: 'images/brightness_icon_light_small.png'
+#    thumb_image_dark: 'images/brightness_icon_dark_small.png'
+  GradientSlider:
+    id: saturation_slider
+    pos_hint: {"x": 0.1, "center_y": 0.5}
+    value: app.saturation
+    on_value: app.saturation = self.value
+    size_hint: 0.8, .2
+    colors: (1,1,1,1), hue_slider._thumb_color
+#    thumb_image_light: 'images/brightness_icon_light_small.png'
+#    thumb_image_dark: 'images/brightness_icon_dark_small.png'
+  GradientSlider:
+    pos_hint: {"x": 0.1, "center_y": 0.5}
+    size_hint: 0.8, .2
+    min: 0
+    max: 1
+    value: app.brightness
+    on_value: app.brightness = self.value
+    colors: (0,0,0,1), (1,1,1,1)
+    thumb_image_light: 'images/brightness_icon_light_small.png'
+    thumb_image_dark: 'images/brightness_icon_dark_small.png'
+  ColorBox:
+    color: app.r, app.g, app.b 
+    size_hint: 1, 0.02
+#    color: app.selected_color
+  LampiToggle:
+    size_hint: 1, 0.25
+    value: app.power
+    on_state: app.power = self.state
+    image: 'images/power_icon_light.png'
+    accent_color: (app.r, app.g, app.b)
+    text: ''    
+ 
