@@ -1,0 +1,33 @@
+# this is a pre-built wheel for Buster and Kivy 2.1.0
+- name: install kivy
+  become: False
+  pip:
+    virtualenv: "{{ venv_directory }}"
+    name: "kivy[base]"
+
+- name: generate kivy config for pi user
+  command:
+    cmd: "{{ venv_directory }}/bin/python3 -c 'from kivy.app import App;App().load_config()'"
+    creates: "{{ pi_user_kivy_config }}"
+
+- name: update pi user kivy config [input] section
+  ini_file:
+    path: "{{ pi_user_kivy_config }}"
+    section: input
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict: "{{ kivy_config_dict_input }}"
+
+- name: remove mouse input from kivy config
+  ansible.builtin.lineinfile:
+    path: /home/pi/.kivy/config.ini
+    regexp: "mouse *= *mouse"
+    line: ""
+
+- name: update pi user kivy config [graphics] section
+  ini_file:
+    path: "{{ pi_user_kivy_config }}"
+    section: graphics
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict: "{{ kivy_config_dict_graphics }}"

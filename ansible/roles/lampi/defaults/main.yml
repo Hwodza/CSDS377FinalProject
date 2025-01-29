@@ -10,3 +10,35 @@ pigpio_service_file: "lampi_pigpio.service"
 apt_pkg_git: git=1:2.39.*
 apt_pkg_python3_distutils: python3-distutils=3.11.*
 
+# chapter 2 variables
+adafruit_tmp_dir: /tmp/adafruit_rpi
+adafruit_git_version: 9e85cf0c8e5777d1f5d72e0f364f2d24d1e86039  # previously: b8d16b01e050bd03b693e34ceda924d7972f7321
+pi_user_kivy_config: /home/pi/.kivy/config.ini
+kivy_config_dict_input:
+    "%(name)s": "probesysfs,provider=mtdev,param=rotation=90,param=invert_x=1,param=max_position_x=240,param=max_position_y=320"
+kivy_config_dict_graphics:
+    "fullscreen": 0
+    "height": 240
+    "width": 320
+    "rotation": 270
+    "allow_screensaver": 0
+boot_config: /boot/config.txt
+connected_devices_git_repo_url: "git@github.com:CWRU-Connected-Devices/connected-devices-spring24.git"
+connected_devices_git_repo_version: main
+repo_directory: "/home/pi/connected-devices"
+venv_directory: "/home/pi/lampi-venv"
+lampi_app_service_file: "lampi_app.service"
+apt_pkg_python3_pip: python3-pip=23.0.*
+apt_pkg_python3_venv: python3-venv=3.11.*
+
+# Last known working xserver pkg versions:
+# - xserver-xorg-video-all=1:7.7+23
+# - xserver-xorg-input-all=1:7.7+23
+# - xserver-xorg-core=2:21.1.7-3+rpt2+deb12u7
+# - xinit=1.4.0-1
+# - x11-xserver-utils=7.7+9+b1
+apt_pkg_xserver_xorg_video_all: xserver-xorg-video-all=1:7.7+*
+apt_pkg_xserver_xorg_input_all: xserver-xorg-input-all=1:7.7+*
+apt_pkg_x11_xserver_utils: x11-xserver-utils=7.7+*
+apt_pkg_xserver_xorg_core: xserver-xorg-core=2:21.1.*
+apt_pkg_xinit: xinit=1.4.*

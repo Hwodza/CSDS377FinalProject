@@ -1,0 +1,113 @@
+# >COMPATIBILITY: this is all likely to change including kernel version
+
+- name: Remove dependencies that are no longer required
+  become: True
+  apt:
+    autoremove: True
+
+- name: install pip3
+  become: True
+  apt:
+    name:
+      - "{{ apt_pkg_python3_pip }}"
+      - "{{ apt_pkg_python3_venv }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: install X
+  become: True
+  apt:
+    name:
+      - "{{ apt_pkg_xserver_xorg_video_all }}"
+      - "{{ apt_pkg_xserver_xorg_input_all }}"
+      - "{{ apt_pkg_x11_xserver_utils }}"
+      - "{{ apt_pkg_xserver_xorg_core }}"
+      - "{{ apt_pkg_xinit }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+    install_recommends: False
+
+- name: create virtual environment
+  become: False
+  command:
+    cmd: "python3 -m venv {{ venv_directory }} --system-site-packages"
+    creates: "{{ venv_directory }}"
+
+- name: add venv activation to bashrc
+  lineinfile:
+    path: "/home/pi/.bashrc"
+    create: yes
+    line: ". {{ venv_directory }}/bin/activate"
+    state: present
+
+- name: install dependencies for adafruit script and ansible pids
+  become: False
+  pip:
+    virtualenv: "{{ venv_directory }}"
+    name:
+      - adafruit-python-shell
+      - click
+      - psutil
+
+- name: set python interpreter for fbcp pid check
+  set_fact:
+    ansible_python_interpreter: "{{ venv_directory }}/bin/python3"
+
+- name: use running fbcp as proof pitft already installed
+  community.general.pids:
+    name: fbcp
+  register: pid_of_fbcp
+
+- name: remove temporary directory
+  become: False
+  when: not pid_of_fbcp.pids
+  file: path={{ adafruit_tmp_dir }} state=absent
+  ignore_errors: True
+
+- name: create temporary directory
+  become: False
+  when: not pid_of_fbcp.pids
+  file: path={{ adafruit_tmp_dir }} state=directory
+
+- name: clone adafruit repo
+  become: False
+  when: not pid_of_fbcp.pids
+  git:
+    repo: https://github.com/adafruit/Raspberry-Pi-Installer-Scripts.git
+    dest: "{{ adafruit_tmp_dir }}"
+    version: "{{ adafruit_git_version }}"
+
+- name: run pitft script
+  become: True
+  when: not pid_of_fbcp.pids
+  command: '{{ venv_directory }}/bin/python3 {{ adafruit_tmp_dir }}/adafruit-pitft.py --display=28c --rotation=0 --install-type=mirror --reboot=no'
+
+- name: add drm to PiTFT config
+  become: True
+  ansible.builtin.lineinfile:
+    path: /boot/firmware/config.txt
+    regexp: "dtoverlay=pitft28-capacitive,rotate=90,speed=64000000,fps=30"
+    line: "dtoverlay=pitft28-capacitive,rotate=90,speed=64000000,fps=30,drm"
+
+- name: reboot to apply settings
+  become: True
+  reboot:
+    reboot_timeout: 120
+    reboot_command: reboot now
+
+- name: remove temporary directory
+  become: True
+  when: not pid_of_fbcp.pids
+  file: path={{ adafruit_tmp_dir }} state=absent
+  ignore_errors: True
+
+- name: dpkg-reconfigure console-setup for better console fonts
+  become: True
+  debconf:
+    name: console-setup
+    question: "{{ item.question }}"
+    value: "{{ item.value }}"
+    vtype: select
+  with_items:
+    - { question: 'console-setup/fontface47', value: 'Terminus' }
+    - { question: 'console-setup/fontsize-fb47', value: '14x28 (framebuffer only)' }
+    - { question: 'console-setup/charmap47', value: 'UTF-8' }
+    - { question: 'console-setup/codeset47', value: 'Guess optimal character set' }

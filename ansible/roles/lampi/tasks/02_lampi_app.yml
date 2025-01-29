@@ -1,0 +1,22 @@
+- name: install our repo
+  become: False  # need to explicitly do this to allow SSH host key forwarding
+  git:
+    repo:  "{{ connected_devices_git_repo_url }}"
+    dest: "{{ repo_directory }}"
+    version: "{{ connected_devices_git_repo_version }}"
+    accept_hostkey: yes
+
+- name: install Lampi app systemd service
+  become: True
+  template:
+    dest: "/etc/systemd/system/{{ lampi_app_service_file }}"
+    owner: root
+    mode: u+rw,g=r,o=r
+    src: "{{ lampi_app_service_file }}"
+
+- name: start Lampi app systemd service
+  become: True
+  systemd:
+    name: lampi_app
+    state: started
+    enabled: True
