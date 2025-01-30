@@ -23,7 +23,7 @@ kivy_config_dict_graphics:
     "rotation": 270
     "allow_screensaver": 0
 boot_config: /boot/config.txt
-connected_devices_git_repo_url: "git@github.com:CWRU-Connected-Devices/connected-devices-spring24.git"
+connected_devices_git_repo_url: "git@github.com:CWRU-Connected-Devices/connected-devices-spring25.git"
 connected_devices_git_repo_version: main
 repo_directory: "/home/pi/connected-devices"
 venv_directory: "/home/pi/lampi-venv"
