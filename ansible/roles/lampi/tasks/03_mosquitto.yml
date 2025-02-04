@@ -1,0 +1,13 @@
+- name: install mosquitto broker and client
+  become: True
+  apt:
+    name:
+      - "{{ apt_pkg_mosquitto }}"
+      - "{{ apt_pkg_mosquitto_clients }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: install chapter >=3 pip packages with requirements.txt
+  become: False
+  pip:
+    virtualenv: "{{ venv_directory }}"
+    requirements: "{{ requirements_file_path }}"

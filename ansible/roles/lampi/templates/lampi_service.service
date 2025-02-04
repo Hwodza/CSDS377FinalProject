@@ -1,0 +1,13 @@
+[Unit]
+Description=Lampi service service
+After=multi-user.target
+
+[Service]
+User=pi
+Type=simple
+Restart=always
+WorkingDirectory={{ repo_directory }}/Lampi
+ExecStart={{ venv_directory }}/bin/python3 lamp_service.py
+
+[Install]
+WantedBy=multi-user.target

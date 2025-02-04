@@ -1,0 +1,14 @@
+- name: install lamp service systemd service
+  become: True
+  template:
+    dest: "/etc/systemd/system/{{ lampi_service_service_file }}"
+    owner: root
+    mode: u+rw,g=r,o=r
+    src: "{{ lampi_service_service_file }}"
+
+- name: start lamp service systemd service
+  become: True
+  systemd:
+    name: lampi_service
+    state: started
+    enabled: True

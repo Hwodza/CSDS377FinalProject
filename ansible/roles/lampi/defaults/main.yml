@@ -42,3 +42,9 @@ apt_pkg_xserver_xorg_input_all: xserver-xorg-input-all=1:7.7+*
 apt_pkg_x11_xserver_utils: x11-xserver-utils=7.7+*
 apt_pkg_xserver_xorg_core: xserver-xorg-core=2:21.1.*
 apt_pkg_xinit: xinit=1.4.*
+
+# chapter 3 variables
+lampi_service_service_file: "lampi_service.service"
+apt_pkg_mosquitto: mosquitto=2.0.*
+apt_pkg_mosquitto_clients: mosquitto-clients=2.0.*
+requirements_file_path: "{{ repo_directory }}/ansible/roles/lampi/files/pip_requirements/requirements.txt"
