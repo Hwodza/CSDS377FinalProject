@@ -1,0 +1,3 @@
+---
+# tasks file for cloud
+- import_tasks: 04.yml

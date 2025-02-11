@@ -1,0 +1,8 @@
+---
+# vars file for cloud
+
+cache_update_valid_secs: 900
+
+# chapter 4 variables
+apt_pkg_mosquitto: mosquitto=2.0.*
+apt_pkg_mosquitto_clients: mosquitto-clients=2.0.*
