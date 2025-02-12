@@ -1,0 +1,14 @@
+name: pycodestyle
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  pycodestyle:
+    name: pycodestyle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: pycodestyle pep8 style checker
+        uses: andymckay/pycodestyle-action@0.1.3
