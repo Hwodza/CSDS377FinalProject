@@ -46,12 +46,14 @@ class LampiApp(App):
 
     def on_start(self):
         self._publish_clock = None
-        self.mqtt = Client()
+        self.mqtt = Client(client_id="lamp_ui")
+        self.mqtt.will_set('lamp/connection/lamp_ui/state', "0", qos=2, retain=True)
         self.mqtt.enable_logger()
         self.mqtt.on_connect = self.on_connect
         self.mqtt.connect(MQTT_BROKER_HOST, port=MQTT_BROKER_PORT,
                           keepalive=MQTT_BROKER_KEEP_ALIVE_SECS)
         self.mqtt.loop_start()
+        self.mqtt.publish('lamp/connection/lamp_ui/state', "1", qos=2, retain=True)
         self.set_up_gpio_and_ip_popup()
 
     def on_hue(self, instance, value):
@@ -107,9 +109,9 @@ class LampiApp(App):
     def _update_leds(self):
         msg = {'color': {'h': self._hue, 's': self._saturation},
                'brightness': self._brightness,
-               'on': self.lamp_is_on}
+               'on': self.lamp_is_on, 'client': 'lamp_ui'}
         self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
-                          json.dumps(msg).encode('utf-8'))
+                          json.dumps(msg).encode('utf-8'), qos=1)
         self._publish_clock = None
 
     def set_up_gpio_and_ip_popup(self):
