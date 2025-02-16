@@ -1,37 +1,33 @@
-function LampiPage($) {
+function TestPage($) {
   const hostAddress = "107.21.161.21"
   const hostPort = "50002";
   const clientId = Math.random() + "_web_client";
-  const deviceId = "b827ebdb1727";
+  const deviceId = "TEST";
 
-  var configurationState = {}; 
+  var configurationState = {};
   console.log(clientId);
   var client = new Paho.MQTT.Client(hostAddress, Number(hostPort), clientId);
   var updateTimer = null;
   var isPowered = false;
-  obj = { 
+  obj = {
     setPowerLabel : function(label) {
       $("#powerState").html(label);
-    },  
+    },
 
     setSliderLabel : function(label) {
       $("#sliderState").html(label);
-    },  
-    
+    },
+
     powerOn : function () {
       console.log('.... powering on');
       obj.setPowerLabel("On");
       isPowered = true;
-      configurationState["on"] = true;
-      $("#power").css("background-image", "url(\"../images//power_icon_light.png\")");
-    },  
+    },
     powerOff : function () {
       console.log('.... powering off');
       obj.setPowerLabel("Off");
       isPowered = false;
-      configurationState["on"] = false;
-      $("#power").css("background-image", "url(\"../images//power_icon_dark.png\")");
-    },  
+    },
 
     togglePower : function() {
       console.log('.... toggling power');
@@ -40,28 +36,18 @@ function LampiPage($) {
       else
         obj.powerOn();
       obj.sendConfigChange();
-    }, 
+    },
 
     onSliderChangedEvent : function(inputEvent) {
       value = Number(inputEvent.target.value);
-      let hue = Number($("#hue-slider").val())
-      let saturation = Number($("#saturation-slider").val())
-      let brightness = Number($("#brightness-slider").val())
-      console.log('.... hue:' + hue + ' saturation: ' + saturation + ' brigtness: ' + brightness);
-      configurationState["color"]["h"] = hue
-      configurationState["color"]["s"] = saturation
-      configurationState["brightness"] = brightness
-      obj.updateUI();
-      obj.scheduleConfigChange();
       console.log('.... slider value has changed to: ' + value);
       obj.setSliderLabel(value);
     },
     
     sendConfigChange : function() {
-      configurationState["client"] = clientId 
       configJson = JSON.stringify(configurationState);
       message = new Paho.MQTT.Message(configJson);
-      message.destinationName = "devices/" + deviceId + "/lamp/set_config";
+      message.destinationName = "devices/" + deviceId + "/test/poke_value";
       client.send(message);
     },
 
@@ -88,7 +74,7 @@ function LampiPage($) {
     },
 
     onConnect : function(response) {
-      client.subscribe("devices/" + deviceId + "/lamp/changed");
+      client.subscribe("devices/+/label/changed");
     },
 
     onConnectionLost : function(responseObject) {
@@ -104,22 +90,10 @@ function LampiPage($) {
       configurationState = JSON.parse(message.payloadString);
       console.log(configurationState);
       obj.updateUI();
-      if (configurationState["on"] == true){
-        obj.powerOn();
-      } else {
-        obj.powerOff();
-      }
       },
 
     updateUI : function() {
       $("#sub_value").html(configurationState.value);
-      setSliderValues(configurationState["color"]['h'], configurationState["color"]["s"], configurationState["brightness"])
-      obj.updateColorBox();
-    },
-
-    updateColorBox : function() {
-      color = tinycolor({h:configurationState["color"]['h']*360, s:configurationState["color"]["s"], v:1.0});
-      $("#colorbox").css("background-color", color.toHexString());
     },
 
     init : function() {
@@ -129,7 +103,6 @@ function LampiPage($) {
 
       $("#power").on("click", obj.togglePower);
       $( ".slider" ).on( "change input", obj.onSliderChangedEvent);
-
     },
 
   };
@@ -137,4 +110,4 @@ function LampiPage($) {
   return obj;
 }
 
-jQuery(LampiPage);
+jQuery(TestPage);
