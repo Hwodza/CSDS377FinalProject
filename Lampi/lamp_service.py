@@ -113,7 +113,7 @@ class LampService(object):
             if 'color' in new_config:
                 self.set_current_color(new_config['color'])
             if 'brightness' in new_config:
-                self.set_current_brightness(new_config['brightness'])
+                self.set_current_brightness(float(new_config['brightness']))
             self.publish_config_change()
         except InvalidLampConfig:
             print("error applying new settings " + str(msg.payload))
@@ -156,10 +156,10 @@ class LampService(object):
 
     def set_current_color(self, new_color):
         for ch in ['h', 's']:
-            if new_color[ch] < 0 or new_color[ch] > 1.0:
+            if float(new_color[ch]) < 0 or float(new_color[ch]) > 1.0:
                 raise InvalidLampConfig()
         for ch in ['h', 's']:
-            self.db['color'][ch] = round(new_color[ch], FP_DIGITS)
+            self.db['color'][ch] = round(float(new_color[ch]), FP_DIGITS)
         self.write_current_settings_to_hardware()
 
     def write_current_settings_to_hardware(self):
