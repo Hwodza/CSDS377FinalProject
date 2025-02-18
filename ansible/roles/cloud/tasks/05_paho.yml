@@ -1,0 +1,54 @@
+- name: remove Debian pip (python-pip)
+  become: True
+  apt:
+    name: ['python-pip', 'python3-pip']
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+    state: absent
+
+- name: Remove dependencies that are no longer required
+  become: True
+  apt:
+    autoremove: yes
+
+- name: install distutils for pip
+  become: True
+  apt:
+    name: "{{ apt_pkg_python3_distutils }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+# install Python pip
+- name: download get-pip.py
+  become: True
+  get_url:
+    url: https://bootstrap.pypa.io/get-pip.py
+    dest: /tmp/get-pip.py
+    mode: 0755
+
+- name: install pip with get-pip.py with Python3
+  become: True
+  command: python3 /tmp/get-pip.py
+
+- name: install venv
+  become: True
+  apt:
+    name: "{{ apt_pkg_python3_10_venv }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: create virtual environment
+  become: False
+  command:
+    cmd: "python3 -m venv {{ venv_directory }} --system-site-packages"
+    creates: "{{ venv_directory }}"
+
+- name: add venv activation to bashrc
+  lineinfile:
+    path: "/home/ubuntu/.bashrc"
+    create: yes
+    line: ". {{ venv_directory }}/bin/activate"
+    state: present
+
+- name: install Paho Python MQTT client library
+  become: False
+  pip:
+    virtualenv: "{{ venv_directory }}"
+    requirements: "{{ requirements_file_path }}"

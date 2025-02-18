@@ -6,3 +6,15 @@ cache_update_valid_secs: 900
 # chapter 4 variables
 apt_pkg_mosquitto: mosquitto=2.0.*
 apt_pkg_mosquitto_clients: mosquitto-clients=2.0.*
+
+# chapter 5 variables
+connected_devices_git_repo_url: "git@github.com:CWRU-Connected-Devices/connected-devices-spring25.git"
+connected_devices_git_repo_version: main
+repo_directory: /home/ubuntu/connected-devices
+root_web_directory: /home/ubuntu/connected-devices/Web/static
+venv_directory: "/home/ubuntu/ec2-venv"
+apt_pkg_python3_distutils: python3-distutils=3.10.*
+apt_pkg_python3_10_venv: python3.10-venv=3.10.*
+apt_pkg_nginx: nginx=1.18.*
+apt_pkg_git: git=1:2.34.*
+requirements_file_path: "{{ repo_directory }}/ansible/roles/lampi/files/pip_requirements/requirements.txt"
