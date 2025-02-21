@@ -1,7 +1,7 @@
 const hostAddress = window.location.hostname;
 const hostPort = "50002";
 const clientId = Math.random() + "_web_client";
-const deviceId = "b827eb8e4272"; // FILL IN WITH THE DEVICEID OF YOUR LAMPI DEVICE
+const deviceId = "b827eb761867"; // FILL IN WITH THE DEVICEID OF YOUR LAMPI DEVICE
 
 function LampiPage($){
 
