@@ -19,13 +19,13 @@
             {% if user.is_authenticated %}
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
-                    <button type="submit">Logout</button>
+                    <button class="unstyled-button" type="submit">Logout</button>
                 </form>
             {% else %}
                <a href="{% url 'login' %}">Login</a>
             {% endif %}
             {% if user.is_superuser %}
-               <a href= {% url 'admin:index' %} >Admin</a>
+               <a class="unstyled-button" href= {% url 'admin:index' %} >Admin</a>
             {% endif %}
         </div>
         {% block content %}
