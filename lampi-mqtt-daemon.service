@@ -1,0 +1,9 @@
+[Service]
+User=ubuntu
+Type=simple
+Restart=always
+WorkingDirectory=/home/ubuntu/connected-devices/Web/lampisite
+ExecStart=/home/ubuntu/ec2-venv/bin/python3 manage.py mqtt-daemon
+
+[Install]
+WantedBy=multi-user.target
