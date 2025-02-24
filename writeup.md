@@ -2,9 +2,9 @@
 
 ## Odza and Zabarov
 
-## \[FIRST NAME]\[LAST_NAME 1\]
+## \[Henry ]\[Odza\]
 
-something I learned ....
+I have never used Django before. However, I have used flask, which has a similar feel to Django. I was suprised though on how many features came with Django that basically worked right out of the box. The tutorial was also suprisingly well done. 
 
 ## Ruslan Zabarov
 
