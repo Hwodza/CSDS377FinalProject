@@ -14,6 +14,7 @@ MQTT_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
 def device_association_topic(device_id):
     return 'devices/{}/lamp/associated'.format(device_id)
 
+
 def get_device_id_from_broker_topic(topic):
     results = re.search(MQTT_BROKER_RE_PATTERN, topic.lower())
     return results.group('device_id')
@@ -28,7 +29,8 @@ class Command(BaseCommand):
             User.objects.get(username=DEFAULT_USER)
         except User.DoesNotExist:
             User.objects.create_user(username=DEFAULT_USER)
-            print("Created user {} to own new LAMPI devices".format(DEFAULT_USER))
+            print("Created user {} to own new LAMPI devices"
+                  .format(DEFAULT_USER))
 
     def _on_connect(self, client, userdata, flags, rc):
         self.client.message_callback_add('$SYS/broker/connection/+/state',
@@ -52,7 +54,8 @@ class Command(BaseCommand):
                 print("Found {}".format(device))
             except Lampi.DoesNotExist:
                 default_user = User.objects.get(username=DEFAULT_USER)
-                new_device = Lampi.objects.create(device_id=device_id, user=default_user)
+                new_device = Lampi.objects.create(device_id=device_id,
+                                                  user=default_user)
                 print("Created {}".format(new_device))
 
     def handle(self, *args, **options):

@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 
 DEFAULT_USER = 'parked_device_user'
 
+
 def get_parked_user():
     return get_user_model().objects.get_or_create(username=DEFAULT_USER)[0]
+
 
 class Lampi(models.Model):
     name = models.CharField(max_length=50, default='My LAMPI')

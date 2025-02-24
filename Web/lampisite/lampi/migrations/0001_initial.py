@@ -18,9 +18,12 @@ class Migration(migrations.Migration):
             name='Lampi',
             fields=[
                 ('name', models.CharField(default='My LAMPI', max_length=50)),
-                ('device_id', models.CharField(max_length=12, primary_key=True, serialize=False)),
+                ('device_id', models.CharField(max_length=12, primary_key=True,
+                                               serialize=False)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=models.SET(lampi.models.get_parked_user), to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(
+                    on_delete=models.SET(lampi.models.get_parked_user),
+                    to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]
