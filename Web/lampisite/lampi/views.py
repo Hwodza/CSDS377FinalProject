@@ -8,7 +8,7 @@ from .models import Lampi
 
 class DetailView(LoginRequiredMixin, TemplateView):
     template_name = 'lampi/detail.html'
-    
+
     def get_context_data(self, **kwargs):
         # call super class method
         context = super(DetailView, self).get_context_data(**kwargs)
@@ -26,4 +26,3 @@ class IndexView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Lampi.objects.filter(user=self.request.user)
-    
