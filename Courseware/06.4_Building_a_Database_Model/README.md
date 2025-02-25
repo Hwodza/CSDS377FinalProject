@@ -53,11 +53,7 @@ We can create a background process that monitors for LAMPI device MQTT broker co
 
 We can build such a background process a few different ways - since it needs the full Django environment ('lampisite' project, 'lampi' app, **settings.py** to get to the proper database, etc.), we can build a small [command extension for the Django 'manage.py'](https://docs.djangoproject.com/en/5.0/howto/custom-management-commands/).
 
-Install the Python Paho library to your virtual environment if it's not already there:
-
-```bash
-$cloud pip3 install paho-mqtt==1.6.1
-```
+Paho should already be installed to your cloud venv by pip requirements.
 
 Create a directory to hold our custom commands where Django will automaticall locate it:
 

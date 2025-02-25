@@ -1,0 +1,14 @@
+- name: install mqtt-daemon systemd service
+  become: True
+  template:
+    dest: "/etc/systemd/system/{{ lampi_mqtt_daemon_service_file }}"
+    owner: root
+    mode: u+rw,g=r,o=r
+    src: "{{ lampi_mqtt_daemon_service_file }}"
+
+- name: start mqtt-daemon systemd service
+  become: True
+  systemd:
+    name: lampi_mqtt_daemon
+    state: started
+    enabled: True

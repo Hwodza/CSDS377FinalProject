@@ -44,12 +44,13 @@ The Django Tutorial has seven parts.  Read the notes below for each part **befor
 
 1. [Writing your first Django app](https://docs.djangoproject.com/en/5.0/intro/tutorial01/)
 
-    * [Install Django](https://docs.djangoproject.com/en/5.0/intro/install/) to your virtual environment on EC2 with [pip3](https://docs.djangoproject.com/en/5.0/topics/install/#installing-an-official-release-with-pip)
+    * Django should already be installed to your cloud venv by the pip requirements. If necessary, install them again:
 
     ```bash
-    pip3 install django==5.0.1
+    $cloud cd ~/connected-devices/ansible/roles/cloud/files/pip_requirements
+    $cloud pip3 install -r requirements.txt
     ```
-    
+
     * When working through the tutorial, when the URL in the tutorial is something like `http://127.0.0.1:8000` you should use your EC2 hostname instead of `127.0.0.1` in your browser (e.g., `http://<your ec2 hostname>:8000`).
     * Do not forget to **open up port 8000** in your EC2 Security Group!
     * When starting the Django development server, do the following:

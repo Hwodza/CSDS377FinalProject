@@ -47,7 +47,7 @@
     line: ". {{ venv_directory }}/bin/activate"
     state: present
 
-- name: install Paho Python MQTT client library
+- name: install cloud pip requirements
   become: False
   pip:
     virtualenv: "{{ venv_directory }}"
