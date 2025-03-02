@@ -16,11 +16,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='lampi',
             name='association_code',
-            field=models.CharField(default='f400b4c9e20f439c8f5b92dde3a07feb', max_length=32),
+            field=models.CharField(default='f400b4c9e20f439c8f5b92dde3a07feb',
+                                    max_length=32),
         ),
         migrations.AlterField(
             model_name='lampi',
             name='user',
-            field=models.ForeignKey(on_delete=models.SET(lampi.models.get_parked_user), to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                on_delete=models.SET(lampi.models.get_parked_user),
+                to=settings.AUTH_USER_MODEL),
         ),
     ]

@@ -19,7 +19,8 @@ class Lampi(models.Model):
     device_id = models.CharField(max_length=12, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.SET(get_parked_user))
     created_at = models.DateTimeField(auto_now_add=True)
-    association_code = models.CharField(max_length=32, default=generate_association_code())
+    association_code = models.CharField(max_length=32,
+                                        default=generate_association_code())
 
     def __str__(self):
         return "{}: {}".format(self.device_id, self.name)
@@ -31,7 +32,9 @@ class Lampi(models.Model):
         # send association MQTT message
         assoc_msg = {"code": self.association_code, "associated": False}
         # your code goes here
-        publish.single(self._generate_device_association_topic(), json.dumps(assoc_msg).encode('utf-8'), qos=2, port=50001)
+        publish.single(self._generate_device_association_topic(),
+                        json.dumps(assoc_msg).encode('utf-8'),
+                        qos=2, port=50001)
 
     def associate_and_publish_associated_msg(self,  user):
         # update Lampi instance with new user
@@ -40,4 +43,6 @@ class Lampi(models.Model):
         # your code goes here
         self.user = user
         self.save()
-        publish.single(self._generate_device_association_topic(), json.dumps(assoc_msg).encode('utf-8'), qos=2, port=50001)
+        publish.single(self._generate_device_association_topic(),
+                        json.dumps(assoc_msg).encode('utf-8'),
+                        qos=2, port=50001)

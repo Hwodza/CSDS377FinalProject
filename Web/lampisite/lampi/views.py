@@ -27,6 +27,7 @@ class DetailView(LoginRequiredMixin, generic.TemplateView):
         print("CONTEXT: {}".format(context))
         return context
 
+
 class AddLampiView(LoginRequiredMixin, generic.FormView):
     template_name = 'lampi/addlampi.html'
     form_class = AddLampiForm
