@@ -53,8 +53,8 @@ class Command(BaseCommand):
                 new_device = Lampi(device_id=device_id)
                 uname = settings.DEFAULT_USER
                 new_device.user = User.objects.get(username=uname)
-                new_device.save()
                 new_device.publish_unassociated_msg()
+                new_device.save()
                 print("Created {}".format(new_device))
 
     def handle(self, *args, **options):
