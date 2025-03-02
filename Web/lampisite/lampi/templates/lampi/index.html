@@ -1,7 +1,7 @@
 {% extends "lampi/base.html" %}
 
 {% block content %}
-
+<a href="{% url 'lampi:add'%}">Add a LAMPI Device</a>
 {% if lampi_list %}
     <ul>
     {% for device in lampi_list %}

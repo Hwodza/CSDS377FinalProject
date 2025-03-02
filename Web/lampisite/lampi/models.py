@@ -38,4 +38,5 @@ class Lampi(models.Model):
         assoc_msg = {"associated": True}
         # your code goes here
         self.user = user
-        publish.single(self._generate_device_association_topic(), assoc_msg, qos=2, port=50001)
+        self.save()
+        publish.single(self._generate_device_association_topic(), json.dumps(assoc_msg).encode('utf-8'), qos=2, port=50001)

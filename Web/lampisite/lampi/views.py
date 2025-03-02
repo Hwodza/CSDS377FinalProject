@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 
 from .models import Lampi
+from .forms import AddLampiForm
 
 # Create your views here.
 
@@ -25,3 +26,17 @@ class DetailView(LoginRequiredMixin, generic.TemplateView):
             Lampi, pk=kwargs['device_id'], user=self.request.user)
         print("CONTEXT: {}".format(context))
         return context
+
+class AddLampiView(LoginRequiredMixin, generic.FormView):
+    template_name = 'lampi/addlampi.html'
+    form_class = AddLampiForm
+    success_url = '/lampi'
+
+    def form_valid(self, form):
+        device = form.cleaned_data['device']
+        # do something here...
+        #   you have the device object
+        #   the logged in user object is available in self.request.user
+        print(device)
+        device.associate_and_publish_associated_msg(self.request.user)
+        return super(AddLampiView, self).form_valid(form)
