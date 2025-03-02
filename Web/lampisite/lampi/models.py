@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 
+
 def get_parked_user():
     return get_user_model().objects.get_or_create(username=DEFAULT_USER)[0]
 
