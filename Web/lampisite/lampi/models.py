@@ -33,8 +33,8 @@ class Lampi(models.Model):
         assoc_msg = {"code": self.association_code, "associated": False}
         # your code goes here
         publish.single(self._generate_device_association_topic(),
-                        json.dumps(assoc_msg).encode('utf-8'),
-                        qos=2, port=50001)
+                       json.dumps(assoc_msg).encode('utf-8'),
+                       qos=2, port=50001)
 
     def associate_and_publish_associated_msg(self,  user):
         # update Lampi instance with new user
@@ -44,5 +44,5 @@ class Lampi(models.Model):
         self.user = user
         self.save()
         publish.single(self._generate_device_association_topic(),
-                        json.dumps(assoc_msg).encode('utf-8'),
-                        qos=2, port=50001)
+                       json.dumps(assoc_msg).encode('utf-8'),
+                       qos=2, port=50001)
