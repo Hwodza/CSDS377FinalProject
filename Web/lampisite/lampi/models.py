@@ -32,7 +32,9 @@ class Lampi(models.Model):
         # send association MQTT message
         assoc_msg = {"code": self.association_code, "associated": False}
         # your code goes here
-        publish.single(self._generate_device_association_topic(), json.dumps(assoc_msg).encode('utf-8'), qos=2, port=50001, retain=True)
+        publish.single(self._generate_device_association_topic(),
+                       json.dumps(assoc_msg).encode('utf-8'),
+                       qos=2, port=50001, retain=True)
         publish.single(self._generate_device_association_topic(),
                        json.dumps(assoc_msg).encode('utf-8'),
                        qos=2, port=50001)
@@ -44,7 +46,9 @@ class Lampi(models.Model):
         # your code goes here
         self.user = user
         self.save()
-        publish.single(self._generate_device_association_topic(), json.dumps(assoc_msg).encode('utf-8'), qos=2, port=50001, retain=True)
+        publish.single(self._generate_device_association_topic(),
+                       json.dumps(assoc_msg).encode('utf-8'),
+                       qos=2, port=50001, retain=True)
         publish.single(self._generate_device_association_topic(),
                        json.dumps(assoc_msg).encode('utf-8'),
                        qos=2, port=50001)

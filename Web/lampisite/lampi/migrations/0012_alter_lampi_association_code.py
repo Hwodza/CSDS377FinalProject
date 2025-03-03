@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='lampi',
             name='association_code',
-            field=models.CharField(default='f7db799d42884e53a4e745ec08d9da66', max_length=32),
+            field=models.CharField(default='f7db799d42884e53a4e745ec08d9da66',
+                                   max_length=32),
         ),
     ]
