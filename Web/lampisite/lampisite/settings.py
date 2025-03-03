@@ -125,4 +125,3 @@ LOGIN_URL = 'login'
 
 DEFAULT_USER = 'parked_device_user'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
