@@ -17,6 +17,8 @@ apt_pkg_python3_distutils: python3-distutils=3.10.*
 apt_pkg_python3_10_venv: python3.10-venv=3.10.*
 apt_pkg_nginx: nginx=1.18.*
 apt_pkg_git: git=1:2.34.*
+apt_pkg_build_essential: build-essential=12.9*
+apt_pkg_python3_dev: python3-dev=3.10.*
 requirements_file_path: "{{ repo_directory }}/ansible/roles/cloud/files/pip_requirements/requirements.txt"
 
 # chapter 6 variables
@@ -26,3 +28,6 @@ django_admin_email: blah@blah.com
 django_admin_password: iot12345
 django_settings: lampisite.settings
 lampi_mqtt_daemon_service_file: lampi_mqtt_daemon.service
+
+# chapter 7 variables
+lampi_uwsgi_service_file: lampi_uwsgi.service

@@ -34,6 +34,21 @@
     name: "{{ apt_pkg_python3_10_venv }}"
     cache_valid_time: "{{ cache_update_valid_secs }}"
 
+# Install build-essential & python3-dev for building uWSGI wheels later on (chapter 7)
+# Install performed here because uWSGI will be installed by Python requirements (called in this file!)
+#  after being added to requirements.txt in chapter 7, and we need these packages to exist before then
+- name: install build essential
+  become: True
+  apt:
+    name: "{{ apt_pkg_build_essential }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: install python3 dev
+  become: True
+  apt:
+    name: "{{ apt_pkg_python3_dev }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
 - name: create virtual environment
   become: False
   command:

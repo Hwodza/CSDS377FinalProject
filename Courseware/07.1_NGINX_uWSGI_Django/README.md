@@ -37,20 +37,20 @@ Stop the Django development server.
 
 ### Installing uWSGI
 
-We need to install some dependencies before we can install uWSGI:
-
-```bash
-cloud$ sudo apt-get install build-essential=12.9* python3-dev=3.10.* -y
-```
-
 uWSGI (which is a Python module) should already be installed to your virtual environment by pip requirements.
 
-If necessary, install them again:
-
-```bash
-$cloud cd ~/connected-devices/ansible/roles/cloud/files/pip_requirements
-$cloud pip3 install -r requirements.txt
-```
+> If you run into errors, install them again:
+>
+> ```bash
+> $cloud cd ~/connected-devices/ansible/roles/cloud/files/pip_requirements
+> $cloud pip3 install -r requirements.txt
+> ```
+>
+> And maybe make sure these dependencies are installed:
+>
+> ```bash
+> cloud$ sudo apt-get install build-essential=12.9* python3-dev=3.10.* -y
+> ```
 
 Now let's run our Django app using uWSGI directly (which we will not generally do, other than during development and configuration testing).
 

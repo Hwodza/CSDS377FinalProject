@@ -1,0 +1,13 @@
+[Unit]
+Description=Lampi UWSGI service
+After=multi-user.target
+
+[Service]
+User=www-data
+Type=simple
+Restart=always
+WorkingDirectory={{ django_dir }}
+ExecStart={{ venv_directory }}/bin/uwsgi --emperor /etc/uwsgi/vassals --uid www-data --gid www-data
+
+[Install]
+WantedBy=multi-user.target
