@@ -1,0 +1,4 @@
+# Install from our fork of the repo
+# the maintainer of the primary repo is not keeping up with critical
+#   pull requests and issues
+git+https://github.com/CWRU-Connected-Devices/pybleno.git

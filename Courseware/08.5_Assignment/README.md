@@ -2,7 +2,23 @@
 
 At the completion of Assignment 8, you should have an iOS application that looks and behaves like this:
 
+## Sliders in Action
+
 ![](Images/ios_assignment.gif)
+
+## LAMPI On
+
+When the lamp is on, the power symbol color matches lamp color.
+
+![](Images/lampi_on.png)
+
+
+## LAMPI Off
+
+
+![](Images/lampi_off.png)
+
+
 
 Requirements:
 
