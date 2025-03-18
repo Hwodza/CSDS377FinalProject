@@ -37,9 +37,24 @@ Change your LAMPI hostname by editing `/etc/hostname`:
 ```bash
 sudo nano /etc/hostname
 ```
+
 We will use a hostname for our devices of the form `LAMPI-<DeviceID>` where `<DeviceID>` is the same Device ID we have used to uniquely identify our LAMPI devices.  
 
 If your LAMPI's DeviceID is `b827ebb9372e` then the hostname should be `LAMPI-b827ebb9372e`.
+
+Replace the hostname in `/etc/hostname` with the new one and save your changes.
+
+You should also edit `/etc/hosts` to tell the Lampi what IP address corresponds with your new hostname:
+
+```bash
+sudo nano /etc/hosts
+```
+
+Change the entry for `127.0.1.1` (it should be the last entry) to use the new hostname:
+
+```
+127.0.1.1   LAMPI-b827ebb9372e
+```
 
 Save your changes.  Then reboot:
 
