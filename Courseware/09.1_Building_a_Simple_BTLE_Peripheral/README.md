@@ -219,7 +219,11 @@ def main():
     ibeacon.start()
 
     while True:
-        time.sleep(1)
+        try:
+            time.sleep(1)
+        except KeyboardInterrupt:
+            ibeacon.stop()
+            sys.exit()
 
 
 if __name__ == "__main__":
