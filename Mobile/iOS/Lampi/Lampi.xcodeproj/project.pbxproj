@@ -3,31 +3,35 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		857336F9256713850024A8BE /* LampiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857336F8256713850024A8BE /* LampiApp.swift */; };
-		857336FB256713850024A8BE /* LampiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857336FA256713850024A8BE /* LampiView.swift */; };
-		857336FD256713870024A8BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 857336FC256713870024A8BE /* Assets.xcassets */; };
-		85733700256713870024A8BE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 857336FF256713870024A8BE /* Preview Assets.xcassets */; };
-		85AC24E2258154A90051259C /* Lampi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AC24E1258154A90051259C /* Lampi.swift */; };
-		85C517E32583FCE6002670BA /* GradientSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C517E22583FCE6002670BA /* GradientSlider.swift */; };
+		8516E57B256447D300E819F6 /* LampiBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8516E57A256447D300E819F6 /* LampiBrowserView.swift */; };
+		8516E57F2564514D00E819F6 /* LampiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8516E57E2564514D00E819F6 /* LampiManager.swift */; };
+		854D43B9255B2CD600565A15 /* GradientSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854D43B8255B2CD600565A15 /* GradientSlider.swift */; };
+		858B9BD52549D7A400A43AC3 /* LampiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858B9BD42549D7A400A43AC3 /* LampiApp.swift */; };
+		858B9BD72549D7A400A43AC3 /* LampiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858B9BD62549D7A400A43AC3 /* LampiView.swift */; };
+		858B9BD92549D7A700A43AC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 858B9BD82549D7A700A43AC3 /* Assets.xcassets */; };
+		858B9BDC2549D7A700A43AC3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 858B9BDB2549D7A700A43AC3 /* Preview Assets.xcassets */; };
+		858B9BE52549E2A000A43AC3 /* Lampi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858B9BE42549E2A000A43AC3 /* Lampi.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		857336F5256713850024A8BE /* Lampi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lampi.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		857336F8256713850024A8BE /* LampiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LampiApp.swift; sourceTree = "<group>"; };
-		857336FA256713850024A8BE /* LampiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LampiView.swift; sourceTree = "<group>"; };
-		857336FC256713870024A8BE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		857336FF256713870024A8BE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		85733701256713870024A8BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		85AC24E1258154A90051259C /* Lampi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lampi.swift; sourceTree = "<group>"; };
-		85C517E22583FCE6002670BA /* GradientSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientSlider.swift; sourceTree = "<group>"; };
+		8516E57A256447D300E819F6 /* LampiBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LampiBrowserView.swift; sourceTree = "<group>"; };
+		8516E57E2564514D00E819F6 /* LampiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LampiManager.swift; sourceTree = "<group>"; };
+		854D43B8255B2CD600565A15 /* GradientSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientSlider.swift; sourceTree = "<group>"; };
+		858B9BD12549D7A400A43AC3 /* Lampi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lampi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		858B9BD42549D7A400A43AC3 /* LampiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LampiApp.swift; sourceTree = "<group>"; };
+		858B9BD62549D7A400A43AC3 /* LampiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LampiView.swift; sourceTree = "<group>"; };
+		858B9BD82549D7A700A43AC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		858B9BDB2549D7A700A43AC3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		858B9BDD2549D7A700A43AC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		858B9BE42549E2A000A43AC3 /* Lampi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lampi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		857336F2256713850024A8BE /* Frameworks */ = {
+		858B9BCE2549D7A400A43AC3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -37,40 +41,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		857336EC256713850024A8BE = {
+		8516E5782564479B00E819F6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				857336F7256713850024A8BE /* Lampi */,
-				857336F6256713850024A8BE /* Products */,
+				858B9BD62549D7A400A43AC3 /* LampiView.swift */,
+				8516E57A256447D300E819F6 /* LampiBrowserView.swift */,
+				854D43B8255B2CD600565A15 /* GradientSlider.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		858B9BC82549D7A400A43AC3 = {
+			isa = PBXGroup;
+			children = (
+				858B9BD32549D7A400A43AC3 /* Lampi */,
+				858B9BD22549D7A400A43AC3 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		857336F6256713850024A8BE /* Products */ = {
+		858B9BD22549D7A400A43AC3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				857336F5256713850024A8BE /* Lampi.app */,
+				858B9BD12549D7A400A43AC3 /* Lampi.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		857336F7256713850024A8BE /* Lampi */ = {
+		858B9BD32549D7A400A43AC3 /* Lampi */ = {
 			isa = PBXGroup;
 			children = (
-				857336F8256713850024A8BE /* LampiApp.swift */,
-				857336FA256713850024A8BE /* LampiView.swift */,
-				85AC24E1258154A90051259C /* Lampi.swift */,
-				85C517E22583FCE6002670BA /* GradientSlider.swift */,
-				857336FC256713870024A8BE /* Assets.xcassets */,
-				85733701256713870024A8BE /* Info.plist */,
-				857336FE256713870024A8BE /* Preview Content */,
+				858B9BD42549D7A400A43AC3 /* LampiApp.swift */,
+				8516E5782564479B00E819F6 /* Views */,
+				858B9BE42549E2A000A43AC3 /* Lampi.swift */,
+				8516E57E2564514D00E819F6 /* LampiManager.swift */,
+				858B9BD82549D7A700A43AC3 /* Assets.xcassets */,
+				858B9BDD2549D7A700A43AC3 /* Info.plist */,
+				858B9BDA2549D7A700A43AC3 /* Preview Content */,
 			);
 			path = Lampi;
 			sourceTree = "<group>";
 		};
-		857336FE256713870024A8BE /* Preview Content */ = {
+		858B9BDA2549D7A700A43AC3 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				857336FF256713870024A8BE /* Preview Assets.xcassets */,
+				858B9BDB2549D7A700A43AC3 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -78,13 +92,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		857336F4256713850024A8BE /* Lampi */ = {
+		858B9BD02549D7A400A43AC3 /* Lampi */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 85733704256713870024A8BE /* Build configuration list for PBXNativeTarget "Lampi" */;
+			buildConfigurationList = 858B9BE02549D7A700A43AC3 /* Build configuration list for PBXNativeTarget "Lampi" */;
 			buildPhases = (
-				857336F1256713850024A8BE /* Sources */,
-				857336F2256713850024A8BE /* Frameworks */,
-				857336F3256713850024A8BE /* Resources */,
+				858B9BCD2549D7A400A43AC3 /* Sources */,
+				858B9BCE2549D7A400A43AC3 /* Frameworks */,
+				858B9BCF2549D7A400A43AC3 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -92,24 +106,25 @@
 			);
 			name = Lampi;
 			productName = Lampi;
-			productReference = 857336F5256713850024A8BE /* Lampi.app */;
+			productReference = 858B9BD12549D7A400A43AC3 /* Lampi.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		857336ED256713850024A8BE /* Project object */ = {
+		858B9BC92549D7A400A43AC3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1220;
-				LastUpgradeCheck = 1220;
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1210;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
-					857336F4256713850024A8BE = {
-						CreatedOnToolsVersion = 12.2;
+					858B9BD02549D7A400A43AC3 = {
+						CreatedOnToolsVersion = 12.1;
 					};
 				};
 			};
-			buildConfigurationList = 857336F0256713850024A8BE /* Build configuration list for PBXProject "Lampi" */;
+			buildConfigurationList = 858B9BCC2549D7A400A43AC3 /* Build configuration list for PBXProject "Lampi" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -117,44 +132,46 @@
 				en,
 				Base,
 			);
-			mainGroup = 857336EC256713850024A8BE;
-			productRefGroup = 857336F6256713850024A8BE /* Products */;
+			mainGroup = 858B9BC82549D7A400A43AC3;
+			productRefGroup = 858B9BD22549D7A400A43AC3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				857336F4256713850024A8BE /* Lampi */,
+				858B9BD02549D7A400A43AC3 /* Lampi */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		857336F3256713850024A8BE /* Resources */ = {
+		858B9BCF2549D7A400A43AC3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				85733700256713870024A8BE /* Preview Assets.xcassets in Resources */,
-				857336FD256713870024A8BE /* Assets.xcassets in Resources */,
+				858B9BDC2549D7A700A43AC3 /* Preview Assets.xcassets in Resources */,
+				858B9BD92549D7A700A43AC3 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		857336F1256713850024A8BE /* Sources */ = {
+		858B9BCD2549D7A400A43AC3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				85C517E32583FCE6002670BA /* GradientSlider.swift in Sources */,
-				857336FB256713850024A8BE /* LampiView.swift in Sources */,
-				85AC24E2258154A90051259C /* Lampi.swift in Sources */,
-				857336F9256713850024A8BE /* LampiApp.swift in Sources */,
+				854D43B9255B2CD600565A15 /* GradientSlider.swift in Sources */,
+				858B9BD72549D7A400A43AC3 /* LampiView.swift in Sources */,
+				858B9BE52549E2A000A43AC3 /* Lampi.swift in Sources */,
+				8516E57F2564514D00E819F6 /* LampiManager.swift in Sources */,
+				858B9BD52549D7A400A43AC3 /* LampiApp.swift in Sources */,
+				8516E57B256447D300E819F6 /* LampiBrowserView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		85733702256713870024A8BE /* Debug */ = {
+		858B9BDE2549D7A700A43AC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -191,6 +208,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -205,7 +223,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -215,7 +233,7 @@
 			};
 			name = Debug;
 		};
-		85733703256713870024A8BE /* Release */ = {
+		858B9BDF2549D7A700A43AC3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -252,6 +270,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -260,7 +279,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -270,14 +289,14 @@
 			};
 			name = Release;
 		};
-		85733705256713870024A8BE /* Debug */ = {
+		858B9BE12549D7A700A43AC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Lampi/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 7MFK7RS5UT;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Lampi/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -285,21 +304,21 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.yourname.Lampi;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.case.cxn201.Lampi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		85733706256713870024A8BE /* Release */ = {
+		858B9BE22549D7A700A43AC3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Lampi/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 7MFK7RS5UT;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Lampi/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -307,35 +326,35 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.yourname.Lampi;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.case.cxn201.Lampi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		857336F0256713850024A8BE /* Build configuration list for PBXProject "Lampi" */ = {
+		858B9BCC2549D7A400A43AC3 /* Build configuration list for PBXProject "Lampi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				85733702256713870024A8BE /* Debug */,
-				85733703256713870024A8BE /* Release */,
+				858B9BDE2549D7A700A43AC3 /* Debug */,
+				858B9BDF2549D7A700A43AC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		85733704256713870024A8BE /* Build configuration list for PBXNativeTarget "Lampi" */ = {
+		858B9BE02549D7A700A43AC3 /* Build configuration list for PBXNativeTarget "Lampi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				85733705256713870024A8BE /* Debug */,
-				85733706256713870024A8BE /* Release */,
+				858B9BE12549D7A700A43AC3 /* Debug */,
+				858B9BE22549D7A700A43AC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 857336ED256713850024A8BE /* Project object */;
+	rootObject = 858B9BC92549D7A400A43AC3 /* Project object */;
 }

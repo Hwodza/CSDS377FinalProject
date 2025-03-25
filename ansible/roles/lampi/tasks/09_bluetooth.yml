@@ -1,0 +1,53 @@
+- name: set device_id
+  tags: ble
+  set_fact:
+    device_id: "{{ ansible_eth0.macaddress | regex_replace(':', '') }}"
+
+- name: set LAMPI hostname
+  tags: ble
+  become: True
+  hostname:
+    name: "LAMPI-{{ device_id }}"
+  register: lampihostname
+
+- name: reboot if hostname changed
+  tags: ble
+  become: True
+  reboot:
+    reboot_timeout: 180
+  when: lampihostname.changed
+
+- name: install lampi bluetooth & hci0 up systemd services
+  become: True
+  template:
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    mode: u+rw,g=r,o=r
+    src: "{{ item }}"
+  with_items:
+    - "{{ lampi_bluetooth_service_file }}"
+    - "{{ lampi_hci0_up_service_file }}"
+
+- name: start lampi bluetooth & hci0 up systemd services
+  become: True
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: True
+  with_items:
+    - lampi_bluetooth
+    - lampi_hci0_up
+  
+- name: install MQTT bridge configuration (updated)
+  become: True
+  tags: ble
+  template:
+    src: 09_mqtt_bridge.conf
+    dest: /etc/mosquitto/conf.d/lampi_bridge.conf
+
+- name: restart mosquitto
+  become: True
+  tags: ble
+  service:
+    name: mosquitto
+    state: restarted 

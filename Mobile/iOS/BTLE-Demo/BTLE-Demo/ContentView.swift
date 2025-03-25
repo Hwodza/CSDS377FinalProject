@@ -12,9 +12,10 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Slider(value: $btleObj.number)
-            Text("Number: \(btleObj.number)")
+            Slider(value:$btleObj.state.number)
+            Text("Number: \(btleObj.state.number)")
         }.padding()
+        .disabled(!btleObj.state.isConnected)
     }
 }
 

@@ -24,4 +24,6 @@ This Git Repository will be updated each week/chapter with new assignments and w
 
 ## [Chapter 9: Introduction to Bluetooth Low Energy](Courseware/09.md)
 
+## [Chapter 10: Introduction to Analytics](Courseware/10.md)
+
 &copy; 2015-2025 LeanDog, Inc. and Nick Barendt

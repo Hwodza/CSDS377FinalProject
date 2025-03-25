@@ -1,0 +1,11 @@
+[Unit]
+Description=Lampi hci0 up service
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=no
+ExecStart=/bin/hciconfig hci0 up
+
+[Install]
+WantedBy=multi-user.target

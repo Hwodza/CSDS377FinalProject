@@ -1,0 +1,26 @@
+- name: stop bluetooth daemon
+  become: True
+  tags: ble
+  systemd:
+    name: bluetooth
+    state: stopped
+
+- name: disable bluetooth daemon
+  become: True
+  tags: ble
+  systemd:
+    name: bluetooth
+    enabled: no
+  
+- name: grant Python the permissions to use bluetooth without being root
+  become: True
+  tags: ble
+  shell: setcap cap_net_raw+eip $(eval readlink -f '{{ venv_directory }}/bin/python3')
+  args:
+    executable: /bin/bash
+
+- name: bring hci0 up (there is also a separate systemd service to do this at startup)
+  become: True
+  tags: ble
+  shell: /bin/hciconfig hci0 up
+

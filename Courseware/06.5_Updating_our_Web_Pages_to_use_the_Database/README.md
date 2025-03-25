@@ -101,7 +101,7 @@ Our DetailView
 
 is still hard-coded for a single LAMPI Device ID (in `lampi.js`).  We need to modify the page template and the JavaScript file so that we can "inject" the proper Device ID.
 
-Modify 'LampiView' in `lampi/views.py` to have a custom [`get_context_data()`](https://docs.djangoproject.com/en/5.0/ref/class-based-views/mixins-single-object/#django.views.generic.detail.SingleObjectMixin.get_context_data).  This will allow your view to access the `device_id` from the URL in the key word arguments (`kwargs` in Python and Django). You can use it to lookup the LAMPI Device in the database and return it in a context object with something like:
+Modify 'DetailView' in `lampi/views.py` to have a custom [`get_context_data()`](https://docs.djangoproject.com/en/5.0/ref/class-based-views/mixins-single-object/#django.views.generic.detail.SingleObjectMixin.get_context_data).  This will allow your view to access the `device_id` from the URL in the key word arguments (`kwargs` in Python and Django). You can use it to lookup the LAMPI Device in the database and return it in a context object with something like:
 
 ```python
 def get_context_data(self, **kwargs):
