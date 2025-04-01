@@ -26,4 +26,6 @@ This Git Repository will be updated each week/chapter with new assignments and w
 
 ## [Chapter 10: Introduction to Analytics](Courseware/10.md)
 
+## [Chapter 11: Remote Update](Courseware/11.md)
+
 &copy; 2015-2025 LeanDog, Inc. and Nick Barendt

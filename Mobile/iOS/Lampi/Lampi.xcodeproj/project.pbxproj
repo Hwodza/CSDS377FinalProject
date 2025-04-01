@@ -10,6 +10,7 @@
 		8516E57B256447D300E819F6 /* LampiBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8516E57A256447D300E819F6 /* LampiBrowserView.swift */; };
 		8516E57F2564514D00E819F6 /* LampiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8516E57E2564514D00E819F6 /* LampiManager.swift */; };
 		854D43B9255B2CD600565A15 /* GradientSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854D43B8255B2CD600565A15 /* GradientSlider.swift */; };
+		8560562B25B22AAC006C0968 /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 8560562A25B22AAC006C0968 /* Mixpanel */; };
 		858B9BD52549D7A400A43AC3 /* LampiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858B9BD42549D7A400A43AC3 /* LampiApp.swift */; };
 		858B9BD72549D7A400A43AC3 /* LampiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858B9BD62549D7A400A43AC3 /* LampiView.swift */; };
 		858B9BD92549D7A700A43AC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 858B9BD82549D7A700A43AC3 /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8560562B25B22AAC006C0968 /* Mixpanel in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +107,9 @@
 			dependencies = (
 			);
 			name = Lampi;
+			packageProductDependencies = (
+				8560562A25B22AAC006C0968 /* Mixpanel */,
+			);
 			productName = Lampi;
 			productReference = 858B9BD12549D7A400A43AC3 /* Lampi.app */;
 			productType = "com.apple.product-type.application";
@@ -133,6 +138,9 @@
 				Base,
 			);
 			mainGroup = 858B9BC82549D7A400A43AC3;
+			packageReferences = (
+				8560562925B22AAC006C0968 /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
+			);
 			productRefGroup = 858B9BD22549D7A400A43AC3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -355,6 +363,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8560562925B22AAC006C0968 /* XCRemoteSwiftPackageReference "mixpanel-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mixpanel/mixpanel-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.8.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8560562A25B22AAC006C0968 /* Mixpanel */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8560562925B22AAC006C0968 /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
+			productName = Mixpanel;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 858B9BC92549D7A400A43AC3 /* Project object */;
 }

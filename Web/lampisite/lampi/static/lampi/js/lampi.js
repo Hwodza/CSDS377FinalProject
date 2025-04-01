@@ -68,10 +68,14 @@ function LampiPage($){
           obj.lampState.on = !obj.lampState.on;
           obj.updatePowerButton();
           obj.scheduleConfigChange();
+
+          mixpanel.track("Toggle Power", {"isOn": obj.lampState.on, "event_type": "ui"});
         },
 
         onSliderInput : function(inputEvent) {
           value = Number(inputEvent.target.value);
+          
+          mixpanel.track("Slider Change", {"slider": inputEvent.target.id, "value": value, "event_type": "ui"});
 
           if(inputEvent.target.id == "hue-slider") {
             obj.lampState.color.h = value;
@@ -183,3 +187,6 @@ function LampiPage($){
 }
 
 jQuery(LampiPage);
+
+
+

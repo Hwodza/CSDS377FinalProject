@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import Mixpanel
 
 struct LampiView: View {
     @Bindable var lamp: Lampi
@@ -27,23 +28,34 @@ struct LampiView: View {
             VStack(alignment: .center, spacing: 20) {
                 GradientSlider(value: $lamp.state.hue,
                                handleColor: lamp.state.baseHueColor,
-                               trackColors: Color.rainbow())
+                               trackColors: Color.rainbow()) { hueValue in
+
+                    trackSliderEvent("hue-slider", value: hueValue)
+                }
 
                 GradientSlider(value: $lamp.state.saturation,
                                handleColor: Color(hue: lamp.state.hue,
                                                   saturation: lamp.state.saturation,
                                                   brightness: 1.0),
-                               trackColors: [.white, lamp.state.baseHueColor])
+                               trackColors: [.white, lamp.state.baseHueColor]) { saturationValue in
+
+                    trackSliderEvent("saturation-slider", value: saturationValue)
+                }
 
                 GradientSlider(value: $lamp.state.brightness,
                                handleColor: Color(white: lamp.state.brightness),
                                handleImage: Image(systemName: "sun.max"),
-                               trackColors: [.black, .white])
-                    .foregroundColor(Color(white: 1.0 - lamp.state.brightness))
+                               trackColors: [.black, .white]) { brightnessValue in
+
+                    trackSliderEvent("brightness-slider", value: brightnessValue)
+                }
+                .foregroundColor(Color(white: 1.0 - lamp.state.brightness))
             }.padding(.horizontal)
 
             Button(action: {
-                lamp.state.isOn = !lamp.state.isOn
+                lamp.state.isOn.toggle()
+                Mixpanel.mainInstance().trackUIEvent("Toggle Power",
+                                                     properties: ["isOn": lamp.state.isOn])
             }) {
                 HStack {
                     Spacer()
@@ -66,6 +78,11 @@ struct LampiView: View {
                 .foregroundColor(.white)
                 .shadow(radius: 2.0)
         })
+    }
+
+    private func trackSliderEvent(_ sliderName: String, value: Double) {
+        Mixpanel.mainInstance().trackUIEvent("Slider Change",
+                                             properties: ["slider": sliderName, "value": value])
     }
 }
 

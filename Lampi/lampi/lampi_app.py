@@ -10,9 +10,15 @@ from paho.mqtt.client import Client
 
 from lamp_common import *
 import lampi.lampi_util
+from mixpanel import Mixpanel
 
 
 MQTT_CLIENT_ID = "lamp_ui"
+
+try:
+    from .mixpanel_settings import MIXPANEL_TOKEN
+except (ModuleNotFoundError, ImportError) as e:
+    MIXPANEL_TOKEN = "UPDATE TOKEN IN mixpanel_settings.py"
 
 
 class LampiApp(App):
@@ -22,6 +28,8 @@ class LampiApp(App):
     _saturation = NumericProperty()
     _brightness = NumericProperty()
     lamp_is_on = BooleanProperty()
+
+    mp = Mixpanel(MIXPANEL_TOKEN)
 
     def _get_hue(self):
         return self._hue
@@ -62,7 +70,7 @@ class LampiApp(App):
         self.mqtt.connect(MQTT_BROKER_HOST, port=MQTT_BROKER_PORT,
                           keepalive=MQTT_BROKER_KEEP_ALIVE_SECS)
         self.mqtt.loop_start()
-        self.set_up_gpio_and_network_status_popup()
+        self.set_up_gpio_and_device_status_popup()
         self.associated_status_popup = self._build_associated_status_popup()
         self.associated_status_popup.bind(on_open=self.update_popup_associated)
         Clock.schedule_interval(self._poll_associated, 0.1)
@@ -75,6 +83,8 @@ class LampiApp(App):
     def on_hue(self, instance, value):
         if self._updating_ui:
             return
+        self._track_ui_event('Slider Change',
+                             {'slider': 'hue-slider', 'value': value})
         if self._publish_clock is None:
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self._update_leds(), 0.01)
@@ -82,6 +92,8 @@ class LampiApp(App):
     def on_saturation(self, instance, value):
         if self._updating_ui:
             return
+        self._track_ui_event('Slider Change',
+                             {'slider': 'saturation-slider', 'value': value})
         if self._publish_clock is None:
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self._update_leds(), 0.01)
@@ -89,6 +101,8 @@ class LampiApp(App):
     def on_brightness(self, instance, value):
         if self._updating_ui:
             return
+        self._track_ui_event('Slider Change',
+                             {'slider': 'brightness-slider', 'value': value})
         if self._publish_clock is None:
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self._update_leds(), 0.01)
@@ -96,9 +110,19 @@ class LampiApp(App):
     def on_lamp_is_on(self, instance, value):
         if self._updating_ui:
             return
+        self._track_ui_event('Toggle Power', {'isOn': value})
         if self._publish_clock is None:
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self._update_leds(), 0.01)
+
+    def _track_ui_event(self, event_name, additional_props={}):
+        device_id = lampi.lampi_util.get_device_id()
+
+        event_props = {'event_type': 'ui', 'interface': 'lampi',
+                       'device_id': device_id}
+        event_props.update(additional_props)
+
+        self.mp.track(device_id, event_name, event_props)
 
     def on_connect(self, client, userdata, flags, rc):
         self.mqtt.publish(client_state_topic(MQTT_CLIENT_ID), b"1",
@@ -183,16 +207,16 @@ class LampiApp(App):
                           qos=1)
         self._publish_clock = None
 
-    def set_up_gpio_and_network_status_popup(self):
+    def set_up_gpio_and_device_status_popup(self):
         self.pi = pigpio.pi()
         self.pi.set_mode(17, pigpio.INPUT)
         self.pi.set_pull_up_down(17, pigpio.PUD_UP)
         Clock.schedule_interval(self._poll_gpio, 0.05)
         self.network_status_popup = self._build_network_status_popup()
-        self.network_status_popup.bind(on_open=self.update_popup_ip_address)
+        self.network_status_popup.bind(on_open=self.update_device_status_popup)
 
     def _build_network_status_popup(self):
-        return Popup(title='Network Status',
+        return Popup(title='Device Status',
                      content=Label(text='IP ADDRESS WILL GO HERE'),
                      size_hint=(1, 1), auto_dismiss=False)
 
@@ -201,8 +225,10 @@ class LampiApp(App):
         interface = "wlan0"
         ipaddr = lampi.lampi_util.get_ip_address(interface)
         deviceid = lampi.lampi_util.get_device_id()
-        msg = f"{interface}: {ipaddr}\nDeviceID: {deviceid}" + \
-            f"\nBroker Bridged: {self.mqtt_broker_bridged}"
+        msg = (f"Version: {''}\n"  # Version goes in the single quotes
+               f"{interface}: {ipaddr}\n"
+               f"DeviceID: {deviceid}"
+               f"\nBroker Bridged: {self.mqtt_broker_bridged}")
         instance.content.text = msg
 
     def on_gpio17_pressed(self, instance, value):

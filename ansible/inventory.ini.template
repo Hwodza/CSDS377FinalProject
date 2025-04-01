@@ -22,3 +22,7 @@ ec2
 # use python3 for cloud_brokers
 [cloud_brokers:vars]
 ansible_python_interpreter=/usr/bin/python3
+
+# add your Mixpanel credentials here
+[all:vars]
+MIXPANEL_TOKEN="fill in"

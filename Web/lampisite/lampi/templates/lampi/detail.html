@@ -4,6 +4,7 @@
 {% block title %}LAMPI{% endblock %}
 
 {% block additional_head_content %}
+  <meta name="description" content="LAMPI Control for {{ device.device_id }}">
   <link rel="stylesheet" type="text/css"
          href="{% static 'lampi/css/lampi-sliders.css' %}">
 
@@ -34,7 +35,7 @@
 		</div>
 	</div>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.2/mqttws31.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js" type="text/javascript"></script>
 
@@ -43,3 +44,5 @@
     <script src="{% static 'lampi/js/lampi-sliders.js' %}" type="text/javascript"></script>
 
 {% endblock %}
+
+{% block page_event %}LAMPI Detail{% endblock %}
