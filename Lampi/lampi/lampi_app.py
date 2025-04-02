@@ -213,7 +213,7 @@ class LampiApp(App):
         self.pi.set_pull_up_down(17, pigpio.PUD_UP)
         Clock.schedule_interval(self._poll_gpio, 0.05)
         self.network_status_popup = self._build_network_status_popup()
-        self.network_status_popup.bind(on_open=self.update_device_status_popup)
+        self.network_status_popup.bind(on_open=self.update_popup_ip_address)
 
     def _build_network_status_popup(self):
         return Popup(title='Device Status',

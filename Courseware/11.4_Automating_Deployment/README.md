@@ -91,7 +91,7 @@ print('Hello Updated Deb! Version {}'.format(version))
 Save, quit, and run our script:
 
 ```bash
-cloud$ ./deploy_new_version.sh
+cloud$ sudo -E ./deploy_new_version.sh
 ```
 
 **NOTE:** as your deployment script becomes more sophisticated (e.g., for the assignment) you might need to use `sudo` - most sudo implementations change the `$HOME` shell variable to `/root` which might result in your GPG keys not being found.
