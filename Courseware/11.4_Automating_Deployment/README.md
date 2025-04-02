@@ -61,7 +61,7 @@ Now let's write a script to run this, as well as our package and deployment. Cre
 #!/bin/bash
 
 cd ~/connected-devices/Lampi/pkg/
-bumpversion minor
+/home/ubuntu/ec2-venv/bin/bumpversion minor  # We need to use the explicit path here because sudo doesn't know where our pip packages are
 dpkg-deb --build -Zgzip hi
 reprepro -b ~/connected-devices/Web/reprepro/ubuntu/ includedeb {{REPO_SHORT_NAME}} hi.deb
 ```
