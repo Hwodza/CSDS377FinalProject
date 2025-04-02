@@ -62,9 +62,14 @@ Note: installing dependencies with `pip` within a Debian package **preinst** scr
 #!/bin/bash
 
 systemctl daemon-reload
+
 systemctl start lampi_service
-systemctl start lampi_bluetooth_service
-systemctl start lampi_app_service
+systemctl start lampi_bluetooth
+systemctl start lampi_app
+
+systemctl enable lampi_service
+systemctl enable lampi_bluetooth
+systemctl enable lampi_app
 ```
 
 ### prerm
@@ -72,8 +77,8 @@ systemctl start lampi_app_service
 #!/bin/bash
 
 systemctl stop lampi_service || true
-systemctl stop lampi_bluetooth_service || true
-systemctl stop lampi_app_service || true
+systemctl stop lampi_bluetooth || true
+systemctl stop lampi_app || true
 ```
 
 ### postrm
