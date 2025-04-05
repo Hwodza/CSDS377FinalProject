@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+
+import os
+
+version = 'Unknown'
+version_path = os.path.join(os.path.dirname(__file__), '__VERSION__')
+with open(version_path, 'r') as version_file:
+  version = version_file.read()
+
+print('Hello Deb! Version {}'.format(version))

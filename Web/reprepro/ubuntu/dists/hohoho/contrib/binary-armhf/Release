@@ -1,0 +1,6 @@
+Archive: stable
+Component: contrib
+Origin: hohoho
+Label: hohoho repo
+Architecture: armhf
+Description: Local Debian repository

@@ -1,0 +1,6 @@
+Archive: stable
+Component: main
+Origin: hohoho
+Label: hohoho repo
+Architecture: armel
+Description: Local Debian repository

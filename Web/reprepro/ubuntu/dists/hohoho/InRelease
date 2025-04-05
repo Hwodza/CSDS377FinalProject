@@ -1,0 +1,84 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Origin: hohoho
+Label: hohoho repo
+Suite: stable
+Codename: hohoho
+Date: Sat, 05 Apr 2025 18:12:38 UTC
+Architectures: armhf armel
+Components: main non-free contrib
+Description: Local Debian repository
+MD5Sum:
+ 843b32097ddd32caa14a9da8cd778696 375 main/binary-armhf/Packages
+ 65458ce90a08457e3b0d4bcaa20031af 296 main/binary-armhf/Packages.gz
+ 8bb6113030279415befad835904af96d 123 main/binary-armhf/Release
+ 843b32097ddd32caa14a9da8cd778696 375 main/binary-armel/Packages
+ 65458ce90a08457e3b0d4bcaa20031af 296 main/binary-armel/Packages.gz
+ 7b2a30c34a80cdb9b865c8176ad137d3 123 main/binary-armel/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 non-free/binary-armhf/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 non-free/binary-armhf/Packages.gz
+ 5430bb9380bdfe5322cd9acc26bc057f 127 non-free/binary-armhf/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 non-free/binary-armel/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 non-free/binary-armel/Packages.gz
+ 3dcf0649f5b46399df838dd003ab9448 127 non-free/binary-armel/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 contrib/binary-armhf/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 contrib/binary-armhf/Packages.gz
+ 708d7d495cb9e98eda8c426de4e5c1f3 126 contrib/binary-armhf/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 contrib/binary-armel/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 contrib/binary-armel/Packages.gz
+ a98e436c8c0bd0b0318fc17ae39ddde8 126 contrib/binary-armel/Release
+SHA1:
+ be926046d876236e7c543ce45ab7d8787acc7903 375 main/binary-armhf/Packages
+ 6fd12da14cc2d2cb30c6cffac038bfffa4f8eee3 296 main/binary-armhf/Packages.gz
+ 597473b46539395d582962de9eec70f00f0bab1c 123 main/binary-armhf/Release
+ be926046d876236e7c543ce45ab7d8787acc7903 375 main/binary-armel/Packages
+ 6fd12da14cc2d2cb30c6cffac038bfffa4f8eee3 296 main/binary-armel/Packages.gz
+ 0edf2d8836d13bddd94c111a03745ea886f3141d 123 main/binary-armel/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 non-free/binary-armhf/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 non-free/binary-armhf/Packages.gz
+ 9296ff2028c61eca1ddfc3f4c2c3f19934c72feb 127 non-free/binary-armhf/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 non-free/binary-armel/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 non-free/binary-armel/Packages.gz
+ c5b4b2fe1b4195fa981be76209e975e67b37dafa 127 non-free/binary-armel/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 contrib/binary-armhf/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 contrib/binary-armhf/Packages.gz
+ 141ca7c9de9132d3bf02b1c291431b997b506199 126 contrib/binary-armhf/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 contrib/binary-armel/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 contrib/binary-armel/Packages.gz
+ ad75e7e46c84a7a716e4615c79825c4a42bccf6e 126 contrib/binary-armel/Release
+SHA256:
+ 05afc45aa3bc3d35a564e00e665313b498820f7f8a912e88982d89c9cb887705 375 main/binary-armhf/Packages
+ 3b26ba1bf5641ccd5e769ae1f877de4db0f3d57dbad44af9f7cb3da5fef1e64b 296 main/binary-armhf/Packages.gz
+ aff10e0e3f329907c6ab07b21bba41c465c128827aa7dd673d55cedcb5f90806 123 main/binary-armhf/Release
+ 05afc45aa3bc3d35a564e00e665313b498820f7f8a912e88982d89c9cb887705 375 main/binary-armel/Packages
+ 3b26ba1bf5641ccd5e769ae1f877de4db0f3d57dbad44af9f7cb3da5fef1e64b 296 main/binary-armel/Packages.gz
+ d3ba35feb7e12ad57d611e7efad116e25cb965e97511c81a3a252c69b695663b 123 main/binary-armel/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 non-free/binary-armhf/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 non-free/binary-armhf/Packages.gz
+ de25a4b39c382eb7fdd8d22f9c2ddfc98ebc3e83caf0a1ce430facacbe5d0717 127 non-free/binary-armhf/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 non-free/binary-armel/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 non-free/binary-armel/Packages.gz
+ dec60798593e5e1f7c28c3689d6ef240f6cd0257554bae92cabb25f958c0bfda 127 non-free/binary-armel/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 contrib/binary-armhf/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 contrib/binary-armhf/Packages.gz
+ 1d7ddd670df0fdf68e3da4cf54c7de3704c7eca3bd77487fc1b740820ab08d5f 126 contrib/binary-armhf/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 contrib/binary-armel/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 contrib/binary-armel/Packages.gz
+ 1b78088506080ea9189b219e28a19a4801fb606f291f7d5bb5c9068a60813e6f 126 contrib/binary-armel/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEmdm9HlgjsAiqHVPR/v9LRylcQNcFAmfxcrIACgkQ/v9LRylc
+QNefXxAAsN9eb7HPMZy4N6heZNCvJDxSQoqAyIwyZeS1sFK+bIM1MKXd48USzL2k
+UDqlAl2ELFuijMff6v6ONEy9ONXHo2nW9hzEUXTNIdAD+Is3/eo+8cUgZnigV4hC
+devhnaSeT6HZn//eEeEpFGWvfmnv6QMgThoz9GOINTjYfS5qyAhOKuMIhvh/AiJo
+TUHrJ/NVSW488QGETj4aidD2MqijNJbMqM7Tmm0R0utNXbQ5nVulKxysEQ3iMVc0
+lI1RzmPZMQEw34CVMfejR8HNKQE+o85DXpRgeRaqUSJC/ea9iNDwsIrMWW58X6B3
+seWCkn6jiet7Nu/iSpVPzwEjF7dSNgbL7vwhIfioxUmiqbof8dxcFm1jL/CiWjmG
++7uAR4IAhVVITQzAbbxqNNNaCdgC56/pFYRc8uGRn8RBvyncB5nSs9ahLRM16acn
+e0nqyv17MDONmHwzR6B7aAp9QnSJypmunIMTDOGqN6+BuqwBmHzPsMaZeJtUVADk
+V05SbBDBo8lHu2scSZUsFk/IGNDcbgA/uRoX7zsHHUbB/LnFhXyT7UEyE5qEhYmx
+uFVWVVlhCs6ojb8uUcTK3iP+jzGvp+0wURo2YdqKHjJZs0A3O4zthc5RayfFMFAg
+XtfkgekuURVdOU3I5UnNBTn8JCrrtrestIRWOTcFk05b7k2/+yM=
+=Gk3Z
+-----END PGP SIGNATURE-----
