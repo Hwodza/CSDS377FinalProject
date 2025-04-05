@@ -1,0 +1,8 @@
+Origin: hohoho
+Label: hohoho repo
+Codename: hohoho
+Architectures: armhf armel
+Suite: stable
+Components: main non-free contrib
+Description: Local Debian repository
+SignWith: DF53A222 
