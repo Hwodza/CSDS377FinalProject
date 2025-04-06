@@ -2,16 +2,16 @@ Origin: hohoho
 Label: hohoho repo
 Suite: stable
 Codename: hohoho
-Date: Sat, 05 Apr 2025 19:54:44 UTC
+Date: Sun, 06 Apr 2025 17:58:08 UTC
 Architectures: armhf armel
 Components: main non-free contrib
 Description: Local Debian repository
 MD5Sum:
- c15703c455237a0e4ffbfead5cd0c18c 375 main/binary-armhf/Packages
- 2dcf5497599cfe99c682c059a03b7ded 296 main/binary-armhf/Packages.gz
+ 62a36e9a88df795af8870a96caad2262 763 main/binary-armhf/Packages
+ 60e9f3efad0926e00cde76d7ca57bbe7 424 main/binary-armhf/Packages.gz
  8bb6113030279415befad835904af96d 123 main/binary-armhf/Release
- c15703c455237a0e4ffbfead5cd0c18c 375 main/binary-armel/Packages
- 2dcf5497599cfe99c682c059a03b7ded 296 main/binary-armel/Packages.gz
+ 62a36e9a88df795af8870a96caad2262 763 main/binary-armel/Packages
+ 60e9f3efad0926e00cde76d7ca57bbe7 424 main/binary-armel/Packages.gz
  7b2a30c34a80cdb9b865c8176ad137d3 123 main/binary-armel/Release
  d41d8cd98f00b204e9800998ecf8427e 0 non-free/binary-armhf/Packages
  7029066c27ac6f5ef18d660d5741979a 20 non-free/binary-armhf/Packages.gz
@@ -26,11 +26,11 @@ MD5Sum:
  7029066c27ac6f5ef18d660d5741979a 20 contrib/binary-armel/Packages.gz
  a98e436c8c0bd0b0318fc17ae39ddde8 126 contrib/binary-armel/Release
 SHA1:
- b4c51aeaf72466dd9da7a8123caf9688ac30f1ec 375 main/binary-armhf/Packages
- 50344c6c8c02fd55c88ed79827720baf021d4bf8 296 main/binary-armhf/Packages.gz
+ 3b092d3f0f9a5c19bd40a2c4da92dd340067d2ac 763 main/binary-armhf/Packages
+ 5276f1ede1a9ab7bf18357998852c7d8bdd37078 424 main/binary-armhf/Packages.gz
  597473b46539395d582962de9eec70f00f0bab1c 123 main/binary-armhf/Release
- b4c51aeaf72466dd9da7a8123caf9688ac30f1ec 375 main/binary-armel/Packages
- 50344c6c8c02fd55c88ed79827720baf021d4bf8 296 main/binary-armel/Packages.gz
+ 3b092d3f0f9a5c19bd40a2c4da92dd340067d2ac 763 main/binary-armel/Packages
+ 5276f1ede1a9ab7bf18357998852c7d8bdd37078 424 main/binary-armel/Packages.gz
  0edf2d8836d13bddd94c111a03745ea886f3141d 123 main/binary-armel/Release
  da39a3ee5e6b4b0d3255bfef95601890afd80709 0 non-free/binary-armhf/Packages
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 non-free/binary-armhf/Packages.gz
@@ -45,11 +45,11 @@ SHA1:
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 contrib/binary-armel/Packages.gz
  ad75e7e46c84a7a716e4615c79825c4a42bccf6e 126 contrib/binary-armel/Release
 SHA256:
- c6e41e683ea3b044aec76aaf147771dc00958f4088566d47479af4f4b3e6d737 375 main/binary-armhf/Packages
- 0ee51b53714e557024d0d92d67b9989c00e029e9da88089a1f8c344a682dd98d 296 main/binary-armhf/Packages.gz
+ efea3fb85b7d42b06cca871bf5553bd6518b3578a5f943f87790d1f492494377 763 main/binary-armhf/Packages
+ 4473b136cb26d4e2df8cee24693cb3e2963e1d9a070fa3c720a1c91946f28085 424 main/binary-armhf/Packages.gz
  aff10e0e3f329907c6ab07b21bba41c465c128827aa7dd673d55cedcb5f90806 123 main/binary-armhf/Release
- c6e41e683ea3b044aec76aaf147771dc00958f4088566d47479af4f4b3e6d737 375 main/binary-armel/Packages
- 0ee51b53714e557024d0d92d67b9989c00e029e9da88089a1f8c344a682dd98d 296 main/binary-armel/Packages.gz
+ efea3fb85b7d42b06cca871bf5553bd6518b3578a5f943f87790d1f492494377 763 main/binary-armel/Packages
+ 4473b136cb26d4e2df8cee24693cb3e2963e1d9a070fa3c720a1c91946f28085 424 main/binary-armel/Packages.gz
  d3ba35feb7e12ad57d611e7efad116e25cb965e97511c81a3a252c69b695663b 123 main/binary-armel/Release
  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 non-free/binary-armhf/Packages
  59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 non-free/binary-armhf/Packages.gz
