@@ -226,7 +226,7 @@ class LampiApp(App):
         ipaddr = lampi.lampi_util.get_ip_address(interface)
         deviceid = lampi.lampi_util.get_device_id()
         version = 'Unknown'
-        with open('../__VERSION__', 'r') as version_file:
+        with open('/opt/lampi/__VERSION__', 'r') as version_file:
             version = version_file.read()
         msg = (f"Version: {version}\n"  # Version goes in the single quotes
                f"{interface}: {ipaddr}\n"
