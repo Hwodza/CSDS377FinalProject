@@ -5,16 +5,16 @@ Origin: hohoho
 Label: hohoho repo
 Suite: stable
 Codename: hohoho
-Date: Sun, 06 Apr 2025 18:24:55 UTC
+Date: Sun, 06 Apr 2025 18:40:32 UTC
 Architectures: armhf armel
 Components: main non-free contrib
 Description: Local Debian repository
 MD5Sum:
- 14b77b0097a6304cdd481e9023094e68 763 main/binary-armhf/Packages
- 3b1cac2da2e3b0e1cc03e079a6b74067 423 main/binary-armhf/Packages.gz
+ 10619785ebc8e84267669f0f67017ab4 763 main/binary-armhf/Packages
+ 004d27f94eb51a794348a96cbb4dd0ec 424 main/binary-armhf/Packages.gz
  8bb6113030279415befad835904af96d 123 main/binary-armhf/Release
- 14b77b0097a6304cdd481e9023094e68 763 main/binary-armel/Packages
- 3b1cac2da2e3b0e1cc03e079a6b74067 423 main/binary-armel/Packages.gz
+ 10619785ebc8e84267669f0f67017ab4 763 main/binary-armel/Packages
+ 004d27f94eb51a794348a96cbb4dd0ec 424 main/binary-armel/Packages.gz
  7b2a30c34a80cdb9b865c8176ad137d3 123 main/binary-armel/Release
  d41d8cd98f00b204e9800998ecf8427e 0 non-free/binary-armhf/Packages
  7029066c27ac6f5ef18d660d5741979a 20 non-free/binary-armhf/Packages.gz
@@ -29,11 +29,11 @@ MD5Sum:
  7029066c27ac6f5ef18d660d5741979a 20 contrib/binary-armel/Packages.gz
  a98e436c8c0bd0b0318fc17ae39ddde8 126 contrib/binary-armel/Release
 SHA1:
- 3041ec38121557ad1214ff8d8b23c0cf526fa56d 763 main/binary-armhf/Packages
- 405932b0a814ed02d3cb599848bd5cdac4c1b36d 423 main/binary-armhf/Packages.gz
+ 57cec18c45d45f40e10e015f5a53fb04ede559dc 763 main/binary-armhf/Packages
+ 1248ae97c7260ce2ae860b4afc0de088541768bc 424 main/binary-armhf/Packages.gz
  597473b46539395d582962de9eec70f00f0bab1c 123 main/binary-armhf/Release
- 3041ec38121557ad1214ff8d8b23c0cf526fa56d 763 main/binary-armel/Packages
- 405932b0a814ed02d3cb599848bd5cdac4c1b36d 423 main/binary-armel/Packages.gz
+ 57cec18c45d45f40e10e015f5a53fb04ede559dc 763 main/binary-armel/Packages
+ 1248ae97c7260ce2ae860b4afc0de088541768bc 424 main/binary-armel/Packages.gz
  0edf2d8836d13bddd94c111a03745ea886f3141d 123 main/binary-armel/Release
  da39a3ee5e6b4b0d3255bfef95601890afd80709 0 non-free/binary-armhf/Packages
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 non-free/binary-armhf/Packages.gz
@@ -48,11 +48,11 @@ SHA1:
  46c6643f07aa7f6bfe7118de926b86defc5087c4 20 contrib/binary-armel/Packages.gz
  ad75e7e46c84a7a716e4615c79825c4a42bccf6e 126 contrib/binary-armel/Release
 SHA256:
- e2bdcbd74b07237f3ce34beb3b389a420ec57d72ee29e0972d2d3e5982fa0c85 763 main/binary-armhf/Packages
- a553a76ffbc4ad59a02e472bfb644fe891c0a0bb610d462e06ccb224944a75ec 423 main/binary-armhf/Packages.gz
+ 93e6484324e3b5dc9f36baf1525426b18d73d8ee44aff4aa0037d9852b0adbca 763 main/binary-armhf/Packages
+ bcedfc038c5920ffec169f19190a0a3751d0bc334927d32b9e168ece37950445 424 main/binary-armhf/Packages.gz
  aff10e0e3f329907c6ab07b21bba41c465c128827aa7dd673d55cedcb5f90806 123 main/binary-armhf/Release
- e2bdcbd74b07237f3ce34beb3b389a420ec57d72ee29e0972d2d3e5982fa0c85 763 main/binary-armel/Packages
- a553a76ffbc4ad59a02e472bfb644fe891c0a0bb610d462e06ccb224944a75ec 423 main/binary-armel/Packages.gz
+ 93e6484324e3b5dc9f36baf1525426b18d73d8ee44aff4aa0037d9852b0adbca 763 main/binary-armel/Packages
+ bcedfc038c5920ffec169f19190a0a3751d0bc334927d32b9e168ece37950445 424 main/binary-armel/Packages.gz
  d3ba35feb7e12ad57d611e7efad116e25cb965e97511c81a3a252c69b695663b 123 main/binary-armel/Release
  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 non-free/binary-armhf/Packages
  59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 non-free/binary-armhf/Packages.gz
@@ -68,17 +68,17 @@ SHA256:
  1b78088506080ea9189b219e28a19a4801fb606f291f7d5bb5c9068a60813e6f 126 contrib/binary-armel/Release
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEmdm9HlgjsAiqHVPR/v9LRylcQNcFAmfyxwkACgkQ/v9LRylc
-QNdGOw/+KNkb4PBk9Fz2t+dbrwZhJMx3NF4mY6vPmDA3ZPDGAaUxMsQG14F8XvtI
-SsRCSevUyKZzVju1jkOshDpwZbXdQzC8gQr6QtRzs3hZG0ZBth+ldfgorma9dAcM
-WOdFmf8K8lcsy1Ler7YCXhGS+B3NOAM8BfWvCRz9DRSGvRVN6rJ4dZT5S+M4OdNk
-gBtXZxyRA375RSzpg1CCkN04IhYKRr5vghEqzzDbTu7caXCwrAQSi2Kt7ES6bXdZ
-zIH4fc0R08wlwkSCW27x8zIsj+4BAJMWmf5pP5n58fJ/5WavPxa/IbZMle3Meh/E
-CQTBbsHYLCqzwRc/tBess95u4EuVl20MK9tH+0xRalgqRrPvNoy5kaEVfgwAI9wW
-o7PQmi4H3+5/Ku6tww88UlrW62tR0P3vFHjpt7rDthNeC0MCLFHyTkUwCtRUFS/p
-WMzsP3mh3lFmR/JAC0ta9j80Ce6JGJfVaCTM+QfAtu+DyzL5QcYcN5CisvIUtzw4
-sFjavcMcFZaHeaM0f3Y6DGl2x1WtmQbO7AIjyxXT4fOUHoXIVolT5tv6VS4d3165
-IsdXD4uLRaGgBsAd7j4YkIgkWb+6RU/1JabGqhcxPI1+lkPIMFNXhfUGdun9WTf1
-rplrlv5JP1pRQN+b2Og8oaD+8DotdipsQb1hM/5SOSGIMSSJIEs=
-=yOxv
+iQIzBAEBCAAdFiEEmdm9HlgjsAiqHVPR/v9LRylcQNcFAmfyyq8ACgkQ/v9LRylc
+QNfC4RAAgZSBYMPlJTq5yl2N/6LTmR8b0Nuul41NXEUhNtux+BLlkO2cm+tRQf4L
+SwkFk4uLgvGkRFbghtiFiZlt6xOioIrQcburH+sGcQCfIlNUj7yNP4+hmBLq5I9f
+tJSCxbUPOqP1HFPQ7aQmPRVo1MKsrjXOlZHkIJb8w/guv3/WH+X5v7MShjpjkzbd
+ykFc13KeFCu9tWM4HZ4S7ZHILwGLtOOp68IlCOj/RzGtLK7FvjN3W7nbjwEcvoiw
+pvM0V+VdtOgTUNS0xUukJ+dfjBD5b3go7r++NAShMJTRnqPdMxtpCnTwpbmZGPuH
+Aia7apEAJPdPn82wQYxmmTpS3Vbe1l4yqOlKv64XVtKdtGRvB/siOqJJPp61/Y7V
+7C1iEfZFvf42WCsXE72HokSv/7UNcaMGQV3Wbzj/FEh1yEVntKcJhfb3SAk53iek
+Nfpjf/RcNCZx0vuUQismtPWDJLZ9V8yaoIt7GlVhDhPqjp96j/YiXNkCXgTrtNOb
+RB+1lmtL7ZM5UA0stg9OODTYuFLVk+a2OlpkZqA/QmchY3bGkfUgx14htzL2k0yh
+JgFMvDmtDM6ordcD0UefBwriTQYHVumtWREpAMdHB5hr6qM/xm1jtJ0aARg3mUWA
+dPH/1gWrt7MU7gfyXqDmSiceftwqpv9Ds/j/ht0nc93BtyisaXA=
+=uJyo
 -----END PGP SIGNATURE-----

@@ -6,6 +6,7 @@ After=multi-user.target
 User=pi
 Type=simple
 Restart=always
+Environment=HOME="/home/pi"
 WorkingDirectory=/opt/lampi
 ExecStart=/home/pi/lampi-venv/bin/python3 /opt/lampi/lamp_service.py
 
