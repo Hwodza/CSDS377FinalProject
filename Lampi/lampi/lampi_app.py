@@ -225,7 +225,10 @@ class LampiApp(App):
         interface = "wlan0"
         ipaddr = lampi.lampi_util.get_ip_address(interface)
         deviceid = lampi.lampi_util.get_device_id()
-        msg = (f"Version: {''}\n"  # Version goes in the single quotes
+        version = 'Unknown'
+        with open('../__VERSION__', 'r') as version_file:
+            version = version_file.read()
+        msg = (f"Version: {version}\n"  # Version goes in the single quotes
                f"{interface}: {ipaddr}\n"
                f"DeviceID: {deviceid}"
                f"\nBroker Bridged: {self.mqtt_broker_bridged}")

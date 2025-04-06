@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # copy system files
-# cp /opt/lampi/
+cp /opt/lampi/system/lampi_app.service /etc/systemd/system/lampi_app.service
+cp /opt/lampi/system/lampi_bluetooth.service /etc/systemd/system/lampi_bluetooth.service
+cp /opt/lampi/system/lampi_hci0.service /etc/systemd/system/lampi_hci0.service
+cp /opt/lampi/system/lampi_service.service /etc/systemd/system/lampi_service.service
+
 
 systemctl daemon-reload
 
