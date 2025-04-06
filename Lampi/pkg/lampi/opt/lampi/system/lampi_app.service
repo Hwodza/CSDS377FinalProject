@@ -6,8 +6,8 @@ After=multi-user.target
 User=pi
 Type=simple
 Restart=always
-WorkingDirectory=/home/pi/connected-devices-spring25/Lampi
-ExecStart=/home/pi/lampi-venv/bin/python3 main.py
+WorkingDirectory=/opt/Lampi
+ExecStart=/home/pi/lampi-venv/bin/python3 lamp_ui.py
 
 [Install]
 

@@ -7,8 +7,8 @@ User=pi
 Type=simple
 Restart=always
 Environment=HOME="/home/pi"
-WorkingDirectory=/home/pi/connected-devices-spring25/Lampi
-ExecStart=/home/pi/lampi-venv/bin/python3 /home/pi/connected-devices-spring25/Lampi/bluetooth/ble_peripheral.py
+WorkingDirectory=/opt/lampi
+ExecStart=/home/pi/lampi-venv/bin/python3 /opt/lampi/bluetooth/ble_peripheral.py
 
 [Install]
 
