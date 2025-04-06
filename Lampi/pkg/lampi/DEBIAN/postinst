@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# copy system files
+# cp /opt/lampi/
+
+systemctl daemon-reload
+
+systemctl start lampi_service
+systemctl start lampi_bluetooth
+systemctl start lampi_app
+
+systemctl enable lampi_service
+systemctl enable lampi_bluetooth
+systemctl enable lampi_app

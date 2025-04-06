@@ -1,0 +1,14 @@
+[Unit]
+Description=Lampi bluetooth service
+After=multi-user.target lampi_hci0_up.service
+
+[Service]
+User=pi
+Type=simple
+Restart=always
+Environment=HOME="/home/pi"
+WorkingDirectory=/home/pi/connected-devices-spring25/Lampi
+ExecStart=/home/pi/lampi-venv/bin/python3 /home/pi/connected-devices-spring25/Lampi/bluetooth/ble_peripheral.py
+
+[Install]
+
