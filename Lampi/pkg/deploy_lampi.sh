@@ -2,7 +2,7 @@
 
 # Bump Version
 cd ~/connected-devices-spring25/Lampi/pkg
-# /home/ubuntu/ec2-venv/bin/bumpversion minor
+/home/ubuntu/ec2-venv/bin/bumpversion minor
 
 # Copy necessary files to lampi 
 cp ~/connected-devices-spring25/Lampi/main.py lampi/opt/lampi/lamp_ui.py
@@ -15,5 +15,5 @@ cp -r ~/connected-devices-spring25/Lampi/lampi/. lampi/opt/lampi/lampi
 cp -r ~/connected-devices-spring25/Lampi/images/. lampi/opt/lampi/images
 
 # Build deb file and publish with reprepro
-# dpkg-deb --build -Zgzip lampi
-# reprepro -b ~/connected-devices-spring25/Web/reprepro/ubuntu includedeb hohoho lampi.deb
+dpkg-deb --build -Zgzip lampi
+reprepro -b ~/connected-devices-spring25/Web/reprepro/ubuntu includedeb hohoho lampi.deb

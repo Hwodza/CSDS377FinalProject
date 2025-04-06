@@ -3,3 +3,12 @@
 systemctl stop lampi_service || true
 systemctl stop lampi_bluetooth || true
 systemctl stop lampi_app || true
+
+systemctl disable lampi_service
+systemctl disable lampi_bluetooth
+systemctl disable lampi_app
+
+rm /etc/systemd/system/lampi_app.service
+rm /etc/systemd/system/lampi_bluetooth.service
+rm /etc/systemd/system/lampi_hci0_up.service
+rm /etc/systemd/system/lampi_service.service
