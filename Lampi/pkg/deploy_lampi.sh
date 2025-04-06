@@ -6,7 +6,7 @@ cd ~/connected-devices-spring25/Lampi/pkg
 
 # Copy necessary files to lampi 
 cp ~/connected-devices-spring25/Lampi/main.py lampi/opt/lampi/lamp_ui.py
-cp ~/connected-devices-spring25/Lampi/lamp_service.py lampi/opt/lampi/lampi_service.py
+cp ~/connected-devices-spring25/Lampi/lamp_service.py lampi/opt/lampi/lamp_service.py
 cp -r ~/connected-devices-spring25/Lampi/bluetooth/. lampi/opt/lampi/bluetooth
 rm -rf lampi/opt/lampi/bluetooth/demo
 cp ~/connected-devices-spring25/Lampi/lamp_common.py lampi/opt/lampi/lamp_common.py
