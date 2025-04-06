@@ -7,7 +7,7 @@ User=pi
 Type=simple
 Restart=always
 Environment=HOME="/home/pi"
-WorkingDirectory=/opt/Lampi
+WorkingDirectory=/opt/lampi
 ExecStart=/home/pi/lampi-venv/bin/python3 /opt/lampi/lamp_ui.py
 
 [Install]
