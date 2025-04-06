@@ -10,4 +10,4 @@ WorkingDirectory=/opt/lampi
 ExecStart=/home/pi/lampi-venv/bin/python3 lamp_service.py
 
 [Install]
-
+WantedBy=multi-user.target

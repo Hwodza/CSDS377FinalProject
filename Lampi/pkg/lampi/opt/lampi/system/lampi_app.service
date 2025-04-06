@@ -10,4 +10,4 @@ WorkingDirectory=/opt/Lampi
 ExecStart=/home/pi/lampi-venv/bin/python3 lamp_ui.py
 
 [Install]
-
+WantedBy=multi-user.target
