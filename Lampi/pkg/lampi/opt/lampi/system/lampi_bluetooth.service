@@ -11,4 +11,4 @@ WorkingDirectory=/opt/lampi
 ExecStart=/home/pi/lampi-venv/bin/python3 /opt/lampi/bluetooth/ble_peripheral.py
 
 [Install]
-
+WantedBy=multi-user.target
