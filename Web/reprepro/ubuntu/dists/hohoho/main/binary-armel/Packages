@@ -16,13 +16,13 @@ Package: lampi
 Architecture: all
 Maintainer: hohoho
 Depends: python3, python3-dev, python3-pip
-Version: 0.10
+Version: 0.12
 Priority: optional
 Section: misc
-Filename: pool/main/l/lampi/lampi_0.10_all.deb
+Filename: pool/main/l/lampi/lampi_0.12_all.deb
 Size: 21114
-SHA256: bdde3285287c5c61ff362251d3984db5ee9d7918d1b812879a09439eb993f60b
-SHA1: 1a1d7ca3dc4828f686f4bbded3a8b0436f4f4f42
-MD5sum: 7c4c2ba7f70ee647095b56e439336fe2
+SHA256: 6e8a919668392432f5c21e3468b42ffe5a3e6d60ba89117b1886c0225ab7a3b9
+SHA1: 9989bdd65c72671ab94da82448e83ea413786481
+MD5sum: 4ee5a75643fe11be84d93258eb0c40bf
 Description: Hello, Lampi!
 
