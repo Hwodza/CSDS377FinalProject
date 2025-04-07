@@ -10,7 +10,7 @@ from paho.mqtt.client import Client
 
 from lamp_common import *
 import lampi.lampi_util
-from mixpanel import Mixpanel
+from mixpanel import Mixpanel, BufferedConsumer
 
 
 MQTT_CLIENT_ID = "lamp_ui"
@@ -29,7 +29,7 @@ class LampiApp(App):
     _brightness = NumericProperty()
     lamp_is_on = BooleanProperty()
 
-    mp = Mixpanel(MIXPANEL_TOKEN)
+    mp = Mixpanel(MIXPANEL_TOKEN, consumer=BufferedConsumer(max_size=5))
 
     def _get_hue(self):
         return self._hue
@@ -213,14 +213,14 @@ class LampiApp(App):
         self.pi.set_pull_up_down(17, pigpio.PUD_UP)
         Clock.schedule_interval(self._poll_gpio, 0.05)
         self.network_status_popup = self._build_network_status_popup()
-        self.network_status_popup.bind(on_open=self.update_popup_ip_address)
+        self.network_status_popup.bind(on_open=self._update_dev_status_popup)
 
     def _build_network_status_popup(self):
         return Popup(title='Device Status',
                      content=Label(text='IP ADDRESS WILL GO HERE'),
                      size_hint=(1, 1), auto_dismiss=False)
 
-    def update_popup_ip_address(self, instance):
+    def _update_dev_status_popup(self, instance):
         """Update the popup with the current IP address"""
         interface = "wlan0"
         ipaddr = lampi.lampi_util.get_ip_address(interface)
@@ -228,7 +228,8 @@ class LampiApp(App):
         msg = (f"Version: {''}\n"  # Version goes in the single quotes
                f"{interface}: {ipaddr}\n"
                f"DeviceID: {deviceid}"
-               f"\nBroker Bridged: {self.mqtt_broker_bridged}")
+               f"\nBroker Bridged: {self.mqtt_broker_bridged}"
+               "Buffered Analytics")
         instance.content.text = msg
 
     def on_gpio17_pressed(self, instance, value):
