@@ -5,8 +5,8 @@ import paho.mqtt.client as mqtt
 import time
 
 db_path = "sysstat_data.db"
-mqtt_broker = "mqtt.example.com"  # Change to your MQTT broker
-mqtt_topic = "system/stats"
+mqtt_broker = "localhost"  # Change to your MQTT broker
+mqtt_topic = "sender/status"
 mqtt_port = 1883
 
 def init_db():
