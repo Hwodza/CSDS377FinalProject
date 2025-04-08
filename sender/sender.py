@@ -197,7 +197,8 @@ def get_network_stats():
                 headers = line.split()
             elif line and line[0].isdigit():  # Skip timestamped lines
                 continue
-            elif any(dev in line for dev in ['eth', 'en', 'wl', 'lo']):  # common interface prefixes
+            elif any(dev in line for dev in ['eth', 'en', 'wl', 'lo']) and line.startswith("Average"):
+                print(line)  # common interface prefixes
                 data_lines.append(line.split())
 
         # Print KB/s received and transmitted for each interface
