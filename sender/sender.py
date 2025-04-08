@@ -3,11 +3,14 @@ import subprocess
 import json
 import paho.mqtt.client as mqtt
 import time
+import re
+import psutil
 
 db_path = "sysstat_data.db"
 mqtt_broker = "localhost"  # Change to your MQTT broker
 mqtt_topic = "sender/status"
 mqtt_port = 1883
+
 
 def init_db():
     conn = sqlite3.connect(db_path)
@@ -72,13 +75,91 @@ def publish_data(data):
     client.publish(mqtt_topic, json.dumps(data))
     client.disconnect()
 
+
+def get_cpu_temp():
+    try:
+        # Run the sensors command and capture the output
+        output = subprocess.check_output(['sensors'], encoding='utf-8')
+    except FileNotFoundError:
+        print("Error: 'sensors' command not found. Please install lm-sensors.")
+        return None
+    except subprocess.CalledProcessError as e:
+        print(f"Error running sensors command: {e}")
+        return None
+
+    # Look for the k10temp section and extract the Tctl value
+    cpu_temp = None
+    in_k10temp = False
+
+    for line in output.splitlines():
+        if line.startswith("k10temp-pci-"):
+            in_k10temp = True
+        elif in_k10temp and line.strip().startswith("Tctl:"):
+            match = re.search(r'Tctl:\s+\+([\d.]+)°C', line)
+            if match:
+                cpu_temp = float(match.group(1))
+                break
+        elif line.strip() == "":
+            in_k10temp = False  # end of the k10temp section
+
+    return cpu_temp
+
+
+def get_per_cpu_load(interval=1):
+    print(f"Measuring CPU load over {interval} second(s)...")
+    load_per_core = psutil.cpu_percent(interval=interval, percpu=True)
+    return load_per_core
+
+
+
+def get_memory_stats():
+    try:
+        # Run the sar command
+        result = subprocess.run(['sar', '-r', '1', '1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # Check for errors
+        if result.returncode != 0:
+            print("Error running sar:", result.stderr)
+            return None
+
+        # Parse the output
+        lines = result.stdout.splitlines()
+
+        for line in reversed(lines):
+            if re.search(r'\d{2}:\d{2}:\d{2}', line):  # Look for timestamped lines (data lines)
+                parts = line.split()
+                if len(parts) >= 5:
+                    return {
+                        'time': parts[0],
+                        'kbmemfree': int(parts[1]),
+                        'kbmemused': int(parts[2]),
+                        'memused_percent': float(parts[3])
+                    }
+
+        print("No memory data found.")
+        return None
+
+    except FileNotFoundError:
+        print("sar command not found. Make sure sysstat is installed.")
+        return None
+
+
 def main():
     init_db()
     while True:
         data = collect_sysstat()
+        temp = get_cpu_temp()
+        print(f"CPU Temp: {temp} °C")
+        cpu_load = get_per_cpu_load()
+        print("Per-CPU Load (%):")
+        for i, load in enumerate(cpu_load):
+            print(f"CPU {i}: {load}%")
+        memory_stats = get_memory_stats()
+        print("Memory Stats: ", memory_stats)
         store_data(data)
         publish_data(data)
         time.sleep(3)  # Adjust the interval as needed
+
 
 if __name__ == "__main__":
     main()
