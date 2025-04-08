@@ -1,0 +1,5 @@
+#!/bin/bash
+
+systemctl stop lampi_service || true
+systemctl stop lampi_bluetooth || true
+systemctl stop lampi_app || true

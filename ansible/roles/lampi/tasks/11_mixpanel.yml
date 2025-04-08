@@ -2,5 +2,5 @@
   template:
     src: 11_mixpanel_settings.py
     dest: "{{ repo_directory }}/Lampi/lampi/mixpanel_settings.py"
-    force: no
+    force: yes
 

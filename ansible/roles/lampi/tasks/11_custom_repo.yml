@@ -1,0 +1,31 @@
+- name: install dirmngr (needed for gpg and apt-key)
+  tags: custom_repo
+  become: True
+  apt:
+    name: "{{ apt_pkg_dirmngr }}"
+    force: yes
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: install apt-key
+  tags: custom_repo
+  become: True
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: "{{ hostvars.ec2.apt_repo_subkey_id }}"
+
+- name: install our custom repository (see subsequent message if fails)
+  tags: custom_repo
+  become: True
+  ignore_errors: yes
+  register: install_custom_repo
+  apt_repository:
+    repo: "deb http://{{ hostvars.ec2.ansible_ec2_public_hostname }}:8090/ubuntu/ eecs397 main"
+    state: present
+    filename: lampi
+    update_cache: yes
+
+- name: output message if custom repository installation failed
+  tags: custom_repo
+  fail:
+    msg: Please manually run the 'sudo -E ./deploy_new_version.sh' command in connected-devices/Lampi/pkg on your EC2 instance, then re-run ansible.
+  when: install_custom_repo.failed

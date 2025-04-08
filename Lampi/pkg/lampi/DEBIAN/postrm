@@ -1,0 +1,7 @@
+#!/bin/bash
+
+systemctl daemon-reload
+
+rm -rf /opt/lampi/*.pyc
+rm -rf /opt/lampi/lamp_state.db
+rm -rf /opt/lampi/.kivy

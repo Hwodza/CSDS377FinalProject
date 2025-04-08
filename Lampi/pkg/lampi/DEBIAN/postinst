@@ -1,0 +1,18 @@
+#!/bin/bash
+
+adduser --system --home /opt/lampi lampi
+usermod -a -G audio,video,plugdev,games,users,input,netdev,spi,i2c,gpio lampi
+
+HOME=/opt/lampi /home/pi/lampi-venv/bin/python3 -c "from kivy.app import App;App().load_config()"
+mv /opt/lampi/kivy-config.ini /opt/lampi/.kivy/config.ini
+chown -R lampi:daemon /opt/lampi
+
+systemctl daemon-reload
+
+systemctl start lampi_service
+systemctl start lampi_bluetooth
+systemctl start lampi_app
+
+systemctl enable lampi_service
+systemctl enable lampi_bluetooth
+systemctl enable lampi_app

@@ -47,7 +47,7 @@ Would change file hi/DEBIAN/control:
 +++ b/hi/DEBIAN/control
 @@ -3,6 +3,6 @@
  Maintainer: Gary Johnson
- Depends: python, python-dev, python-pip
+ Depends: python3, python3-dev, python3-pip
  Priority: optional
 -Version: 0.1
 +Version: 0.2

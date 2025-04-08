@@ -1,4 +1,5 @@
 import json
+import os
 import pigpio
 
 from kivy.app import App
@@ -19,6 +20,14 @@ try:
     from .mixpanel_settings import MIXPANEL_TOKEN
 except (ModuleNotFoundError, ImportError) as e:
     MIXPANEL_TOKEN = "UPDATE TOKEN IN mixpanel_settings.py"
+
+version_path = os.path.join(os.path.dirname(__file__), '__VERSION__')
+try:
+    with open(version_path, 'r') as version_file:
+        LAMPI_APP_VERSION = version_file.read()
+except IOError:
+    # if version file cannot be opened, we'll stick with unknown
+    LAMPI_APP_VERSION = 'Unknown'
 
 
 class LampiApp(App):
@@ -225,11 +234,11 @@ class LampiApp(App):
         interface = "wlan0"
         ipaddr = lampi.lampi_util.get_ip_address(interface)
         deviceid = lampi.lampi_util.get_device_id()
-        msg = (f"Version: {''}\n"  # Version goes in the single quotes
+        msg = (f"Version: {LAMPI_APP_VERSION}\n"
                f"{interface}: {ipaddr}\n"
                f"DeviceID: {deviceid}"
                f"\nBroker Bridged: {self.mqtt_broker_bridged}"
-               "Buffered Analytics")
+               "\nBuffered Analytics")
         instance.content.text = msg
 
     def on_gpio17_pressed(self, instance, value):

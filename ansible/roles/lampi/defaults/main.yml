@@ -55,3 +55,4 @@ nodejs_version: "8.15.1"
 nvm_path: "/home/pi/.nvm/nvm.sh"
 lampi_hci0_up_service_file: "lampi_hci0_up.service"
 lampi_bluetooth_service_file: "lampi_bluetooth.service"
+apt_pkg_dirmngr: dirmngr=2.2.*
