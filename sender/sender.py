@@ -41,7 +41,11 @@ def collect_sysstat():
     
     # Network Usage
     net_data = subprocess.getoutput("sar -n DEV 1 1 | grep 'Average.*eth0' | awk '{print $5, $6}'")
-    network_rx, network_tx = map(float, net_data.split())
+    try:
+        network_rx, network_tx = map(float, net_data.split())
+    except ValueError:
+        # Default to 0.0 if parsing fails
+        network_rx, network_tx = 0.0, 0.0
     
     return {
         "timestamp": timestamp,
@@ -74,7 +78,7 @@ def main():
         data = collect_sysstat()
         store_data(data)
         publish_data(data)
-        time.sleep(60)  # Adjust the interval as needed
+        time.sleep(3)  # Adjust the interval as needed
 
 if __name__ == "__main__":
     main()
