@@ -183,6 +183,39 @@ def monitor_disk():
     return stats
 
 
+def get_network_stats():
+    try:
+        # Run the sar command to get network stats (1 second sample)
+        result = subprocess.run(['sar', '-n', 'DEV', '1', '1'], capture_output=True, text=True, check=True)
+        lines = result.stdout.strip().split('\n')
+
+        # Find the header and data lines
+        headers = []
+        data_lines = []
+        for line in lines:
+            if 'IFACE' in line:
+                headers = line.split()
+            elif line and line[0].isdigit():  # Skip timestamped lines
+                continue
+            elif any(dev in line for dev in ['eth', 'en', 'wl', 'lo']):  # common interface prefixes
+                data_lines.append(line.split())
+
+        # Print KB/s received and transmitted for each interface
+        print("Interface Stats (KB/s):")
+        for line in data_lines:
+            iface = line[1]
+            rx_kb = line[4]
+            tx_kb = line[5]
+        return {
+            'iface': iface,
+            'rx_kb': rx_kb,
+            'tx_kb': tx_kb
+        }
+    except subprocess.CalledProcessError as e:
+        print("Failed to run sar:", e)
+        return {'error': str(e)}
+
+
 def main():
     init_db()
     while True:
@@ -197,6 +230,8 @@ def main():
         print("Memory Stats: ", memory_stats)
         disk_stats = monitor_disk()
         print("Disk Stats: ", disk_stats)
+        network_stats = get_network_stats()
+        print("Network Stats: ", network_stats)
         store_data(data)
         publish_data(data)
         time.sleep(3)  # Adjust the interval as needed
