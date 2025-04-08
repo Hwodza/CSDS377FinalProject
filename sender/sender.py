@@ -117,31 +117,29 @@ def get_per_cpu_load(interval=1):
     return load_per_core
 
 
+
 def get_memory_stats():
     try:
         # Run the sar command
         result = subprocess.run(['sar', '-r', '1', '1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        # Check for errors
         if result.returncode != 0:
             print("Error running sar:", result.stderr)
             return None
 
-        # Parse the output
         lines = result.stdout.splitlines()
 
-        for line in reversed(lines):
-            if re.search(r'\d{2}:\d{2}:\d{2}', line):  # Look for timestamped lines (data lines)
-                parts = line.split()
-                if len(parts) >= 5:
-                    return {
-                        'time': parts[0],
-                        'kbmemfree': int(parts[1]),
-                        'kbmemused': int(parts[2]),
-                        'memused_percent': float(parts[3])
-                    }
+        for line in lines:
+            parts = line.split()
+            if len(parts) >= 5 and parts[1].isdigit():  # Only process valid data lines
+                return {
+                    'time': parts[0],
+                    'kbmemfree': int(parts[1]),
+                    'kbmemused': int(parts[2]),
+                    'memused_percent': float(parts[3])
+                }
 
-        print("No memory data found.")
+        print("No valid memory data found.")
         return None
 
     except FileNotFoundError:
@@ -151,33 +149,40 @@ def get_memory_stats():
 
 def parse_iostat_output(output):
     lines = output.strip().split('\n')
-    # Find the device lines (skip CPU stats and headers)
-    for i, line in enumerate(lines):
-        if line.strip().startswith('Device'):
-            device_lines = lines[i+1:]
-            break
-    else:
-        return []
-
+    device_lines_started = False
     stats = []
-    for line in device_lines:
-        parts = line.split()
-        if len(parts) >= 12:
-            device = parts[0]
-            await = float(parts[9])
-            util = float(parts[11])
-            stats.append({
-                'device': device,
-                'await': await,
-                'util': util
-            })
+
+    for line in lines:
+        # Look for the header that starts with "Device"
+        if line.strip().startswith('Device'):
+            device_lines_started = True
+            continue
+        if device_lines_started:
+            parts = line.split()
+            # Ensure line has enough columns to parse
+            if len(parts) >= 12:
+                try:
+                    device = parts[0]
+                    wait = float(parts[9])  # "await" value
+                    util = float(parts[11])  # "%util" value
+                    stats.append({
+                        'device': device,
+                        'wait': wait,
+                        'util': util
+                    })
+                except ValueError:
+                    # Skip line if conversion fails (e.g., malformed line)
+                    continue
     return stats
+
 
 def monitor_disk():
     result = subprocess.run(['iostat', '-dx', '1', '2'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     output = result.stdout
     stats = parse_iostat_output(output)
     return stats
+
+
 def main():
     init_db()
     while True:
