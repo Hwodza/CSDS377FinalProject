@@ -11,6 +11,9 @@ mqtt_broker = "localhost"  # Change to your MQTT broker
 mqtt_topic = "sender/status"
 mqtt_port = 1883
 
+'''
+Please write a python script that will do the following: make a sqlite database, its main table should have a timestamp as its primary key. It also needs to store the following data, kbmemfree, kbmemused, memused_percent
+'''
 
 def init_db():
     conn = sqlite3.connect(db_path)
@@ -27,6 +30,7 @@ def init_db():
     """)
     conn.commit()
     conn.close()
+
 
 def collect_sysstat():
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -59,6 +63,7 @@ def collect_sysstat():
         "network_tx": network_tx
     }
 
+
 def store_data(data):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -68,6 +73,7 @@ def store_data(data):
     """, data)
     conn.commit()
     conn.close()
+
 
 def publish_data(data):
     client = mqtt.Client()
@@ -111,7 +117,6 @@ def get_per_cpu_load(interval=1):
     return load_per_core
 
 
-
 def get_memory_stats():
     try:
         # Run the sar command
@@ -144,6 +149,35 @@ def get_memory_stats():
         return None
 
 
+def parse_iostat_output(output):
+    lines = output.strip().split('\n')
+    # Find the device lines (skip CPU stats and headers)
+    for i, line in enumerate(lines):
+        if line.strip().startswith('Device'):
+            device_lines = lines[i+1:]
+            break
+    else:
+        return []
+
+    stats = []
+    for line in device_lines:
+        parts = line.split()
+        if len(parts) >= 12:
+            device = parts[0]
+            await = float(parts[9])
+            util = float(parts[11])
+            stats.append({
+                'device': device,
+                'await': await,
+                'util': util
+            })
+    return stats
+
+def monitor_disk():
+    result = subprocess.run(['iostat', '-dx', '1', '2'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    output = result.stdout
+    stats = parse_iostat_output(output)
+    return stats
 def main():
     init_db()
     while True:
@@ -156,6 +190,8 @@ def main():
             print(f"CPU {i}: {load}%")
         memory_stats = get_memory_stats()
         print("Memory Stats: ", memory_stats)
+        disk_stats = monitor_disk()
+        print("Disk Stats: ", disk_stats)
         store_data(data)
         publish_data(data)
         time.sleep(3)  # Adjust the interval as needed
