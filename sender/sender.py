@@ -202,15 +202,14 @@ def get_network_stats():
 
         # Print KB/s received and transmitted for each interface
         print("Interface Stats (KB/s):")
+        networks = []
         for line in data_lines:
-            iface = line[1]
-            rx_kb = line[4]
-            tx_kb = line[5]
-        return {
-            'iface': iface,
-            'rx_kb': rx_kb,
-            'tx_kb': tx_kb
-        }
+            networks.append({
+                'iface': line[1],
+                'rx_kb': line[4],
+                'tx_kb': line[5]
+                })
+        return networks
     except subprocess.CalledProcessError as e:
         print("Failed to run sar:", e)
         return {'error': str(e)}
