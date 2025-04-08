@@ -1,0 +1,62 @@
+- name: install postgres and related packages
+  become: True
+  apt:
+    name:
+      - "{{ apt_pkg_libpq_dev }}"
+      - "{{ apt_pkg_postgresql }}"
+      - "{{ apt_pkg_postgresql_contrib }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: install python3-dev (for psycopg2)
+  become: True
+  apt:
+    name:
+      - "{{ apt_pkg_build_essential }}"
+      - "{{ apt_pkg_python3_dev }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+# Django appears to be deprecating psycopg2 in favor of psycopg 3, 
+#   but Ansible appears to still rely on psycopg2
+- name: install Python psycopg2 library
+  become: False
+  pip:
+    virtualenv: "{{ venv_directory }}"
+    name: psycopg2
+
+# see https://docs.ansible.com/ansible-core/2.12/user_guide/become.html#risks-of-becoming-an-unprivileged-user
+- name: install acl [required for creating postgres database]
+  become: True
+  tags: postgres_acl
+  apt:
+    name: "{{ apt_pkg_acl }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: set python interpreter for PostgreSQL
+  set_fact:
+    ansible_python_interpreter: "{{ venv_directory }}/bin/python3"
+
+- name: create postgresql database for our Django project
+  become: True
+  become_user: postgres
+  tags: postgres_acl
+  postgresql_db:
+    name: "{{ lampi_db_name }}"
+    encoding: UTF-8
+
+- name: create postgresql user for our Django project
+  become: True
+  become_user: postgres
+  postgresql_user:
+    db: "{{ lampi_db_name }}"
+    name: "{{ lampi_db_user }}"
+    password: "{{ lampi_db_password }}"
+
+- name: grant privileges to our user to the new database
+  become: True
+  become_user: postgres
+  postgresql_privs:
+    db: "{{ lampi_db_name }}"
+    privs: ALL
+    roles: "{{ lampi_db_user }}"
+    type: database
+    grant_option: yes

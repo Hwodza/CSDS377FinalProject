@@ -18,8 +18,10 @@ def generate_association_code():
 
 class Lampi(models.Model):
     name = models.CharField(max_length=50, default="My LAMPI")
-    device_id = models.CharField(max_length=12, primary_key=True)
-    user = models.ForeignKey(User,
+    device_id = models.CharField(db_index=True,
+                                 max_length=12,
+                                 primary_key=True)
+    user = models.ForeignKey(User, db_index=True,
                              on_delete=models.SET(get_parked_user))
     association_code = models.CharField(max_length=32, unique=True,
                                         default=generate_association_code)

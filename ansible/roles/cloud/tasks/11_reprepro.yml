@@ -1,0 +1,145 @@
+- name: install rng-tools
+  become: True
+  tags: custom_repo
+  apt:
+    name: "{{ apt_pkg_rng_tools }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: configure rngd
+  become: True
+  tags: custom_repo
+  template:
+    dest: /etc/default/rng-tools-debian
+    src: 11_default_rng-tools
+
+- name: start rngd
+  become: True
+  tags: custom_repo
+  service:
+    name: rng-tools
+    state: restarted
+
+- name: see if .gnupg directory exists
+  tags: gpg, custom_repo
+  stat: path=/home/ubuntu/.gnupg
+  register: gnupg_dir
+
+- name: make .gnupg directory
+  tags: gpg, custom_repo
+  when: not gnupg_dir.stat.exists
+  file:
+    path: /home/ubuntu/.gnupg
+    state: directory
+    mode: og-rwx
+
+- name: see if .gnupg/gpg.conf exists
+  tags: gpg, custom_repo
+  stat: path=/home/ubuntu/.gnupg/gpg.conf
+  register: gpg_conf
+
+- name: set gpg.conf
+  tags: gpg, custom_repo
+  when: not gpg_conf.stat.exists
+  template:
+    dest: /home/ubuntu/.gnupg/gpg.conf
+    src: 11_gpg.conf
+
+- name: see if gpg keys already exist
+  tags: gpg, custom_repo
+  register: gpg_keys
+  shell: |
+    gpg --list-keys
+
+- name: generate gpg key config (if needed)
+  tags: gpg, custom_repo
+  when: gpg_keys.stdout.find('rsa4096')==-1
+  template:
+    src: 11_gpg_key_config
+    dest: "{{ gpg_key_config_path }}"
+
+- name: generate gpg keys (if needed)
+  tags: gpg, custom_repo
+  when: gpg_keys.stdout.find('rsa4096')==-1
+  shell: |
+    gpg --batch --gen-key {{ gpg_key_config_path }}
+
+- name: remove gpg key config (if needed)
+  tags: gpg, custom_repo
+  when: gpg_keys.stdout.find('rsa4096')==-1
+  file:
+    path: "{{ gpg_key_config_path }}"
+    state: absent
+
+- name: get gpg key ids
+  tags: gpg, custom_repo
+  register: gpg_keys
+  shell: |
+    gpg --list-keys --with-colons
+
+- name: get gpg sub key parts
+  tags: gpg, custom_repo
+  set_fact:
+    gpg_sub_key_str: "{{ gpg_keys.stdout_lines | list | last }}"
+
+- name: get gpg sub key id
+  tags: gpg, custom_repo
+  set_fact:
+    apt_repo_subkey_id: "{{ gpg_sub_key_str.split(':')[9] }}"
+    cacheable: True
+
+- name: dump gpg key id
+  tags: gpg, custom_repo
+  debug:
+    msg: "{{ apt_repo_subkey_id }}"
+
+- name: register gpg key
+  tags: gpg, custom_repo
+  shell: |
+    gpg --keyserver keyserver.ubuntu.com --send-key {{ apt_repo_subkey_id }}
+
+- name: install reprepo
+  become: True
+  tags: gpg, custom_repo
+  apt:
+    name: "{{ apt_pkg_reprepro }}"
+    cache_valid_time: "{{ cache_update_valid_secs }}"
+
+- name: configure repository
+  become: True
+  tags: gpg, custom_repo
+  template:
+    src: 11_reprepro_distribution_conf
+    dest: "{{ repo_directory }}/Web/reprepro/ubuntu/conf/distributions"
+
+# automating reprepro is complicated by the need for the GPG passphrase
+#  in a popup (curses?) so just run it manually for the moment
+#  fixes to run this properly within Ansible appear super hacky
+# 
+#- name: build package and deploy to reprepro
+#  become: True
+#  tags: gpg, custom_repo
+#  ansible.builtin.shell: 
+#    chdir: "{{ repo_directory }}/Lampi/pkg"
+#    cmd: "{{ repo_directory }}/Lampi/pkg/deploy_new_version.sh"  
+
+- name: install reprepro nginx configuration
+  become: True
+  tags: gpg, custom_repo
+  template:
+    dest: /etc/nginx/sites-available/reprepro-apt.conf
+    src: 11_reprepro_nginx.conf
+
+- name: make nginx reprepro nginx configuration available
+  become: True
+  tags: gpg, custom_repo
+  file:
+    state: link
+    src: /etc/nginx/sites-available/reprepro-apt.conf
+    dest: /etc/nginx/sites-enabled/reprepro-apt.conf
+
+- name: restart NGINX
+  become: True
+  tags: gpg, custom_repo
+  service:
+    name: nginx
+    state: restarted

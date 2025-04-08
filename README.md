@@ -28,4 +28,8 @@ This Git Repository will be updated each week/chapter with new assignments and w
 
 ## [Chapter 11: Remote Update](Courseware/11.md)
 
+## ~~[Chapter 12: Load Testing](Courseware/12.md)~~
+
+## [Chapter 13: Introduction to PKI, SSL/TLS, and Certificates](Courseware/13.md)
+
 &copy; 2015-2025 LeanDog, Inc. and Nick Barendt

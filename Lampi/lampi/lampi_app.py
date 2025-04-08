@@ -1,4 +1,5 @@
 import json
+import os
 import pigpio
 
 from kivy.app import App
@@ -10,7 +11,7 @@ from paho.mqtt.client import Client
 
 from lamp_common import *
 import lampi.lampi_util
-from mixpanel import Mixpanel
+from mixpanel import Mixpanel, BufferedConsumer
 
 
 MQTT_CLIENT_ID = "lamp_ui"
@@ -19,6 +20,14 @@ try:
     from .mixpanel_settings import MIXPANEL_TOKEN
 except (ModuleNotFoundError, ImportError) as e:
     MIXPANEL_TOKEN = "UPDATE TOKEN IN mixpanel_settings.py"
+
+version_path = os.path.join(os.path.dirname(__file__), '__VERSION__')
+try:
+    with open(version_path, 'r') as version_file:
+        LAMPI_APP_VERSION = version_file.read()
+except IOError:
+    # if version file cannot be opened, we'll stick with unknown
+    LAMPI_APP_VERSION = 'Unknown'
 
 
 class LampiApp(App):
@@ -29,7 +38,7 @@ class LampiApp(App):
     _brightness = NumericProperty()
     lamp_is_on = BooleanProperty()
 
-    mp = Mixpanel(MIXPANEL_TOKEN)
+    mp = Mixpanel(MIXPANEL_TOKEN, consumer=BufferedConsumer(max_size=5))
 
     def _get_hue(self):
         return self._hue
@@ -213,22 +222,23 @@ class LampiApp(App):
         self.pi.set_pull_up_down(17, pigpio.PUD_UP)
         Clock.schedule_interval(self._poll_gpio, 0.05)
         self.network_status_popup = self._build_network_status_popup()
-        self.network_status_popup.bind(on_open=self.update_popup_ip_address)
+        self.network_status_popup.bind(on_open=self._update_dev_status_popup)
 
     def _build_network_status_popup(self):
         return Popup(title='Device Status',
                      content=Label(text='IP ADDRESS WILL GO HERE'),
                      size_hint=(1, 1), auto_dismiss=False)
 
-    def update_popup_ip_address(self, instance):
+    def _update_dev_status_popup(self, instance):
         """Update the popup with the current IP address"""
         interface = "wlan0"
         ipaddr = lampi.lampi_util.get_ip_address(interface)
         deviceid = lampi.lampi_util.get_device_id()
-        msg = (f"Version: {''}\n"  # Version goes in the single quotes
+        msg = (f"Version: {LAMPI_APP_VERSION}\n"
                f"{interface}: {ipaddr}\n"
                f"DeviceID: {deviceid}"
-               f"\nBroker Bridged: {self.mqtt_broker_bridged}")
+               f"\nBroker Bridged: {self.mqtt_broker_bridged}"
+               "\nBuffered Analytics")
         instance.content.text = msg
 
     def on_gpio17_pressed(self, instance, value):

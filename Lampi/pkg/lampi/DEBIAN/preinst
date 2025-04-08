@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# /home/pi/lampi-venv/bin/python3 -m pip install https://s3.amazonaws.com/connected-devices/Cython-0.28.2-cp35-cp35m-linux_armv7l.whl || true
+# /home/pi/lampi-venv/bin/python3 -m pip install https://s3.amazonaws.com/connected-devices/Kivy_Garden-0.1.4-py3-none-any.whl || true
+# /home/pi/lampi-venv/bin/python3 -m pip install https://s3.amazonaws.com/connected-devices/Kivy-1.10.1-cp35-cp35m-linux_armv7l.whl || true
+/home/pi/lampi-venv/bin/python3 -m pip install "kivy[base]"
+/home/pi/lampi-venv/bin/python3 -m pip install paho-mqtt || true

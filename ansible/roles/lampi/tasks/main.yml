@@ -1,5 +1,6 @@
 ---
 # tasks file for lampi
+- import_tasks: pre_12.yml
 - import_tasks: 01.yml
 - import_tasks: 02.yml
 - import_tasks: 03.yml

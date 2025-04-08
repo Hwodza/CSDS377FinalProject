@@ -52,12 +52,18 @@
     groups: www-data
     name: ubuntu
 
+- name: check for presence of django sqlite database
+  stat: path={{ django_dir }}/db.sqlite3
+  register: django_db_sqlit3
+
+
 - name: make django database group writable
   become: True
   file:
     path: "{{ django_dir }}/db.sqlite3"
     mode: "u=rw,g=rw,o=r"
     state: file
+  when: django_db_sqlit3.stat.exists
 
 - name: run Django collectstatic
   django_manage:
