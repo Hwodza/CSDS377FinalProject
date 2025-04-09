@@ -69,26 +69,26 @@ ScreenManager:
 
 <SecondScreen>:
     BoxLayout:
-        orientation: 'vertical'
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint_y: None
-            height: self.minimum_height
-            Label:
-                text: "Device List"
-                font_size: '20sp'
-                size_hint_y: None
-                height: self.texture_size[1] + 20
-        ScrollView:
-            size_hint: (1, 1)
-            padding: 30
-            GridLayout:
-                id: device_list
-                cols: 1
-                size_hint_y: None
-                height: self.minimum_height
-                row_default_height: 50
-                row_force_default: True
+      orientation: 'vertical'
+
+      Label:
+          text: "Device List"
+          font_size: '20sp'
+          size_hint_y: None
+          height: self.texture_size[1] + 20
+
+      ScrollView:
+          size_hint_y: 1
+          padding: 30
+
+          GridLayout:
+              id: device_list
+              cols: 1
+              size_hint_y: None
+              height: self.minimum_height
+              row_default_height: 50
+              row_force_default: True
+
             
         Button:
             text: "Return to Main Screen"
