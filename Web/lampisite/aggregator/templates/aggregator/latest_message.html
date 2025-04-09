@@ -6,8 +6,8 @@
 <body>
 {% if message %}
   <h2>Latest Message</h2>
-  <p><strong>Name:</strong> {{ message.name }}</p>
-  <p><strong>Value:</strong> {{ message.value }}</p>
+  <p><strong>Name:</strong> {{ message.topic }}</p>
+  <p><strong>Value:</strong> {{ message.payload }}</p>
   <p><strong>Timestamp:</strong> {{ message.timestamp }}</p>
 {% else %}
   <p>No messages received yet.</p>
