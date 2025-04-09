@@ -133,7 +133,6 @@ def get_memory_stats():
             parts = line.split()
             if len(parts) >= 5 and parts[1].isdigit():  # Only process valid data lines
                 return {
-                    'time': parts[0],
                     'kbmemfree': int(parts[1]),
                     'kbmemused': int(parts[2]),
                     'memused_percent': float(parts[3])
@@ -198,11 +197,10 @@ def get_network_stats():
             elif line and line[0].isdigit():  # Skip timestamped lines
                 continue
             elif any(dev in line for dev in ['eth', 'en', 'wl', 'lo']) and line.startswith("Average"):
-                print(line)  # common interface prefixes
+                # print(line)  # common interface prefixes
                 data_lines.append(line.split())
 
         # Print KB/s received and transmitted for each interface
-        print("Interface Stats (KB/s):")
         networks = []
         for line in data_lines:
             networks.append({
@@ -223,9 +221,7 @@ def main():
         temp = get_cpu_temp()
         print(f"CPU Temp: {temp} °C")
         cpu_load = get_per_cpu_load()
-        print("Per-CPU Load (%):")
-        for i, load in enumerate(cpu_load):
-            print(f"CPU {i}: {load}%")
+        print(f"CPU Load: {cpu_load}")
         memory_stats = get_memory_stats()
         print("Memory Stats: ", memory_stats)
         disk_stats = monitor_disk()
