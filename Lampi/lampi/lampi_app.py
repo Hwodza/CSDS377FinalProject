@@ -229,11 +229,21 @@ class LampiApp(App):
     def receive_sender_messages(self, client, userdata, message):
         """Handle messages from the 'sender/#' topic."""
         decoded_message = message.payload.decode('utf-8')
-        print("RECIEVED SENDER MESSAGE", decoded_message)
+        print("RECEIVED SENDER MESSAGE", decoded_message)
         topic = message.topic
         formatted_message = f"Sender Topic: {topic}\nMessage: {decoded_message}"
-        Clock.schedule_once(lambda dt: self.second_screen.add_message(formatted_message), 0)
+        
+        # Debugging: Check if second_screen is initialized
+        if not self.second_screen:
+            print("Second screen is not initialized!")
+            return
 
+        # Debugging: Check if message_container is set
+        if not self.second_screen.message_container:
+            print("Message container is not initialized!")
+            return
+
+        Clock.schedule_once(lambda dt: self.second_screen.add_message(formatted_message), 0)
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
