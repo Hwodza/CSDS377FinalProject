@@ -171,8 +171,8 @@ def get_memory_stats():
             if len(parts) >= 5 and parts[1].isdigit():
                 return {
                     'kbmemfree': int(parts[1]),
-                    'kbmemused': int(parts[2]),
-                    'memused_percent': float(parts[3])
+                    'kbmemused': int(parts[3]),
+                    'memused_percent': float(parts[4])
                 }
 
         print("No valid memory data found.")

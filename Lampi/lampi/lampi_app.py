@@ -55,7 +55,7 @@ class SecondScreen(Screen):
             # Extract CPU and memory usage if available
             shortened_message = (
                 f"CPU: {message['cpu_temp']}, "
-                f"MEM: {message['memused_percent']}%"
+                f"MEM: {message['memory_stats']['memused_percent']}%"
             )
         except KeyError as e:
             # Print the error if the keys are missing
