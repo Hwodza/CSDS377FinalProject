@@ -11,6 +11,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
+from kivy.lang import Builder
 
 from paho.mqtt.client import Client
 
@@ -18,7 +19,7 @@ from lamp_common import *
 import lampi.lampi_util
 from mixpanel import Mixpanel, BufferedConsumer
 
-
+Builder.load_file('lampi.kv')
 MQTT_CLIENT_ID = "lamp_ui"
 
 try:
