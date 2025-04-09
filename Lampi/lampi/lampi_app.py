@@ -42,29 +42,22 @@ class MainScreen(Screen):
 class SecondScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.message_container = None
-        self.is_ready = False  # Add a flag to indicate readiness
+        self.device_messages = {}  # Store the latest message for each device
 
-    def on_kv_post(self, base_widget):
-        """Called after the kv language is applied."""
-        self.message_container = self.ids.message_container
-        self.is_ready = True  # Set the flag to True
-        print("Kivy on post called", self.message_container)
-
-    def add_message(self, message):
-        """Add a new message to the scroll view."""
-        self.message_container = self.ids.message_container
-        if not self.is_ready or self.message_container is None:
-            print("SecondScreen is not ready or message_container is None")
-            return
-
-        print("add_message called")
-        new_message = BoxLayout(size_hint_y=None, height=40)
-        new_message.add_widget(Label(text=message, size_hint_x=1))
-        self.message_container.add_widget(new_message)
-        self.message_container.height = sum(
-            child.height for child in self.message_container.children
-        )
+    def update_device_message(self, device_name, message):
+        """Update the message for a specific device in the UI."""
+        self.device_messages[device_name] = message
+        device_list = self.ids.device_list
+        if device_name not in device_list.children:
+            # Add a new DeviceBox if it doesn't exist
+            device_box = DeviceBox(device_name=device_name, message=message)
+            device_list.add_widget(device_box)
+        else:
+            # Update the existing DeviceBox
+            for child in device_list.children:
+                if child.device_name == device_name:
+                    child.message = message
+                    break
 
 
 class LampiApp(App):
@@ -225,23 +218,14 @@ class LampiApp(App):
                                  f"on the Web\n{code}")
 
     def receive_sender_messages(self, client, userdata, message):
-        """Handle messages from the 'sender/#' topic."""
-        decoded_message = message.payload.decode('utf-8')
-        print("RECEIVED SENDER MESSAGE", decoded_message)
-        topic = message.topic
-        formatted_message = f"Sender Topic: {topic}\nMessage: {decoded_message}"
+        """Handle messages from devices on the topic sender/{devicename}."""
+        topic_parts = message.topic.split('/')
+        if len(topic_parts) == 2 and topic_parts[0] == "sender":
+            device_name = topic_parts[1]
+            payload = message.payload.decode('utf-8')
+            second_screen = self.screen_manager.get_screen("second")
+            second_screen.update_device_message(device_name, payload)
         
-        # Debugging: Check if second_screen is initialized
-        if not self.second_screen:
-            print("Second screen is not initialized!")
-            return
-
-        # Debugging: Check if message_container is set
-        # if not self.second_screen.message_container:
-        #     print("Message container is not initialized!")
-        #     return
-
-        Clock.schedule_once(lambda dt: self.second_screen.add_message(formatted_message), 0)
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
