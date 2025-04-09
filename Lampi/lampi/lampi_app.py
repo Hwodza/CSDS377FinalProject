@@ -47,11 +47,14 @@ class SecondScreen(Screen):
     def on_kv_post(self, base_widget):
         """Called after the kv language is applied."""
         self.message_container = self.ids.message_container
+        print("Kivy on post called", self.message_container)
 
     def add_message(self, message):
         """Add a new message to the scroll view."""
         if self.message_container is None:
+            print("Message container is none")
             return  # Ensure the container is initialized
+        print("add message called")
         new_message = BoxLayout(size_hint_y=None, height=40)
         new_message.add_widget(Label(text=message, size_hint_x=1))
         self.message_container.add_widget(new_message)
@@ -217,6 +220,7 @@ class LampiApp(App):
     def receive_sender_messages(self, client, userdata, message):
         """Handle messages from the 'sender/#' topic."""
         decoded_message = message.payload.decode('utf-8')
+        print("RECIEVED SENDER MESSAGE", decoded_message)
         topic = message.topic
         formatted_message = f"Sender Topic: {topic}\nMessage: {decoded_message}"
         Clock.schedule_once(lambda dt: self.second_screen.add_message(formatted_message), 0)
