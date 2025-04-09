@@ -7,6 +7,8 @@ from kivy.properties import NumericProperty, AliasProperty, BooleanProperty
 from kivy.clock import Clock
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.uix.screenmanager import Screen, ScreenManager
+
 from paho.mqtt.client import Client
 
 from lamp_common import *
@@ -28,6 +30,12 @@ try:
 except IOError:
     # if version file cannot be opened, we'll stick with unknown
     LAMPI_APP_VERSION = 'Unknown'
+class MainScreen(Screen):
+    pass
+
+
+class SecondScreen(Screen):
+    pass
 
 
 class LampiApp(App):
@@ -39,6 +47,12 @@ class LampiApp(App):
     lamp_is_on = BooleanProperty()
 
     mp = Mixpanel(MIXPANEL_TOKEN, consumer=BufferedConsumer(max_size=5))
+
+    def build(self):
+        self.screen_manager = ScreenManager()
+        self.screen_manager.add_widget(MainScreen(name="main"))
+        self.screen_manager.add_widget(SecondScreen(name="second"))
+        return self.screen_manager
 
     def _get_hue(self):
         return self._hue
