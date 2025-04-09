@@ -213,7 +213,7 @@ def parse_iostat_output(output):
 
 
 def monitor_disk():
-    result = subprocess.run(['iostat', '-dx', '1', '2'],
+    result = subprocess.run(['iostat', '-dx', '1', '1'],
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             text=True)
     output = result.stdout
