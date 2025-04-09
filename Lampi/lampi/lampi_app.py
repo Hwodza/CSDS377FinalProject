@@ -33,6 +33,8 @@ try:
 except IOError:
     # if version file cannot be opened, we'll stick with unknown
     LAMPI_APP_VERSION = 'Unknown'
+
+
 class MainScreen(Screen):
     pass
 
@@ -40,10 +42,16 @@ class MainScreen(Screen):
 class SecondScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.message_container = None  # Initialize as None
+
+    def on_kv_post(self, base_widget):
+        """Called after the kv language is applied."""
         self.message_container = self.ids.message_container
 
     def add_message(self, message):
         """Add a new message to the scroll view."""
+        if self.message_container is None:
+            return  # Ensure the container is initialized
         new_message = BoxLayout(size_hint_y=None, height=40)
         new_message.add_widget(Label(text=message, size_hint_x=1))
         self.message_container.add_widget(new_message)
