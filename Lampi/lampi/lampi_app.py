@@ -53,6 +53,7 @@ class SecondScreen(Screen):
 
     def add_message(self, message):
         """Add a new message to the scroll view."""
+        self.message_container = self.ids.message_container
         if not self.is_ready or self.message_container is None:
             print("SecondScreen is not ready or message_container is None")
             return
@@ -236,9 +237,9 @@ class LampiApp(App):
             return
 
         # Debugging: Check if message_container is set
-        if not self.second_screen.message_container:
-            print("Message container is not initialized!")
-            return
+        # if not self.second_screen.message_container:
+        #     print("Message container is not initialized!")
+        #     return
 
         Clock.schedule_once(lambda dt: self.second_screen.add_message(formatted_message), 0)
 
