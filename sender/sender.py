@@ -59,7 +59,7 @@ def init_db():
             timestamp TEXT,
             iface TEXT,
             rx_kb REAL,
-            tx_db REAL,
+            tx_kb REAL,
             PRIMARY KEY (timestamp, iface),
             FOREIGN KEY (timestamp) REFERENCES main_stats(timestamp)
         )
@@ -99,9 +99,9 @@ def store_data(timestamp, kbmemfree, kbmemused, memused_percent, cputemp,
         # Insert into network_stats
         for entry in network_stats:
             cursor.execute("""
-                INSERT INTO network_stats (timestamp, iface, rx_kb, tx_db)
+                INSERT INTO network_stats (timestamp, iface, rx_kb, tx_kb)
                 VALUES (?, ?, ?, ?)
-            """, (timestamp, entry['iface'], entry['rx_kb'], entry['tx_db']))
+            """, (timestamp, entry['iface'], entry['rx_kb'], entry['tx_kb']))
 
         conn.commit()
         print(f"Inserted system stats for timestamp {timestamp}")
