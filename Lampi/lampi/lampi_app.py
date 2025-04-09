@@ -47,22 +47,18 @@ class MainScreen(Screen):
 class SecondScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.device_messages = {}  # Store the latest message for each device
+        self.devices = {}
 
     def update_device_message(self, device_name, message):
         """Update the message for a specific device in the UI."""
-        self.device_messages[device_name] = message
-        device_list = self.ids.device_list
-        if device_name not in device_list.children:
-            # Add a new DeviceBox if it doesn't exist
+        if device_name not in self.devices:
+            # Create a new DeviceBox if it doesn't exist
             device_box = DeviceBox(device_name=device_name, message=message)
-            device_list.add_widget(device_box)
+            self.devices[device_name] = device_box
+            self.ids.device_list.add_widget(device_box)  # Add to the UI
         else:
             # Update the existing DeviceBox
-            for child in device_list.children:
-                if child.device_name == device_name:
-                    child.message = message
-                    break
+            self.devices[device_name].message = message
 
 
 class LampiApp(App):
