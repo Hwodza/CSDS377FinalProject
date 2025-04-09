@@ -70,13 +70,18 @@ ScreenManager:
 <SecondScreen>:
     BoxLayout:
         orientation: 'vertical'
-        Label:
-            text: "Device List"
-            font_size: '20sp'
+        BoxLayout:
+            orientation: 'vertical'
             size_hint_y: None
-            height: self.texture_size[1] + 20
+            height: self.minimum_height
+            Label:
+                text: "Device List"
+                font_size: '20sp'
+                size_hint_y: None
+                height: self.texture_size[1] + 20
         ScrollView:
             size_hint: (1, 1)
+            padding: 30
             GridLayout:
                 id: device_list
                 cols: 1
