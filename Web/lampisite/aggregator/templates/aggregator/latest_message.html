@@ -2,16 +2,32 @@
 <html>
 <head>
     <title>Latest MQTT Message</title>
+    <script>
+        function fetchLatestMessage() {
+            fetch('/latest-message/json/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('topic').textContent = 'N/A';
+                        document.getElementById('payload').textContent = 'N/A';
+                        document.getElementById('timestamp').textContent = 'N/A';
+                    } else {
+                        document.getElementById('topic').textContent = data.topic;
+                        document.getElementById('payload').textContent = data.payload;
+                        document.getElementById('timestamp').textContent = data.timestamp;
+                    }
+                })
+                .catch(error => console.error('Error fetching latest message:', error));
+        }
+
+        // Poll the server every 1 seconds
+        setInterval(fetchLatestMessage, 1000);
+    </script>
 </head>
 <body>
-{% if message %}
   <h2>Latest Message</h2>
-  <p><strong>Name:</strong> {{ message.topic }}</p>
-  <p><strong>Value:</strong> {{ message.payload }}</p>
-  <p><strong>Timestamp:</strong> {{ message.timestamp }}</p>
-{% else %}
-  <p>No messages received yet.</p>
-{% endif %}
-
+  <p><strong>Name:</strong> <span id="topic">{% if message %}{{ message.topic }}{% else %}N/A{% endif %}</span></p>
+  <p><strong>Value:</strong> <span id="payload">{% if message %}{{ message.payload }}{% else %}N/A{% endif %}</span></p>
+  <p><strong>Timestamp:</strong> <span id="timestamp">{% if message %}{{ message.timestamp }}{% else %}N/A{% endif %}</span></p>
 </body>
 </html>
