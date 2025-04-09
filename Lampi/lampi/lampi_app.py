@@ -228,7 +228,9 @@ class LampiApp(App):
             device_name = topic_parts[1]
             payload = message.payload.decode('utf-8')
             second_screen = self.screen_manager.get_screen("second")
-            second_screen.update_device_message(device_name, payload)
+            
+            # Schedule the UI update on the main thread
+            Clock.schedule_once(lambda dt: second_screen.update_device_message(device_name, payload))
         
 
     def receive_bridge_connection_status(self, client, userdata, message):
