@@ -21,7 +21,7 @@ def on_message(client, userdata, msg):
         topic=msg.topic,
         payload=msg.payload.decode()
     )
-    client.publish("devices/b827ebdb1727/sender/hello", msg.payload)
+    client.publish("devices/b827ebdb1727/sender/Laptop", msg.payload)
 
 
 def start_mqtt():
