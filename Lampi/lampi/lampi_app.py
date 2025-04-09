@@ -3,7 +3,7 @@ import os
 import pigpio
 
 from kivy.app import App
-from kivy.properties import NumericProperty, AliasProperty, BooleanProperty
+from kivy.properties import NumericProperty, AliasProperty, BooleanProperty, StringProperty
 from kivy.clock import Clock
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
@@ -11,7 +11,6 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
-from kivy.lang import Builder
 
 from paho.mqtt.client import Client
 
@@ -19,7 +18,6 @@ from lamp_common import *
 import lampi.lampi_util
 from mixpanel import Mixpanel, BufferedConsumer
 
-Builder.load_file('lampi.kv')
 MQTT_CLIENT_ID = "lamp_ui"
 
 try:
@@ -34,6 +32,11 @@ try:
 except IOError:
     # if version file cannot be opened, we'll stick with unknown
     LAMPI_APP_VERSION = 'Unknown'
+
+
+class DeviceBox(BoxLayout):
+    device_name = StringProperty("")
+    message = StringProperty("")
 
 
 class MainScreen(Screen):
