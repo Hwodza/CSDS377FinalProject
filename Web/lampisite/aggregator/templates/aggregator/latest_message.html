@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Latest MQTT Message</title>
+</head>
+<body>
+{% if message %}
+  <h2>Latest Message</h2>
+  <p><strong>Name:</strong> {{ message.topic }}</p>
+  <p><strong>Value:</strong> {{ message.payload }}</p>
+  <p><strong>Timestamp:</strong> {{ message.timestamp }}</p>
+{% else %}
+  <p>No messages received yet.</p>
+{% endif %}
+
+</body>
+</html>
