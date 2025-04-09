@@ -72,6 +72,7 @@ ScreenManager:
         orientation: 'vertical'
 
         Label:
+            id: title_label
             text: "Device List"
             font_size: '20sp'
             size_hint_y: None
@@ -79,7 +80,7 @@ ScreenManager:
 
         ScrollView:
             size_hint_y: 1
-            padding: 30
+            do_scroll_x: False
 
             GridLayout:
                 id: device_list
@@ -89,10 +90,11 @@ ScreenManager:
                 row_default_height: 50
                 row_force_default: True
 
-              
         Button:
+            id: return_button
             text: "Return to Main Screen"
-            size_hint_y: 0.1
+            size_hint_y: None
+            height: 50
             on_press: app.screen_manager.current = "main"
 
 <DeviceBox>:
