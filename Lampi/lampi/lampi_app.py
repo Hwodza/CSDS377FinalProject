@@ -49,6 +49,12 @@ class SecondScreen(Screen):
         self.message_container = self.ids.message_container
         print("Kivy on post called", self.message_container)
 
+    def on_enter(self):
+        """Ensure message_container is initialized when the screen is entered."""
+        if self.message_container is None:
+            self.message_container = self.ids.message_container
+            print(f"on_enter: message_container initialized to {self.message_container}")
+
     def add_message(self, message):
         """Add a new message to the scroll view."""
         if self.message_container is None:
