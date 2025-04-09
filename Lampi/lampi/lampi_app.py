@@ -207,7 +207,7 @@ class LampiApp(App):
                                  f"on the Web\n{code}")
 
     def receive_sender_messages(self, client, userdata, message):
-         """Handle messages from the 'sender/#' topic."""
+        """Handle messages from the 'sender/#' topic."""
         decoded_message = message.payload.decode('utf-8')
         topic = message.topic
         formatted_message = f"Sender Topic: {topic}\nMessage: {decoded_message}"
