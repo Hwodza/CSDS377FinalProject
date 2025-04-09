@@ -3,7 +3,8 @@ import os
 import pigpio
 
 from kivy.app import App
-from kivy.properties import NumericProperty, AliasProperty, BooleanProperty, StringProperty
+from kivy.properties import NumericProperty, AliasProperty, BooleanProperty, \
+    StringProperty
 from kivy.clock import Clock
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
@@ -228,10 +229,10 @@ class LampiApp(App):
             device_name = topic_parts[1]
             payload = message.payload.decode('utf-8')
             second_screen = self.screen_manager.get_screen("second")
-            
             # Schedule the UI update on the main thread
-            Clock.schedule_once(lambda dt: second_screen.update_device_message(device_name, payload))
-        
+            Clock.schedule_once(
+                lambda dt: second_screen.update_device_message(
+                    device_name, payload))
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
