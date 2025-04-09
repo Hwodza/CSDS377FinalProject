@@ -156,7 +156,7 @@ def get_per_cpu_load(interval=1):
 def get_memory_stats():
     try:
         # Run the sar command
-        result = subprocess.run(['sar', '-r', '1', '1'], 
+        result = subprocess.run(['sar', '-r', '1', '1'],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                 text=True)
 
@@ -213,7 +213,7 @@ def parse_iostat_output(output):
 
 
 def monitor_disk():
-    result = subprocess.run(['iostat', '-dx', '1', '2'], 
+    result = subprocess.run(['iostat', '-dx', '1', '2'],
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             text=True)
     output = result.stdout
@@ -272,7 +272,7 @@ def main():
         network_stats = get_network_stats()
         print("Network Stats: ", network_stats)
         timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
-        store_data(timestamp, memory_stats['kbmemfree'], 
+        store_data(timestamp, memory_stats['kbmemfree'],
                    memory_stats['kbmemused'], memory_stats['memused_percent'],
                    temp, disk_stats, cpu_load, network_stats)
         publish_data({
