@@ -49,21 +49,24 @@ class SecondScreen(Screen):
         self.message_container = self.ids.message_container
         print("Kivy on post called", self.message_container)
 
-    def on_enter(self):
-        """Ensure message_container is initialized when the screen is entered."""
-        if self.message_container is None:
-            self.message_container = self.ids.message_container
-            print(f"on_enter: message_container initialized to {self.message_container}")
-
     def add_message(self, message):
         """Add a new message to the scroll view."""
         if self.message_container is None:
             print("Message container is none")
             return  # Ensure the container is initialized
-        print("add message called")
+
+        print("add_message called")
+        # Create a new BoxLayout for the message
         new_message = BoxLayout(size_hint_y=None, height=40)
         new_message.add_widget(Label(text=message, size_hint_x=1))
+
+        # Add the new message to the message container
         self.message_container.add_widget(new_message)
+
+        # Dynamically adjust the height of the message container
+        self.message_container.height = sum(
+            child.height for child in self.message_container.children
+        )
 
 
 class LampiApp(App):
