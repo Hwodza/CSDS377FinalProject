@@ -57,7 +57,9 @@ class SecondScreen(Screen):
                 f"CPU: {message['cpu_temp']}, "
                 f"MEM: {message['memused_percent']}%"
             )
-        except KeyError:
+        except KeyError as e:
+            # Print the error if the keys are missing
+            print(f"Error extracting values for device '{device_name}': {e}")
             # Fallback to string representation of the message
             shortened_message = str(message)
 
