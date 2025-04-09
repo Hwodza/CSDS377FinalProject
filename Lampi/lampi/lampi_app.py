@@ -54,8 +54,8 @@ class SecondScreen(Screen):
         shortened_message = message
         try:
             shortened_message = (
-                f"CPU: {message['cpu_temp']}, "
-                f"MEM: {message['memused_percent']}%"
+                f"CPU: {str(message['cpu_temp'])}, "
+                f"MEM: {str(message['memused_percent'])}%"
             )
         except KeyError:
             # Handle the case where the message does not have expected keys
