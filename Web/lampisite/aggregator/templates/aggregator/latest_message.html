@@ -4,9 +4,14 @@
     <title>Latest MQTT Message</title>
 </head>
 <body>
-    <h1>Latest MQTT Message</h1>
-    <p><strong>Topic:</strong> {{ message.topic }}</p>
-    <p><strong>Message:</strong> {{ message.payload }}</p>
-    <p><strong>Received At:</strong> {{ message.timestamp }}</p>
+{% if message %}
+  <h2>Latest Message</h2>
+  <p><strong>Name:</strong> {{ message.name }}</p>
+  <p><strong>Value:</strong> {{ message.value }}</p>
+  <p><strong>Timestamp:</strong> {{ message.timestamp }}</p>
+{% else %}
+  <p>No messages received yet.</p>
+{% endif %}
+
 </body>
 </html>

@@ -7,7 +7,7 @@ import time
 
 
 # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "your_project_name.settings")
-django.setup()
+# django.setup()
 
 
 def on_connect(client, userdata, flags, rc):
