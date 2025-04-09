@@ -1,0 +1,7 @@
+file/location: /etc/mosquitto/conf.d/sender_bridge.conf
+
+connection 5c3a45d9ca63_sender
+address 107.21.161.21:50001
+remote_clientid 5c3a45d9ca63_sender
+topic sender/status out 1 "" senders/5c3a45d9ca63/
+cleansession true
