@@ -60,7 +60,7 @@ class SecondScreen(Screen):
         except KeyError:
             # Handle the case where the message does not have expected keys
             pass
-        
+
         if device_name not in self.devices:
             # Create a new DeviceBox if it doesn't exist
             device_box = DeviceBox(device_name=device_name, 
@@ -234,7 +234,7 @@ class LampiApp(App):
         topic_parts = message.topic.split('/')
         if len(topic_parts) == 2 and topic_parts[0] == "sender":
             device_name = topic_parts[1]
-            payload = message.payload.decode('utf-8')
+            payload = json.loads(message.payload.decode('utf-8'))
             second_screen = self.screen_manager.get_screen("second")
             # Schedule the UI update on the main thread
             Clock.schedule_once(
