@@ -21,8 +21,7 @@ def on_message(client, userdata, msg):
         topic=msg.topic,
         payload=msg.payload.decode()
     )
-    mqtt.publish.singe("devices/b827ebdb1727/sender/hello", msg.payload, qos=1,
-                       retain=False, hostname="localhost", port=50001)
+    client.publish("devices/b827ebdb1727/sender/hello", msg.payload)
 
 
 def start_mqtt():
