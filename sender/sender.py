@@ -304,7 +304,7 @@ def main():
             "disk_stats": disk_stats,
             "network_stats": network_stats
         })
-        time.sleep(3)  # Adjust the interval as needed
+        time.sleep(1)  # Adjust the interval as needed
 
 
 if __name__ == "__main__":
