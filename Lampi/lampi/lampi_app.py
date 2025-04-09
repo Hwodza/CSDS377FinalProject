@@ -8,6 +8,9 @@ from kivy.clock import Clock
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.label import Label
 
 from paho.mqtt.client import Client
 
@@ -35,7 +38,15 @@ class MainScreen(Screen):
 
 
 class SecondScreen(Screen):
-    pass
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.message_container = self.ids.message_container
+
+    def add_message(self, message):
+        """Add a new message to the scroll view."""
+        new_message = BoxLayout(size_hint_y=None, height=40)
+        new_message.add_widget(Label(text=message, size_hint_x=1))
+        self.message_container.add_widget(new_message)
 
 
 class LampiApp(App):
@@ -50,8 +61,10 @@ class LampiApp(App):
 
     def build(self):
         self.screen_manager = ScreenManager()
-        self.screen_manager.add_widget(MainScreen(name="main"))
-        self.screen_manager.add_widget(SecondScreen(name="second"))
+        self.main_screen = MainScreen(name="main")
+        self.second_screen = SecondScreen(name="second")
+        self.screen_manager.add_widget(self.main_screen)
+        self.screen_manager.add_widget(self.second_screen)
         return self.screen_manager
 
     def _get_hue(self):
@@ -156,9 +169,12 @@ class LampiApp(App):
                                        self.receive_bridge_connection_status)
         self.mqtt.message_callback_add(TOPIC_LAMP_ASSOCIATED,
                                        self.receive_associated)
+        self.mqtt.message_callback_add("sender/#",
+                                       self.receive_sender_messages)
         self.mqtt.subscribe(broker_bridge_connection_topic(), qos=1)
         self.mqtt.subscribe(TOPIC_LAMP_CHANGE_NOTIFICATION, qos=1)
         self.mqtt.subscribe(TOPIC_LAMP_ASSOCIATED, qos=2)
+        self.mqtt.subscribe("sender/#", qos=1)
 
     def _poll_associated(self, dt):
         # this polling loop allows us to synchronize changes from the
@@ -189,6 +205,14 @@ class LampiApp(App):
                                  "to associate\n"
                                  "your device\n"
                                  f"on the Web\n{code}")
+
+    def receive_sender_messages(self, client, userdata, message):
+         """Handle messages from the 'sender/#' topic."""
+        decoded_message = message.payload.decode('utf-8')
+        topic = message.topic
+        formatted_message = f"Sender Topic: {topic}\nMessage: {decoded_message}"
+        Clock.schedule_once(lambda dt: self.second_screen.add_message(formatted_message), 0)
+
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up

@@ -70,6 +70,14 @@ ScreenManager:
 <SecondScreen>:
     BoxLayout:
         orientation: 'vertical'
+        ScrollView:
+            size_hint: (1, 0.9)
+            BoxLayout:
+                id: message_container
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
         Button:
             text: "Return to Main Screen"
+            size_hint_y: 0.1
             on_press: app.screen_manager.current = "main"
