@@ -42,28 +42,25 @@ class MainScreen(Screen):
 class SecondScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.message_container = None  # Initialize as None
+        self.message_container = None
+        self.is_ready = False  # Add a flag to indicate readiness
 
     def on_kv_post(self, base_widget):
         """Called after the kv language is applied."""
         self.message_container = self.ids.message_container
+        self.is_ready = True  # Set the flag to True
         print("Kivy on post called", self.message_container)
 
     def add_message(self, message):
         """Add a new message to the scroll view."""
-        if self.message_container is None:
-            print("Message container is none")
-            return  # Ensure the container is initialized
+        if not self.is_ready or self.message_container is None:
+            print("SecondScreen is not ready or message_container is None")
+            return
 
         print("add_message called")
-        # Create a new BoxLayout for the message
         new_message = BoxLayout(size_hint_y=None, height=40)
         new_message.add_widget(Label(text=message, size_hint_x=1))
-
-        # Add the new message to the message container
         self.message_container.add_widget(new_message)
-
-        # Dynamically adjust the height of the message container
         self.message_container.height = sum(
             child.height for child in self.message_container.children
         )
