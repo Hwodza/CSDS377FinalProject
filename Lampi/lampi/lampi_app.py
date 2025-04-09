@@ -51,14 +51,25 @@ class SecondScreen(Screen):
 
     def update_device_message(self, device_name, message):
         """Update the message for a specific device in the UI."""
+        shortened_message = message
+        try:
+            shortened_message = (
+                f"CPU: {message['cpu_temp']}, "
+                f"MEM: {message['memused_percent']}%"
+            )
+        except KeyError:
+            # Handle the case where the message does not have expected keys
+            pass
+        
         if device_name not in self.devices:
             # Create a new DeviceBox if it doesn't exist
-            device_box = DeviceBox(device_name=device_name, message=message)
+            device_box = DeviceBox(device_name=device_name, 
+                                   message=shortened_message)
             self.devices[device_name] = device_box
             self.ids.device_list.add_widget(device_box)  # Add to the UI
         else:
             # Update the existing DeviceBox
-            self.devices[device_name].message = message
+            self.devices[device_name].message = shortened_message
 
 
 class LampiApp(App):
