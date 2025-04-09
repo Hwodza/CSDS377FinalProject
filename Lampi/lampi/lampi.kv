@@ -69,31 +69,31 @@ ScreenManager:
 
 <SecondScreen>:
     BoxLayout:
-      orientation: 'vertical'
+        orientation: 'vertical'
 
-      Label:
-          text: "Device List"
-          font_size: '20sp'
-          size_hint_y: None
-          height: self.texture_size[1] + 20
+        Label:
+            text: "Device List"
+            font_size: '20sp'
+            size_hint_y: None
+            height: self.texture_size[1] + 20
 
-      ScrollView:
-          size_hint_y: 1
-          padding: 30
+        ScrollView:
+            size_hint_y: 1
+            padding: 30
 
-          GridLayout:
-              id: device_list
-              cols: 1
-              size_hint_y: None
-              height: self.minimum_height
-              row_default_height: 50
-              row_force_default: True
+            GridLayout:
+                id: device_list
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 50
+                row_force_default: True
 
-            
-        Button:
-            text: "Return to Main Screen"
-            size_hint_y: 0.1
-            on_press: app.screen_manager.current = "main"
+              
+          Button:
+              text: "Return to Main Screen"
+              size_hint_y: 0.1
+              on_press: app.screen_manager.current = "main"
 
 <DeviceBox>:
     size_hint_y: None
