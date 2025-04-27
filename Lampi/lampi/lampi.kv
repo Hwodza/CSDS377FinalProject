@@ -115,12 +115,23 @@ ScreenManager:
                 row_default_height: 50
                 row_force_default: True
 
-        Button:
-            id: return_button
-            text: "Return to Main Screen"
+        FloatLayout:
             size_hint_y: .1
-            height: 50
-            on_press: app.screen_manager.current = "main"
+            height: 50 
+            Button:
+                id: return_button
+                pos_hint: {'x': 0, 'y': 0}
+                text: '' 
+                size_hint: (None, None)
+                background_normal: ''
+                background_down: ''
+                background_color: 0, 0, 0, 0
+                size: (60, 60)
+                on_press: app.screen_manager.current = "main"
+                
+                Image:
+                    source: 'images/home.png'
+                    size: 60, 60
 
 <DeviceBox>:
     size_hint_y: None
