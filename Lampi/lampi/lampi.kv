@@ -50,22 +50,47 @@ ScreenManager:
         BoxLayout:
             orientation: 'vertical'
             size_hint_y: 0.33
+            
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
             ColorBox:
                 id: button_hue
                 size_hint_y: 0.1
                 color: hsv_to_rgb(app.hue, app.saturation, 1.0)
-            LampiToggle:
-                id: button_onoff
+            
+            FloatLayout:
                 size_hint_y: 0.90
-                image: 'images/power_icon_light.png'
-                accent_color: hsv_to_rgb(hue_slider.value, saturation_slider.value, 1.0)
-                text: ''
-                state: 'down' if app.lamp_is_on else 'normal'
-                on_state:  app.lamp_is_on = True if self.state == 'down' else False
-        Button:
-            text: "Go to Second Screen"
-            size_hint_y: 0.1
-            on_press: app.screen_manager.current = "second"
+                
+                LampiToggle:
+                    id: button_onoff
+                    size_hint: (None, None)
+                    size: (min(self.parent.width, self.parent.height), min(self.parent.width, self.parent.height))
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    image: 'images/power_icon_light.png'
+                    accent_color: hsv_to_rgb(hue_slider.value, saturation_slider.value, 1.0)
+                    text: ''
+                    state: 'down' if app.lamp_is_on else 'normal'
+                    on_state: app.lamp_is_on = True if self.state == 'down' else False
+                
+                Button:
+                    size_hint: (None, None)
+                    pos_hint: {'right': 0.95, 'center_y': 0.5}
+                    size: (60, 60)
+                    background_normal: ''
+                    background_down: ''
+                    background_color: 0, 0, 0, 0
+                    on_press: app.screen_manager.current = "second"  
+                    
+                    Image:
+                        source: 'images/menu_icon.png'
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+                        size: 60, 60
+            
 
 <SecondScreen>:
     BoxLayout:
