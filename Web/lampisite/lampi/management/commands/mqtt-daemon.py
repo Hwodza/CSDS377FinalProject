@@ -152,7 +152,6 @@ class Command(BaseCommand):
 
     def _monitor_broker_bridges(self, client, userdata, message):
         self._monitor_for_new_devices(client, userdata, message)
-        self._monitor_for_connection_events(client, userdata, message)
 
     def _monitor_for_connection_events(self, client, userdata, message):
         results = re.search(MQTT_BROKER_RE_PATTERN, message.topic.lower())
