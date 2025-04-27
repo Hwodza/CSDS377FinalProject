@@ -116,7 +116,7 @@ def store_data(timestamp, kbmemfree, kbmemused, memused_percent, cputemp,
 def publish_data(data):
     client = mqtt.Client()
     client.connect(mqtt_broker, mqtt_port, 60)
-    client.publish(mqtt_topic, json.dumps(data))
+    client.publish(mqtt_topic, json.dumps(data), qos=1)
     client.disconnect()
 
 
@@ -308,10 +308,10 @@ def main():
                         help="Change the interval, in seconds, that data"
                         " is sent")
     args = parser.parse_args()
-    print(len(args))
+    print(args)
     metadata = get_or_create_metadata()
     while True:
-        if len(args) == 0:
+        if args:
             temp = get_cpu_temp()
             print(f"CPU Temp: {temp} °C")
             cpu_load = get_per_cpu_load()
