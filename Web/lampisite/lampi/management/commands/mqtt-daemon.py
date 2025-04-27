@@ -65,6 +65,7 @@ class Command(BaseCommand):
             device_id = results.group('device_id')
             try:
                 device = SenderDevice.objects.get(device_id=device_id)
+
                 data = json.loads(message.payload.decode())
                 
                 # Parse timestamp
@@ -75,14 +76,14 @@ class Command(BaseCommand):
                 device_data = DeviceData.objects.create(
                     device=device,
                     timestamp=timestamp,
-                    kbmemfree=data['memory']['kbmemfree'],
-                    kbmemused=data['memory']['kbmemused'],
-                    memused_percent=data['memory']['memused_percent'],
-                    cputemp=data['cpu']['temperature']
+                    kbmemfree=data['memory_stats']['kbmemfree'],
+                    kbmemused=data['memory_stats']['kbmemused'],
+                    memused_percent=data['memory_stats']['memused_percent'],
+                    cputemp=data['cpu_temp']
                 )
                 
                 # Process disk stats
-                for disk in data['disks']:
+                for disk in data['disk_stats']:
                     DiskStats.objects.create(
                         device_data=device_data,
                         device=disk['device'],
@@ -91,7 +92,7 @@ class Command(BaseCommand):
                     )
                 
                 # Process CPU loads
-                for core, load in enumerate(data['cpu']['loads']):
+                for core, load in enumerate(data['cpu_load']):
                     CpuLoad.objects.create(
                         device_data=device_data,
                         core=core,
@@ -99,7 +100,7 @@ class Command(BaseCommand):
                     )
                 
                 # Process network stats
-                for net in data['network']:
+                for net in data['network_stats']:
                     NetworkStats.objects.create(
                         device_data=device_data,
                         iface=net['iface'],
