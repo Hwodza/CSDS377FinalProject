@@ -1,9 +1,10 @@
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from .models import Lampi
+from .models import Lampi, SenderDevice, DeviceData, DiskStats, CpuLoad, \
+NetworkStats
 from django.conf import settings
-from lampi.forms import AddLampiForm
+from lampi.forms import AddLampiForm, AddSenderForm
 from mixpanel import Mixpanel
 
 
@@ -16,6 +17,9 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
+        context['lampi_devices'] = Lampi.objects.filter(user=self.request.user)
+        context['sender_devices'] = SenderDevice.objects.filter(
+            user=self.request.user)
         context['MIXPANEL_TOKEN'] = settings.MIXPANEL_TOKEN
         return context
 
@@ -51,3 +55,31 @@ class AddLampiView(LoginRequiredMixin, generic.FormView):
                   'device_id': device.device_id})
 
         return super(AddLampiView, self).form_valid(form)
+
+
+class AddSenderView(LoginRequiredMixin, generic.FormView):
+    template_name = 'lampi/addsender.html'
+    form_class = AddSenderForm
+    success_url = '/lampi'
+
+    def get_context_data(self, **kwargs):
+        context = super(AddSenderView, self).get_context_data(**kwargs)
+        context['MIXPANEL_TOKEN'] = settings.MIXPANEL_TOKEN
+        return context
+
+    def form_valid(self, form):
+        device = form.cleaned_data['device']
+        device.associate_and_publish_associated_msg(self.request.user)
+
+        return super(AddSenderView, self).form_valid(form)
+
+
+class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'lampi/sender_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SenderDetailView, self).get_context_data(**kwargs)
+        context['device'] = get_object_or_404(
+            SenderDevice, pk=kwargs['device_id'], user=self.request.user)
+        context['MIXPANEL_TOKEN'] = settings.MIXPANEL_TOKEN
+        return context

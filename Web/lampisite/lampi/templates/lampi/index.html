@@ -2,6 +2,7 @@
 
 {% block content %}
 
+<h2>LAMPI Devices</h2>
 {% if lampi_list %}
     <ul>
     {% for device in lampi_list %}
@@ -14,6 +15,19 @@
     <p>No devices are available.</p>
     <a href="{% url 'lampi:add' %}">Add a LAMPI Device</a>
 {% endif %}
+
+<h2>Sender Devices</h2>
+{% if sender_devices %}
+    <ul>
+    {% for device in sender_devices %}
+       <li><a href="{% url 'lampi:sender_detail' device.device_id %}">
+        {{ device.name }} ({{ device.device_id }})</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Sender devices are available.</p>
+{% endif %}
+<a href="{% url 'lampi:addsender' %}">Add a Sender Device</a>
 
 {% endblock %}
 
