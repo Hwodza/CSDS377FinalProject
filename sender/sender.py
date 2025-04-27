@@ -10,7 +10,7 @@ import argparse
 
 db_path = "sysstat_data.db"
 mqtt_broker = "localhost"
-mqtt_topic = "sender/status"
+mqtt_topic = "sender/stats"
 mqtt_port = 1883
 
 
@@ -290,27 +290,27 @@ def get_or_create_metadata():
 
 def main():
     init_db()
+    parser = argparse.ArgumentParser(description="System Stats Sender")
+    parser.add_argument('-n', '--name',
+                        type=str,
+                        help="Name of this sender device")
+    parser.add_argument('-c', '--change-name',
+                        type=str,
+                        help="Change name of this sender device")
+    parser.add_argument('-d', '--print-id',
+                        action='store_true',
+                        help="print current id (mac address)")
+    parser.add_argument('-a', '--association-code',
+                        action='store_true',
+                        help="prints association code")
+    parser.add_argument('-i', '--change-interval',
+                        type=int,
+                        help="Change the interval, in seconds, that data"
+                        " is sent")
+    args = parser.parse_args()
+    print(len(args))
+    metadata = get_or_create_metadata()
     while True:
-        parser = argparse.ArgumentParser(description="System Stats Sender")
-        parser.add_argument('-n', '--name',
-                            type=str,
-                            help="Name of this sender device")
-        parser.add_argument('-c', '--change-name',
-                            type=str,
-                            help="Change name of this sender device")
-        parser.add_argument('-d', '--print-id',
-                            action='store_true',
-                            help="print current id (mac address)")
-        parser.add_argument('-a', '--association-code',
-                            action='store_true',
-                            help="prints association code")
-        parser.add_argument('-i', '--change-interval',
-                            type=int,
-                            help="Change the interval, in seconds, that data"
-                            " is sent")
-        args = parser.parse_args()
-        print(len(args))
-        metadata = get_or_create_metadata()
         if len(args) == 0:
             temp = get_cpu_temp()
             print(f"CPU Temp: {temp} °C")
