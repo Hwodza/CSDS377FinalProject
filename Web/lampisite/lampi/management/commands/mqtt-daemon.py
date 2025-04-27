@@ -1,4 +1,7 @@
 import re
+import json
+from datetime import datetime
+from django.utils import timezone
 from paho.mqtt.client import Client
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
@@ -9,7 +12,10 @@ from mixpanel import Mixpanel
 
 MQTT_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
                           r'(?P<device_id>[0-9a-f]*)_broker/state')
-
+MQTT_SENDER_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
+                                 r'(?P<device_id>[0-9a-f]*)_sender_broker/'
+                                 r'state')
+MQTT_SENDER_STATS_RE_PATTERN = r'senders\/(?P<device_id>[0-9a-f]*)\/stats\/'
 DEVICE_STATE_RE_PATTERN = r'devices\/(?P<device_id>[0-9a-f]*)\/lamp\/changed'
 
 
@@ -37,6 +43,9 @@ class Command(BaseCommand):
         self.client.message_callback_add('$SYS/broker/connection/+/state',
                                          self._monitor_broker_bridges)
         self.client.subscribe('$SYS/broker/connection/+/state')
+        self.client.message_callback_add('senders/+/sender/stats',
+                                         self._monitor_for_new_stats)
+        self.client.subscribe('senders/+/sender/stats')
         self.client.message_callback_add('devices/+/lamp/changed',
                                          self._monitor_lamp_state)
         self.client.subscribe('devices/+/lamp/changed')
@@ -47,33 +56,99 @@ class Command(BaseCommand):
         self.client.connect('localhost', port=50001)
         self.client.loop_forever()
 
+    def _monitor_for_new_stats(self, client, userdata, message):
+        print("RECV: '{}' on '{}'".format(message.payload, message.topic))
+        if message.payload == b'1':
+            # broker connected
+            results = re.search(MQTT_SENDER_STATS_RE_PATTERN,
+                                message.topic.lower())
+            device_id = results.group('device_id')
+            try:
+                device = SenderDevice.objects.get(device_id=device_id)
+
+                data = json.loads(message.payload.decode())
+
+                # Parse timestamp
+                timestamp = datetime.strptime(data['timestamp'],
+                                              '%Y-%m-%d %H:%M:%S')
+
+                # Create DeviceData entry
+                device_data = DeviceData.objects.create(
+                    device=device,
+                    timestamp=timestamp,
+                    kbmemfree=data['memory_stats']['kbmemfree'],
+                    kbmemused=data['memory_stats']['kbmemused'],
+                    memused_percent=data['memory_stats']['memused_percent'],
+                    cputemp=data['cpu_temp']
+                )
+
+                # Process disk stats
+                for disk in data['disk_stats']:
+                    DiskStats.objects.create(
+                        device_data=device_data,
+                        device=disk['device'],
+                        wait=disk['wait'],
+                        util=disk['util']
+                    )
+
+                # Process CPU loads
+                for core, load in enumerate(data['cpu_load']):
+                    CpuLoad.objects.create(
+                        device_data=device_data,
+                        core=core,
+                        load=load
+                    )
+
+                # Process network stats
+                for net in data['network_stats']:
+                    NetworkStats.objects.create(
+                        device_data=device_data,
+                        iface=net['iface'],
+                        rx_kb=net['rx_kb'],
+                        tx_kb=net['tx_kb']
+                    )
+
+                print(f"Processed data from {device_id} at {timestamp}")
+
+            except Exception as e:
+                print(f"Error processing message: {e}")
+
     def _monitor_for_new_devices(self, client, userdata, message):
         print("RECV: '{}' on '{}'".format(message.payload, message.topic))
         # message payload has to treated as type "bytes" in Python 3
         if message.payload == b'1':
             # broker connected
             results = re.search(MQTT_BROKER_RE_PATTERN, message.topic.lower())
-            device_id = results.group('device_id')
-            try:
-                device = Lampi.objects.get(device_id=device_id)
-                print("Found {}".format(device))
-            except Lampi.DoesNotExist:
-                # this is a new device - create new record for it
-                new_device = Lampi(device_id=device_id)
-                uname = settings.DEFAULT_USER
-                new_device.user = User.objects.get(username=uname)
-                new_device.save()
-                print("Created {}".format(new_device))
-                # send association MQTT message
-                new_device.publish_unassociated_msg()
-                # record a new activation
-                self.mp.track(new_device.user.username,
-                              "LAMPI Activation", {
-                                                   'event_type': 'activations',
-                                                   'interface': 'mqtt',
-                                                   'device_id': device_id
-                                                  }
-                              )
+            if results:
+                device_id = results.group('device_id')
+                try:
+                    device = Lampi.objects.get(device_id=device_id)
+                    print("Found {}".format(device))
+                except Lampi.DoesNotExist:
+                    # this is a new device - create new record for it
+                    new_device = Lampi(device_id=device_id)
+                    uname = settings.DEFAULT_USER
+                    new_device.user = User.objects.get(username=uname)
+                    new_device.save()
+                    print("Created {}".format(new_device))
+                    # send association MQTT message
+                    new_device.publish_unassociated_msg()
+            else:
+                results = re.search(MQTT_SENDER_BROKER_RE_PATTERN,
+                                    message.topic.lower())
+                device_id = results.group('device_id')
+                try:
+                    device = SenderDevice.objects.get(device_id=device_id)
+                    print("Found {}".format(device))
+                except SenderDevice.DoesNotExist:
+                    # this is a new device - create new record for it
+                    new_device = SenderDevice(device_id=device_id)
+                    uname = settings.DEFAULT_USER
+                    new_device.user = User.objects.get(username=uname)
+                    new_device.save()
+                    print("Created {}".format(new_device))
+                    # send association MQTT message
+                    new_device.publish_unassociated_msg()
 
     def _monitor_broker_bridges(self, client, userdata, message):
         self._monitor_for_new_devices(client, userdata, message)

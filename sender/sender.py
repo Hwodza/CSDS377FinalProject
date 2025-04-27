@@ -1,14 +1,16 @@
 import sqlite3
 import subprocess
 import json
+import os
 import paho.mqtt.client as mqtt
 import time
 import re
 import psutil
+import argparse
 
 db_path = "sysstat_data.db"
-mqtt_broker = "localhost"  # Change to your MQTT broker
-mqtt_topic = "sender/status"
+mqtt_broker = "localhost"
+mqtt_topic = "sender/stats"
 mqtt_port = 1883
 
 
@@ -114,7 +116,7 @@ def store_data(timestamp, kbmemfree, kbmemused, memused_percent, cputemp,
 def publish_data(data):
     client = mqtt.Client()
     client.connect(mqtt_broker, mqtt_port, 60)
-    client.publish(mqtt_topic, json.dumps(data))
+    client.publish(mqtt_topic, json.dumps(data), qos=1)
     client.disconnect()
 
 
@@ -257,33 +259,85 @@ def get_network_stats():
         return {'error': str(e)}
 
 
+def get_or_create_metadata():
+    # Define the file path for the metadata.json file
+    metadata_file = os.path.join(os.path.dirname(__file__), 'metadata.json')
+
+    # Default metadata
+    default_metadata = {
+        "device_name": "default_device",
+        "device_address": "5c3a45d9ca63",
+        "interval": 3,
+    }
+
+    # Check if the file exists
+    if os.path.exists(metadata_file):
+        try:
+            # Load and return the metadata from the file
+            with open(metadata_file, 'r') as file:
+                metadata = json.load(file)
+                return metadata
+        except json.JSONDecodeError:
+            print("Error: metadata.json is corrupted. Recreating with default "
+                  "data.")
+
+    # If the file does not exist or is corrupted, create it with default data
+    with open(metadata_file, 'w') as file:
+        json.dump(default_metadata, file, indent=4)
+        print("metadata.json created with default data.")
+
+    return default_metadata
+
+
 def main():
     init_db()
+    parser = argparse.ArgumentParser(description="System Stats Sender")
+    parser.add_argument('-n', '--name',
+                        type=str,
+                        help="Name of this sender device")
+    parser.add_argument('-c', '--change-name',
+                        type=str,
+                        help="Change name of this sender device")
+    parser.add_argument('-d', '--print-id',
+                        action='store_true',
+                        help="print current id (mac address)")
+    parser.add_argument('-a', '--association-code',
+                        action='store_true',
+                        help="prints association code")
+    parser.add_argument('-i', '--change-interval',
+                        type=int,
+                        help="Change the interval, in seconds, that data"
+                        " is sent")
+    args = parser.parse_args()
+    print(args)
+    metadata = get_or_create_metadata()
     while True:
-        # data = collect_sysstat()
-        temp = get_cpu_temp()
-        print(f"CPU Temp: {temp} °C")
-        cpu_load = get_per_cpu_load()
-        print(f"CPU Load: {cpu_load}")
-        memory_stats = get_memory_stats()
-        print("Memory Stats: ", memory_stats)
-        disk_stats = monitor_disk()
-        print("Disk Stats: ", disk_stats)
-        network_stats = get_network_stats()
-        print("Network Stats: ", network_stats)
-        timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
-        store_data(timestamp, memory_stats['kbmemfree'],
-                   memory_stats['kbmemused'], memory_stats['memused_percent'],
-                   temp, disk_stats, cpu_load, network_stats)
-        publish_data({
-            "timestamp": timestamp,
-            "cpu_temp": temp,
-            "cpu_load": cpu_load,
-            "memory_stats": memory_stats,
-            "disk_stats": disk_stats,
-            "network_stats": network_stats
-        })
-        time.sleep(3)  # Adjust the interval as needed
+        if args:
+            temp = get_cpu_temp()
+            print(f"CPU Temp: {temp} °C")
+            cpu_load = get_per_cpu_load()
+            print(f"CPU Load: {cpu_load}")
+            memory_stats = get_memory_stats()
+            print("Memory Stats: ", memory_stats)
+            disk_stats = monitor_disk()
+            print("Disk Stats: ", disk_stats)
+            network_stats = get_network_stats()
+            print("Network Stats: ", network_stats)
+            timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+            store_data(timestamp, memory_stats['kbmemfree'],
+                       memory_stats['kbmemused'],
+                       memory_stats['memused_percent'],
+                       temp, disk_stats, cpu_load, network_stats)
+            publish_data({
+                "device_name": metadata['device_name'],
+                "timestamp": timestamp,
+                "cpu_temp": temp,
+                "cpu_load": cpu_load,
+                "memory_stats": memory_stats,
+                "disk_stats": disk_stats,
+                "network_stats": network_stats
+            })
+            time.sleep(3)  # Adjust the interval as needed
 
 
 if __name__ == "__main__":
