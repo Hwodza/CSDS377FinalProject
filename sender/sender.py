@@ -278,13 +278,14 @@ def get_or_create_metadata():
                 metadata = json.load(file)
                 return metadata
         except json.JSONDecodeError:
-            print("Error: metadata.json is corrupted. Recreating with default data.")
-    
+            print("Error: metadata.json is corrupted. Recreating with default "
+                  "data.")
+
     # If the file does not exist or is corrupted, create it with default data
     with open(metadata_file, 'w') as file:
         json.dump(default_metadata, file, indent=4)
         print("metadata.json created with default data.")
-    
+
     return default_metadata
 
 

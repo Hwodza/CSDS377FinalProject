@@ -18,10 +18,17 @@ class Migration(migrations.Migration):
             name='SenderDevice',
             fields=[
                 ('name', models.CharField(default='My Sender', max_length=50)),
-                ('device_id', models.CharField(db_index=True, max_length=12, primary_key=True, serialize=False)),
-                ('association_code', models.CharField(default=lampi.models.generate_association_code, max_length=32, unique=True)),
+                ('device_id', models.CharField(db_index=True, max_length=12,
+                                               primary_key=True,
+                                               serialize=False)),
+                ('association_code',
+                 models.CharField(
+                     default=lampi.models.generate_association_code,
+                     max_length=32, unique=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=models.SET(lampi.models.get_parked_user), to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(
+                    on_delete=models.SET(lampi.models.get_parked_user),
+                    to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -33,7 +40,9 @@ class Migration(migrations.Migration):
                 ('kbmemused', models.IntegerField()),
                 ('memused_percent', models.FloatField()),
                 ('cputemp', models.FloatField()),
-                ('device', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='device_data', to='lampi.senderdevice')),
+                ('device', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='device_data', to='lampi.senderdevice')),
             ],
             options={
                 'ordering': ['-timestamp'],
@@ -46,7 +55,9 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(primary_key=True, serialize=False)),
                 ('core', models.IntegerField()),
                 ('load', models.FloatField()),
-                ('device_data', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cpu_loads', to='lampi.devicedata')),
+                ('device_data', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='cpu_loads', to='lampi.devicedata')),
             ],
             options={
                 'unique_together': {('device_data', 'core')},
@@ -59,7 +70,9 @@ class Migration(migrations.Migration):
                 ('device', models.CharField(max_length=100)),
                 ('wait', models.FloatField()),
                 ('util', models.FloatField()),
-                ('device_data', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='disk_stats', to='lampi.devicedata')),
+                ('device_data', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='disk_stats', to='lampi.devicedata')),
             ],
             options={
                 'unique_together': {('device_data', 'device')},
@@ -72,7 +85,9 @@ class Migration(migrations.Migration):
                 ('iface', models.CharField(max_length=50)),
                 ('rx_kb', models.FloatField()),
                 ('tx_kb', models.FloatField()),
-                ('device_data', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='network_stats', to='lampi.devicedata')),
+                ('device_data', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='network_stats', to='lampi.devicedata')),
             ],
             options={
                 'unique_together': {('device_data', 'iface')},

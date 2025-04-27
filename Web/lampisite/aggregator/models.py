@@ -30,7 +30,7 @@ class SenderDevice(models.Model):
 
     def __str__(self):
         return "{}: {}".format(self.device_id, self.name)
-    
+
     def _generate_device_association_topic(self):
         return 'senders/{}/sender/associated'.format(self.device_id)
 
@@ -122,7 +122,7 @@ class NetworkStats(models.Model):
     iface = models.CharField(max_length=50)
     rx_kb = models.FloatField()
     tx_kb = models.FloatField()
-    
+
     class Meta:
         # Composite primary key
         unique_together = ('device_data', 'iface')

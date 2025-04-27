@@ -67,11 +67,11 @@ class Command(BaseCommand):
                 device = SenderDevice.objects.get(device_id=device_id)
 
                 data = json.loads(message.payload.decode())
-                
+
                 # Parse timestamp
                 timestamp = datetime.strptime(data['timestamp'],
                                               '%Y-%m-%d %H:%M:%S')
-                
+
                 # Create DeviceData entry
                 device_data = DeviceData.objects.create(
                     device=device,
@@ -81,7 +81,7 @@ class Command(BaseCommand):
                     memused_percent=data['memory_stats']['memused_percent'],
                     cputemp=data['cpu_temp']
                 )
-                
+
                 # Process disk stats
                 for disk in data['disk_stats']:
                     DiskStats.objects.create(
@@ -90,7 +90,7 @@ class Command(BaseCommand):
                         wait=disk['wait'],
                         util=disk['util']
                     )
-                
+
                 # Process CPU loads
                 for core, load in enumerate(data['cpu_load']):
                     CpuLoad.objects.create(
@@ -98,7 +98,7 @@ class Command(BaseCommand):
                         core=core,
                         load=load
                     )
-                
+
                 # Process network stats
                 for net in data['network_stats']:
                     NetworkStats.objects.create(
@@ -107,9 +107,9 @@ class Command(BaseCommand):
                         rx_kb=net['rx_kb'],
                         tx_kb=net['tx_kb']
                     )
-                
+
                 print(f"Processed data from {device_id} at {timestamp}")
-            
+
             except Exception as e:
                 print(f"Error processing message: {e}")
 
@@ -149,7 +149,7 @@ class Command(BaseCommand):
                     print("Created {}".format(new_device))
                     # send association MQTT message
                     new_device.publish_unassociated_msg()
-                    
+
     def _monitor_broker_bridges(self, client, userdata, message):
         self._monitor_for_new_devices(client, userdata, message)
         self._monitor_for_connection_events(client, userdata, message)
