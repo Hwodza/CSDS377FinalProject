@@ -113,6 +113,7 @@ class SenderDevice(models.Model):
 
 
 class DeviceData(models.Model):
+    id = models.BigAutoField(primary_key=True)
     device = models.ForeignKey(SenderDevice,
                                on_delete=models.CASCADE,
                                related_name='device_data')
@@ -132,6 +133,7 @@ class DeviceData(models.Model):
 
 
 class DiskStats(models.Model):
+    id = models.BigAutoField(primary_key=True)
     device_data = models.ForeignKey(DeviceData,
                                     on_delete=models.CASCADE,
                                     related_name='disk_stats')
@@ -148,6 +150,7 @@ class DiskStats(models.Model):
 
 
 class CpuLoad(models.Model):
+    id = models.BigAutoField(primary_key=True)
     device_data = models.ForeignKey(DeviceData,
                                     on_delete=models.CASCADE,
                                     related_name='cpu_loads')
@@ -163,6 +166,7 @@ class CpuLoad(models.Model):
 
 
 class NetworkStats(models.Model):
+    id = models.BigAutoField(primary_key=True)
     device_data = models.ForeignKey(DeviceData,
                                     on_delete=models.CASCADE,
                                     related_name='network_stats')
