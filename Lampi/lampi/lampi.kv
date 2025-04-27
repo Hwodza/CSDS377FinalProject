@@ -7,54 +7,141 @@
 #:include lampi/controls/color_box.kv
 #:include lampi/colors.kv
 
-BoxLayout:
-  canvas.before:
-    Color:
-      rgba: offwhite
-    Rectangle:
-      pos: self.pos
-      size: self.size
-  orientation: 'vertical'
-  BoxLayout:
-    orientation: 'vertical'
-    padding: 30
-    size_hint_y: 0.66
-    # hue
-    GradientSlider:
-      id: hue_slider
-      size_hint_y: 0.33
-      colors: red, yellow, green, cyan, blue, magenta, red
-      value: app.hue
-      on_value: app.hue = self.value_normalized
-    # saturation
-    GradientSlider:
-      id: saturation_slider
-      size_hint_y: 0.33
-      colors: white, hsv_to_rgb(app.hue, 1.0, 1.0)
-      value: app.saturation
-      on_value: app.saturation = self.value_normalized
-    # brightness
-    GradientSlider:
-      id: brightness
-      size_hint_y: 0.33
-      colors: (0, 0, 0, 1), (1, 1, 1, 1)
-      thumb_image_light: 'images/brightness_icon_light_small.png'
-      thumb_image_dark: 'images/brightness_icon_dark_small.png'
-      value: app.brightness
-      on_value: app.brightness = self.value_normalized
-  BoxLayout:
-    orientation: 'vertical'
-    size_hint_y: 0.33
-    ColorBox:
-      id: button_hue
-      size_hint_y: 0.1
-      color: hsv_to_rgb(app.hue, app.saturation, 1.0)
-    LampiToggle:
-      id: button_onoff
-      size_hint_y: 0.90
-      image: 'images/power_icon_light.png'
-      accent_color: hsv_to_rgb(hue_slider.value, saturation_slider.value, 1.0)
-      text: ''
-      state: 'down' if app.lamp_is_on else 'normal'
-      on_state:  app.lamp_is_on = True if self.state == 'down' else False
+ScreenManager:
+    MainScreen:
+    SecondScreen:
 
+<MainScreen>:
+    BoxLayout:
+        canvas.before:
+            Color:
+                rgba: offwhite
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 30
+            size_hint_y: 0.66
+            # hue
+            GradientSlider:
+                id: hue_slider
+                size_hint_y: 0.33
+                colors: red, yellow, green, cyan, blue, magenta, red
+                value: app.hue
+                on_value: app.hue = self.value_normalized
+            # saturation
+            GradientSlider:
+                id: saturation_slider
+                size_hint_y: 0.33
+                colors: white, hsv_to_rgb(app.hue, 1.0, 1.0)
+                value: app.saturation
+                on_value: app.saturation = self.value_normalized
+            # brightness
+            GradientSlider:
+                id: brightness
+                size_hint_y: 0.33
+                colors: (0, 0, 0, 1), (1, 1, 1, 1)
+                thumb_image_light: 'images/brightness_icon_light_small.png'
+                thumb_image_dark: 'images/brightness_icon_dark_small.png'
+                value: app.brightness
+                on_value: app.brightness = self.value_normalized
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.33
+            
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            ColorBox:
+                id: button_hue
+                size_hint_y: 0.1
+                color: hsv_to_rgb(app.hue, app.saturation, 1.0)
+            
+            FloatLayout:
+                size_hint_y: 0.90
+                
+                LampiToggle:
+                    id: button_onoff
+                    size_hint: (None, None)
+                    size: (min(self.parent.width, self.parent.height), min(self.parent.width, self.parent.height))
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    image: 'images/power_icon_light.png'
+                    accent_color: hsv_to_rgb(hue_slider.value, saturation_slider.value, 1.0)
+                    text: ''
+                    state: 'down' if app.lamp_is_on else 'normal'
+                    on_state: app.lamp_is_on = True if self.state == 'down' else False
+                
+                Button:
+                    size_hint: (None, None)
+                    pos_hint: {'right': 0.95, 'center_y': 0.5}
+                    size: (60, 60)
+                    background_normal: ''
+                    background_down: ''
+                    background_color: 0, 0, 0, 0
+                    on_press: app.screen_manager.current = "second"  
+                    
+                    Image:
+                        source: 'images/menu_icon.png'
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+                        size: 60, 60
+            
+
+<SecondScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            id: title_label
+            text: "Device List"
+            font_size: '20sp'
+            size_hint_y: None
+            height: self.texture_size[1] + 20
+
+        ScrollView:
+            size_hint_y: 1
+            do_scroll_x: False
+
+            GridLayout:
+                id: device_list
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 50
+                row_force_default: True
+
+        FloatLayout:
+            size_hint_y: .1
+            height: 50 
+            Button:
+                id: return_button
+                pos_hint: {'x': 0, 'y': 0}
+                text: '' 
+                size_hint: (None, None)
+                background_normal: ''
+                background_down: ''
+                background_color: 0, 0, 0, 0
+                size: (60, 60)
+                on_press: app.screen_manager.current = "main"
+                
+                Image:
+                    source: 'images/home.png'
+                    size: 60, 60
+
+<DeviceBox>:
+    size_hint_y: None
+    height: 50
+    padding: 0
+    device_name: ''
+    message: ''
+    Label:
+        text: root.device_name
+        size_hint_x: 0.3
+    Label:
+        text: root.message
+        size_hint_x: 0.7

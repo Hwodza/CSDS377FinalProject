@@ -21,6 +21,7 @@ def on_message(client, userdata, msg):
         topic=msg.topic,
         payload=msg.payload.decode()
     )
+    client.publish("devices/b827ebdb1727/sender/Laptop", msg.payload)
 
 
 def start_mqtt():
@@ -29,7 +30,7 @@ def start_mqtt():
         client.on_connect = on_connect
         client.on_message = on_message
 
-        client.connect("localhost", 50001, 60)
+        client.connect("localhost", port=50001)
         client.loop_forever()
 
     thread = threading.Thread(target=run, daemon=True)

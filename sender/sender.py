@@ -15,7 +15,7 @@ mqtt_port = 1883
 def init_db():
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    
+
     # Enable foreign key constraints
     cursor.execute("PRAGMA foreign_keys = ON;")
 
@@ -59,7 +59,7 @@ def init_db():
             timestamp TEXT,
             iface TEXT,
             rx_kb REAL,
-            tx_db REAL,
+            tx_kb REAL,
             PRIMARY KEY (timestamp, iface),
             FOREIGN KEY (timestamp) REFERENCES main_stats(timestamp)
         )
@@ -68,39 +68,8 @@ def init_db():
     conn.close()
 
 
-def collect_sysstat():
-    timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
-    
-    # CPU Usage
-    cpu_usage = float(subprocess.getoutput("sar 1 1 | grep 'Average' | awk '{print 100 - $NF}'"))
-    
-    # Memory Usage
-    mem_data = subprocess.getoutput("free -m | awk 'NR==2{printf \"%s\", $3*100/$2 }'")
-    memory_usage = float(mem_data)
-    
-    # Disk Usage
-    disk_data = subprocess.getoutput("df --output=pcent / | tail -1 | tr -d '%'")
-    disk_usage = float(disk_data)
-    
-    # Network Usage
-    net_data = subprocess.getoutput("sar -n DEV 1 1 | grep 'Average.*eth0' | awk '{print $5, $6}'")
-    try:
-        network_rx, network_tx = map(float, net_data.split())
-    except ValueError:
-        # Default to 0.0 if parsing fails
-        network_rx, network_tx = 0.0, 0.0
-    
-    return {
-        "timestamp": timestamp,
-        "cpu_usage": cpu_usage,
-        "memory_usage": memory_usage,
-        "disk_usage": disk_usage,
-        "network_rx": network_rx,
-        "network_tx": network_tx
-    }
-
-
-def store_data(timestamp, kbmemfree, kbmemused, memused_percent, cputemp, disk_stats, cpu_loads, network_stats):
+def store_data(timestamp, kbmemfree, kbmemused, memused_percent, cputemp,
+               disk_stats, cpu_loads, network_stats):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("PRAGMA foreign_keys = ON;")
@@ -108,7 +77,8 @@ def store_data(timestamp, kbmemfree, kbmemused, memused_percent, cputemp, disk_s
     try:
         # Insert into main_stats
         cursor.execute("""
-            INSERT INTO main_stats (timestamp, kbmemfree, kbmemused, memused_percent, cputemp)
+            INSERT INTO main_stats (timestamp, kbmemfree, kbmemused,
+                       memused_percent, cputemp)
             VALUES (?, ?, ?, ?, ?)
         """, (timestamp, kbmemfree, kbmemused, memused_percent, cputemp))
 
@@ -129,9 +99,9 @@ def store_data(timestamp, kbmemfree, kbmemused, memused_percent, cputemp, disk_s
         # Insert into network_stats
         for entry in network_stats:
             cursor.execute("""
-                INSERT INTO network_stats (timestamp, iface, rx_kb, tx_db)
+                INSERT INTO network_stats (timestamp, iface, rx_kb, tx_kb)
                 VALUES (?, ?, ?, ?)
-            """, (timestamp, entry['iface'], entry['rx_kb'], entry['tx_db']))
+            """, (timestamp, entry['iface'], entry['rx_kb'], entry['tx_kb']))
 
         conn.commit()
         print(f"Inserted system stats for timestamp {timestamp}")
@@ -186,7 +156,9 @@ def get_per_cpu_load(interval=1):
 def get_memory_stats():
     try:
         # Run the sar command
-        result = subprocess.run(['sar', '-r', '1', '1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(['sar', '-r', '1', '1'],
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                text=True)
 
         if result.returncode != 0:
             print("Error running sar:", result.stderr)
@@ -196,11 +168,11 @@ def get_memory_stats():
 
         for line in lines:
             parts = line.split()
-            if len(parts) >= 5 and parts[1].isdigit():  # Only process valid data lines
+            if len(parts) >= 5 and parts[1].isdigit():
                 return {
                     'kbmemfree': int(parts[1]),
-                    'kbmemused': int(parts[2]),
-                    'memused_percent': float(parts[3])
+                    'kbmemused': int(parts[3]),
+                    'memused_percent': float(parts[4])
                 }
 
         print("No valid memory data found.")
@@ -241,7 +213,9 @@ def parse_iostat_output(output):
 
 
 def monitor_disk():
-    result = subprocess.run(['iostat', '-dx', '1', '2'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    result = subprocess.run(['iostat', '-dx', '1', '1'],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            text=True)
     output = result.stdout
     stats = parse_iostat_output(output)
     return stats
@@ -250,7 +224,8 @@ def monitor_disk():
 def get_network_stats():
     try:
         # Run the sar command to get network stats (1 second sample)
-        result = subprocess.run(['sar', '-n', 'DEV', '1', '1'], capture_output=True, text=True, check=True)
+        result = subprocess.run(['sar', '-n', 'DEV', '1', '1'],
+                                capture_output=True, text=True, check=True)
         lines = result.stdout.strip().split('\n')
 
         # Find the header and data lines
@@ -261,7 +236,10 @@ def get_network_stats():
                 headers = line.split()
             elif line and line[0].isdigit():  # Skip timestamped lines
                 continue
-            elif any(dev in line for dev in ['eth', 'en', 'wl', 'lo']) and line.startswith("Average"):
+            elif (
+                any(dev in line for dev in ['eth', 'en', 'wl', 'lo'])
+                and line.startswith("Average")
+            ):
                 # print(line)  # common interface prefixes
                 data_lines.append(line.split())
 
@@ -294,8 +272,9 @@ def main():
         network_stats = get_network_stats()
         print("Network Stats: ", network_stats)
         timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
-        store_data(timestamp, memory_stats['kbmemfree'], memory_stats['kbmemused'],
-                   memory_stats['memused_percent'], temp, disk_stats, cpu_load, network_stats)
+        store_data(timestamp, memory_stats['kbmemfree'],
+                   memory_stats['kbmemused'], memory_stats['memused_percent'],
+                   temp, disk_stats, cpu_load, network_stats)
         publish_data({
             "timestamp": timestamp,
             "cpu_temp": temp,
@@ -309,4 +288,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

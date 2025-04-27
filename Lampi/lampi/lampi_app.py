@@ -3,16 +3,21 @@ import os
 import pigpio
 
 from kivy.app import App
-from kivy.properties import NumericProperty, AliasProperty, BooleanProperty
+from kivy.properties import NumericProperty, AliasProperty, BooleanProperty, \
+    StringProperty
 from kivy.clock import Clock
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.label import Label
+
 from paho.mqtt.client import Client
 
 from lamp_common import *
 import lampi.lampi_util
 from mixpanel import Mixpanel, BufferedConsumer
-
 
 MQTT_CLIENT_ID = "lamp_ui"
 
@@ -30,6 +35,45 @@ except IOError:
     LAMPI_APP_VERSION = 'Unknown'
 
 
+class DeviceBox(BoxLayout):
+    device_name = StringProperty("")
+    message = StringProperty("")
+
+
+class MainScreen(Screen):
+    pass
+
+
+class SecondScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.devices = {}
+
+    def update_device_message(self, device_name, message):
+        """Update the message for a specific device in the UI."""
+        try:
+            # Extract CPU and memory usage if available
+            shortened_message = (
+                f"CPU: {message['cpu_temp']}, "
+                f"MEM: {message['memory_stats']['memused_percent']}%"
+            )
+        except KeyError as e:
+            # Print the error if the keys are missing
+            print(f"Error extracting values for device '{device_name}': {e}")
+            # Fallback to string representation of the message
+            shortened_message = str(message)
+
+        if device_name not in self.devices:
+            # Create a new DeviceBox if it doesn't exist
+            device_box = DeviceBox(device_name=device_name,
+                                   message=shortened_message)
+            self.devices[device_name] = device_box
+            self.ids.device_list.add_widget(device_box)  # Add to the UI
+        else:
+            # Update the existing DeviceBox
+            self.devices[device_name].message = shortened_message
+
+
 class LampiApp(App):
     _updated = False
     _updating_ui = False
@@ -39,6 +83,14 @@ class LampiApp(App):
     lamp_is_on = BooleanProperty()
 
     mp = Mixpanel(MIXPANEL_TOKEN, consumer=BufferedConsumer(max_size=5))
+
+    def build(self):
+        self.screen_manager = ScreenManager()
+        self.main_screen = MainScreen(name="main")
+        self.second_screen = SecondScreen(name="second")
+        self.screen_manager.add_widget(self.main_screen)
+        self.screen_manager.add_widget(self.second_screen)
+        return self.screen_manager
 
     def _get_hue(self):
         return self._hue
@@ -142,9 +194,12 @@ class LampiApp(App):
                                        self.receive_bridge_connection_status)
         self.mqtt.message_callback_add(TOPIC_LAMP_ASSOCIATED,
                                        self.receive_associated)
+        self.mqtt.message_callback_add("sender/#",
+                                       self.receive_sender_messages)
         self.mqtt.subscribe(broker_bridge_connection_topic(), qos=1)
         self.mqtt.subscribe(TOPIC_LAMP_CHANGE_NOTIFICATION, qos=1)
         self.mqtt.subscribe(TOPIC_LAMP_ASSOCIATED, qos=2)
+        self.mqtt.subscribe("sender/#", qos=1)
 
     def _poll_associated(self, dt):
         # this polling loop allows us to synchronize changes from the
@@ -175,6 +230,18 @@ class LampiApp(App):
                                  "to associate\n"
                                  "your device\n"
                                  f"on the Web\n{code}")
+
+    def receive_sender_messages(self, client, userdata, message):
+        """Handle messages from devices on the topic sender/{devicename}."""
+        topic_parts = message.topic.split('/')
+        if len(topic_parts) == 2 and topic_parts[0] == "sender":
+            device_name = topic_parts[1]
+            payload = json.loads(message.payload.decode('utf-8'))
+            second_screen = self.screen_manager.get_screen("second")
+            # Schedule the UI update on the main thread
+            Clock.schedule_once(
+                lambda dt: second_screen.update_device_message(
+                    device_name, payload))
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
