@@ -1,5 +1,253 @@
 {% extends "lampi/base.html" %}
 
-<h1>Hello Sender Detail View</h1>
+{% block content %}
+<div class="container">
+    <h2 class="my-4">{{ device.name }} - Device Dashboard</h2>
+    
+    <!-- Current Stats Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Current System Status</h3>
+        </div>
+        <div class="card-body">
+            {% if current_stats %}
+            <div class="row">
+                <!-- Memory Stats -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            Memory Usage
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Free:</strong> {{ current_stats.kbmemfree|floatformat:"0" }} KB</p>
+                            <p><strong>Used:</strong> {{ current_stats.kbmemused|floatformat:"0" }} KB</p>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ current_stats.memused_percent }}%" 
+                                     aria-valuenow="{{ current_stats.memused_percent }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    {{ current_stats.memused_percent|floatformat:"1" }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CPU Stats -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-danger text-white">
+                            CPU Status
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Temperature:</strong> {{ current_stats.cputemp|floatformat:"1" }}°C</p>
+                            <h5>Core Loads:</h5>
+                            <ul class="list-group">
+                                {% for core in chart_data.cpu_loads %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Core {{ core.core }}
+                                    <span class="badge bg-primary rounded-pill">{{ core.load|floatformat:"2" }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Disk/Network Stats -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            Disk & Network
+                        </div>
+                        <div class="card-body">
+                            <h5>Disk Utilization:</h5>
+                            <ul class="list-group mb-3">
+                                {% for disk in chart_data.disk_stats %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ disk.device }}
+                                    <span class="badge bg-warning text-dark rounded-pill">{{ disk.util|floatformat:"1" }}%</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            
+                            <h5>Network Throughput:</h5>
+                            <ul class="list-group">
+                                {% for net in chart_data.network_stats %}
+                                <li class="list-group-item">
+                                    <strong>{{ net.iface }}</strong><br>
+                                    RX: {{ net.rx_kb|floatformat:"2" }} KB/s<br>
+                                    TX: {{ net.tx_kb|floatformat:"2" }} KB/s
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">No statistics available for this device.</div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Charts Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Performance History (Last 24 Hours)</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <h4>Memory Usage</h4>
+                        <canvas id="memoryChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <h4>CPU Temperature</h4>
+                        <canvas id="cpuTempChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+
+<script>
+// Initialize charts when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    {% if current_stats %}
+    // Memory Chart
+    const memoryCtx = document.getElementById('memoryChart').getContext('2d');
+    new Chart(memoryCtx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_data.timestamps|safe }},
+            datasets: [
+                {
+                    label: 'Memory Free (KB)',
+                    data: {{ chart_data.memory_data.free|safe }},
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    tension: 0.3,
+                    borderWidth: 2
+                },
+                {
+                    label: 'Memory Used (KB)',
+                    data: {{ chart_data.memory_data.used|safe }},
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    tension: 0.3,
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        tooltipFormat: 'MMM D, h:mm a',
+                        unit: 'hour'
+                    },
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Kilobytes (KB)'
+                    }
+                }
+            }
+        }
+    });
+
+    // CPU Temperature Chart
+    const cpuTempCtx = document.getElementById('cpuTempChart').getContext('2d');
+    new Chart(cpuTempCtx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_data.timestamps|safe }},
+            datasets: [{
+                label: 'CPU Temperature (°C)',
+                data: {{ chart_data.cpu_temp|safe }},
+                borderColor: 'rgba(255, 159, 64, 1)',
+                backgroundColor: 'rgba(255, 159, 64, 0.1)',
+                tension: 0.3,
+                borderWidth: 2,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        tooltipFormat: 'MMM D, h:mm a',
+                        unit: 'hour'
+                    },
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Temperature (°C)'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
+<style>
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 20px;
+}
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+.card-header {
+    font-weight: 500;
+}
+.progress {
+    height: 25px;
+}
+.progress-bar {
+    font-size: 0.9rem;
+    line-height: 25px;
+}
+</style>
+{% endblock %}
 
 {% block page_event %}LAMPI List{% endblock %}
