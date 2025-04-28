@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: {{ chart_data.memory_data.free|safe }},
                     borderColor: 'rgba(54, 162, 235, 1)',
                     backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                    tension: 0.3,
+                    tension: 0.0,
                     borderWidth: 2
                 },
                 {
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 data: {{ chart_data.cpu_temp|safe }},
                 borderColor: 'rgba(255, 159, 64, 1)',
                 backgroundColor: 'rgba(255, 159, 64, 0.1)',
-                tension: 0.3,
+                tension: 0.0,
                 borderWidth: 2,
                 fill: true
             }]
