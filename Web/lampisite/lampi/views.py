@@ -76,16 +76,6 @@ class AddSenderView(LoginRequiredMixin, generic.FormView):
         return super(AddSenderView, self).form_valid(form)
 
 
-# class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
-#     template_name = 'lampi/sender_detail.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super(SenderDetailView, self).get_context_data(**kwargs)
-#         context['device'] = get_object_or_404(
-#             SenderDevice, pk=kwargs['device_id'], user=self.request.user)
-#         context['MIXPANEL_TOKEN'] = settings.MIXPANEL_TOKEN
-#         return context
-
 class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'lampi/senderdetail.html'
 

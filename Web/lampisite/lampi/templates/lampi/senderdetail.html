@@ -1,114 +1,188 @@
 {% extends "lampi/base.html" %}
 
 {% block content %}
-<div class="container">
+<div class="container-fluid">
     <h2 class="my-4">{{ device.name }} - Device Dashboard</h2>
     
-    <!-- Current Stats Section -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>Current System Status</h3>
-        </div>
-        <div class="card-body">
-            {% if current_stats %}
-            <div class="row">
-                <!-- Memory Stats -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            Memory Usage
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Free:</strong> {{ current_stats.kbmemfree|floatformat:"0" }} KB</p>
-                            <p><strong>Used:</strong> {{ current_stats.kbmemused|floatformat:"0" }} KB</p>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" 
-                                     style="width: {{ current_stats.memused_percent }}%" 
-                                     aria-valuenow="{{ current_stats.memused_percent }}" 
-                                     aria-valuemin="0" 
-                                     aria-valuemax="100">
-                                    {{ current_stats.memused_percent|floatformat:"1" }}%
-                                </div>
+    <!-- Current Stats Grid -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+        <!-- Memory Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Memory Usage</h5>
+                </div>
+                <div class="card-body">
+                    {% if current_stats %}
+                    <div class="mb-3">
+                        <p class="mb-1"><strong>Free:</strong> {{ current_stats.kbmemfree|floatformat:"0" }} KB</p>
+                        <p class="mb-1"><strong>Used:</strong> {{ current_stats.kbmemused|floatformat:"0" }} KB</p>
+                        <div class="progress mt-2" style="height: 25px;">
+                            <div class="progress-bar progress-bar-striped" role="progressbar" 
+                                 style="width: {{ current_stats.memused_percent }}%" 
+                                 aria-valuenow="{{ current_stats.memused_percent }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ current_stats.memused_percent|floatformat:"1" }}%
                             </div>
                         </div>
                     </div>
+                    <div class="chart-container-sm">
+                        <canvas id="memoryHistoryChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mb-0">No memory data available</div>
+                    {% endif %}
                 </div>
-                
-                <!-- CPU Stats -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header bg-danger text-white">
-                            CPU Status
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Temperature:</strong> {{ current_stats.cputemp|floatformat:"1" }}°C</p>
-                            <h5>Core Loads:</h5>
-                            <ul class="list-group">
-                                {% for core in chart_data.cpu_loads %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Core {{ core.core }}
-                                    <span class="badge bg-primary rounded-pill">{{ core.load|floatformat:"2" }}</span>
-                                </li>
-                                {% endfor %}
-                            </ul>
+            </div>
+        </div>
+        
+        <!-- CPU Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">CPU Status</h5>
+                </div>
+                <div class="card-body">
+                    {% if current_stats %}
+                    <div class="mb-3">
+                        <p class="mb-1"><strong>Temperature:</strong> {{ current_stats.cputemp|floatformat:"1" }}°C</p>
+                        <div class="row mt-2">
+                            {% for core in chart_data.cpu_loads %}
+                            <div class="col-6 mb-2">
+                                <small>Core {{ core.core }}</small>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-info" role="progressbar" 
+                                         style="width: {{ core.load|multiply:100 }}%" 
+                                         aria-valuenow="{{ core.load|multiply:100 }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        {{ core.load|floatformat:"2" }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
+                    <div class="chart-container-sm">
+                        <canvas id="cpuHistoryChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mb-0">No CPU data available</div>
+                    {% endif %}
                 </div>
-                
-                <!-- Disk/Network Stats -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header bg-success text-white">
-                            Disk & Network
+            </div>
+        </div>
+        
+        <!-- Disk Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Disk Utilization</h5>
+                </div>
+                <div class="card-body">
+                    {% if chart_data.disk_stats %}
+                    <div class="mb-3">
+                        {% for disk in chart_data.disk_stats %}
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ disk.device }}</span>
+                                <span>{{ disk.util|floatformat:"1" }}%</span>
+                            </div>
+                            <div class="progress" style="height: 15px;">
+                                <div class="progress-bar bg-warning" role="progressbar" 
+                                     style="width: {{ disk.util }}%" 
+                                     aria-valuenow="{{ disk.util }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                            <small class="text-muted">Wait: {{ disk.wait|floatformat:"2 }}ms</small>
                         </div>
-                        <div class="card-body">
-                            <h5>Disk Utilization:</h5>
-                            <ul class="list-group mb-3">
-                                {% for disk in chart_data.disk_stats %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    {{ disk.device }}
-                                    <span class="badge bg-warning text-dark rounded-pill">{{ disk.util|floatformat:"1" }}%</span>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                            
-                            <h5>Network Throughput:</h5>
-                            <ul class="list-group">
-                                {% for net in chart_data.network_stats %}
-                                <li class="list-group-item">
-                                    <strong>{{ net.iface }}</strong><br>
-                                    RX: {{ net.rx_kb|floatformat:"2" }} KB/s<br>
-                                    TX: {{ net.tx_kb|floatformat:"2" }} KB/s
-                                </li>
-                                {% endfor %}
-                            </ul>
+                        {% endfor %}
+                    </div>
+                    <div class="chart-container-sm">
+                        <canvas id="diskHistoryChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mb-0">No disk data available</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Network Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Network Throughput</h5>
+                </div>
+                <div class="card-body">
+                    {% if chart_data.network_stats %}
+                    <div class="mb-3">
+                        {% for net in chart_data.network_stats %}
+                        <div class="mb-3">
+                            <h6>{{ net.iface }}</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small>RX: {{ net.rx_kb|floatformat:"2" }} KB/s</small>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                             style="width: {{ net.rx_kb|normalize_network:100 }}%" 
+                                             aria-valuenow="{{ net.rx_kb }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <small>TX: {{ net.tx_kb|floatformat:"2" }} KB/s</small>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" 
+                                             style="width: {{ net.tx_kb|normalize_network:100 }}%" 
+                                             aria-valuenow="{{ net.tx_kb }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        {% endfor %}
+                    </div>
+                    <div class="chart-container-sm">
+                        <canvas id="networkHistoryChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mb-0">No network data available</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Memory Details Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header bg-purple text-white">
+                    <h5 class="card-title mb-0">Memory Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="memoryDetailChart"></canvas>
                     </div>
                 </div>
             </div>
-            {% else %}
-            <div class="alert alert-warning">No statistics available for this device.</div>
-            {% endif %}
         </div>
-    </div>
-    
-    <!-- Charts Section -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3>Performance History (Last 24 Hours)</h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="chart-container">
-                        <h4>Memory Usage</h4>
-                        <canvas id="memoryChart"></canvas>
-                    </div>
+        
+        <!-- CPU Load Details Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header bg-orange text-white">
+                    <h5 class="card-title mb-0">CPU Load Details</h5>
                 </div>
-                <div class="col-md-6">
+                <div class="card-body">
                     <div class="chart-container">
-                        <h4>CPU Temperature</h4>
-                        <canvas id="cpuTempChart"></canvas>
+                        <canvas id="cpuLoadChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -120,133 +194,298 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
 
 <script>
-// Initialize charts when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     {% if current_stats %}
-    // Memory Chart
-    const memoryCtx = document.getElementById('memoryChart').getContext('2d');
-    new Chart(memoryCtx, {
+    const timeFormat = 'MMM D, HH:mm';
+    const gridColor = 'rgba(0, 0, 0, 0.05)';
+    const fontColor = '#666';
+    
+    // Memory History Chart (Used/Free)
+    new Chart(document.getElementById('memoryHistoryChart').getContext('2d'), {
         type: 'line',
         data: {
             labels: {{ chart_data.timestamps|safe }},
             datasets: [
                 {
-                    label: 'Memory Free (KB)',
-                    data: {{ chart_data.memory_data.free|safe }},
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                    tension: 0.3,
-                    borderWidth: 2
+                    label: 'Used (KB)',
+                    data: {{ chart_data.memory_data.used|safe }},
+                    borderColor: 'rgba(255, 99, 132, 0.8)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    borderWidth: 1,
+                    tension: 0.1,
+                    fill: true
                 },
                 {
-                    label: 'Memory Used (KB)',
-                    data: {{ chart_data.memory_data.used|safe }},
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                    tension: 0.3,
-                    borderWidth: 2
+                    label: 'Free (KB)',
+                    data: {{ chart_data.memory_data.free|safe }},
+                    borderColor: 'rgba(54, 162, 235, 0.8)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    borderWidth: 1,
+                    tension: 0.1,
+                    fill: true
+                }
+            ]
+        },
+        options: getChartOptions('Memory Usage (KB)')
+    });
+    
+    // CPU History Chart (Temperature)
+    new Chart(document.getElementById('cpuHistoryChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: {{ chart_data.timestamps|safe }},
+            datasets: [{
+                label: 'Temperature (°C)',
+                data: {{ chart_data.cpu_temp|safe }},
+                borderColor: 'rgba(255, 159, 64, 0.8)',
+                backgroundColor: 'rgba(255, 159, 64, 0.1)',
+                borderWidth: 1,
+                tension: 0.1,
+                fill: true
+            }]
+        },
+        options: getChartOptions('Temperature (°C)')
+    });
+    
+    // Disk History Chart (Utilization)
+    new Chart(document.getElementById('diskHistoryChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: {{ chart_data.timestamps|safe }},
+            datasets: [
+                {% for disk in chart_data.disk_stats %}
+                {
+                    label: '{{ disk.device }} Util %',
+                    data: {{ disk.util_history|safe }},
+                    borderColor: getColorForIndex({{ forloop.counter0 }}),
+                    backgroundColor: 'rgba(0, 0, 0, 0)',
+                    borderWidth: 1,
+                    tension: 0.1
+                },
+                {% endfor %}
+            ]
+        },
+        options: getChartOptions('Utilization %')
+    });
+    
+    // Network History Chart
+    new Chart(document.getElementById('networkHistoryChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: {{ chart_data.timestamps|safe }},
+            datasets: [
+                {% for net in chart_data.network_stats %}
+                {
+                    label: '{{ net.iface }} RX',
+                    data: {{ net.rx_history|safe }},
+                    borderColor: 'rgba(40, 167, 69, 0.8)',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    borderWidth: 1,
+                    tension: 0.1
+                },
+                {
+                    label: '{{ net.iface }} TX',
+                    data: {{ net.tx_history|safe }},
+                    borderColor: 'rgba(0, 123, 255, 0.8)',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 1,
+                    tension: 0.1
+                },
+                {% endfor %}
+            ]
+        },
+        options: getChartOptions('Throughput (KB/s)')
+    });
+    
+    // Memory Detail Chart (Stacked)
+    new Chart(document.getElementById('memoryDetailChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['Memory Usage'],
+            datasets: [
+                {
+                    label: 'Used',
+                    data: [{{ current_stats.kbmemused }}],
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                },
+                {
+                    label: 'Free',
+                    data: [{{ current_stats.kbmemfree }}],
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
                 }
             ]
         },
         options: {
             responsive: true,
-            plugins: {
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
+            scales: {
+                x: { stacked: true },
+                y: { 
+                    stacked: true,
+                    title: { display: true, text: 'Kilobytes (KB)' }
                 }
             },
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        tooltipFormat: 'MMM D, h:mm a',
-                        unit: 'hour'
-                    },
-                    grid: {
-                        display: false
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Kilobytes (KB)'
-                    }
-                }
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'Memory Distribution' }
             }
         }
     });
-
-    // CPU Temperature Chart
-    const cpuTempCtx = document.getElementById('cpuTempChart').getContext('2d');
-    new Chart(cpuTempCtx, {
-        type: 'line',
+    
+    // CPU Load Chart (Per Core)
+    new Chart(document.getElementById('cpuLoadChart').getContext('2d'), {
+        type: 'radar',
         data: {
-            labels: {{ chart_data.timestamps|safe }},
+            labels: [
+                {% for core in chart_data.cpu_loads %}
+                'Core {{ core.core }}'{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
             datasets: [{
-                label: 'CPU Temperature (°C)',
-                data: {{ chart_data.cpu_temp|safe }},
+                label: 'CPU Load',
+                data: [
+                    {% for core in chart_data.cpu_loads %}
+                    {{ core.load|multiply:100 }}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                backgroundColor: 'rgba(255, 159, 64, 0.2)',
                 borderColor: 'rgba(255, 159, 64, 1)',
-                backgroundColor: 'rgba(255, 159, 64, 0.1)',
-                tension: 0.3,
-                borderWidth: 2,
-                fill: true
+                pointBackgroundColor: 'rgba(255, 159, 64, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(255, 159, 64, 1)'
             }]
         },
         options: {
             responsive: true,
+            scales: {
+                r: {
+                    angleLines: { display: true },
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    ticks: { 
+                        callback: function(value) { return value + '%'; }
+                    }
+                }
+            },
             plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'CPU Core Utilization' }
+            }
+        }
+    });
+    
+    {% endif %}
+    
+    // Helper functions
+    function getColorForIndex(index) {
+        const colors = [
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 206, 86, 0.8)',
+            'rgba(75, 192, 192, 0.8)',
+            'rgba(153, 102, 255, 0.8)',
+            'rgba(255, 159, 64, 0.8)'
+        ];
+        return colors[index % colors.length];
+    }
+    
+    function getChartOptions(title) {
+        return {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    position: 'top',
+                    labels: { color: fontColor }
+                },
                 tooltip: {
                     mode: 'index',
-                    intersect: false
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y.toFixed(2);
+                        }
+                    }
                 }
             },
             scales: {
                 x: {
                     type: 'time',
-                    time: {
-                        tooltipFormat: 'MMM D, h:mm a',
-                        unit: 'hour'
-                    },
-                    grid: {
-                        display: false
-                    }
+                    time: { tooltipFormat: timeFormat, unit: 'hour' },
+                    grid: { color: gridColor },
+                    ticks: { color: fontColor }
                 },
                 y: {
-                    title: {
-                        display: true,
-                        text: 'Temperature (°C)'
-                    }
+                    beginAtZero: true,
+                    title: { 
+                        display: true, 
+                        text: title,
+                        color: fontColor
+                    },
+                    grid: { color: gridColor },
+                    ticks: { color: fontColor }
                 }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
             }
-        }
-    });
-    {% endif %}
+        };
+    }
 });
 </script>
 
 <style>
+:root {
+    --bs-purple: #6f42c1;
+    --bs-orange: #fd7e14;
+}
+.bg-purple { background-color: var(--bs-purple) !important; }
+.bg-orange { background-color: var(--bs-orange) !important; }
+
 .chart-container {
     position: relative;
     height: 300px;
     margin-bottom: 20px;
 }
+.chart-container-sm {
+    position: relative;
+    height: 150px;
+}
+
 .card {
-    margin-bottom: 20px;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 .card-header {
-    font-weight: 500;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0 !important;
+    padding: 1rem 1.25rem;
 }
+.card-body {
+    padding: 1.25rem;
+}
+
 .progress {
-    height: 25px;
+    border-radius: 10px;
+    background-color: #f0f0f0;
 }
 .progress-bar {
-    font-size: 0.9rem;
-    line-height: 25px;
+    border-radius: 10px;
+}
+
+.alert {
+    border-radius: 8px;
 }
 </style>
 {% endblock %}
