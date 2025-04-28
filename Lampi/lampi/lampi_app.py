@@ -339,6 +339,7 @@ class LampiApp(App):
                        'brightness': 0.0,
                        'on': False,
                        'client': MQTT_CLIENT_ID}
+        self._publish_clock = None
         for _ in range(8):
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
