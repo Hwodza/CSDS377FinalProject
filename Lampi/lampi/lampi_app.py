@@ -168,7 +168,7 @@ class LampiApp(App):
     _saturation = NumericProperty()
     _brightness = NumericProperty()
     lamp_is_on = BooleanProperty()
-
+    last_state = None
     mp = Mixpanel(MIXPANEL_TOKEN, consumer=BufferedConsumer(max_size=5))
 
     def build(self):
@@ -354,26 +354,17 @@ class LampiApp(App):
                 print(f"Invalid JSON from {device_name}")
 
     def flash_lamp_red(self):
-        og_hue = self._get_hue
-        og_saturation = self._get_saturation
-        og_brightness = self._get_brightness
-        og_on = self.lamp_is_on
+        on_message = {'color': {'h': 0, 's': 1}, 'brightness': 100, 'on': True}
+        off_message = {'color': {'h': 0, 's': 1}, 'brightness': 0, 'on': False}
         for _ in range(20):
-            self._set_hue(0)
-            self._set_saturation(1)
-            self._set_brightness(1)
-            self.lamp_is_on = True
-            Clock.schedule_once(lambda dt: self._update_leds(), 0.01)
+            self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
+                              json.dumps(on_message).encode('utf-8'), qos=1)
             time.sleep(0.1)
-            self.lamp_is_on = False
-            Clock.schedule_once(lambda dt: self._update_leds(), 0.01)
+            self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
+                              json.dumps(off_message).encode('utf-8'), qos=1)
             time.sleep(0.1)
-        self._set_hue(og_hue)
-        self._set_saturation(og_saturation)
-        self._set_brightness(og_brightness)
-        self.lamp_is_on = og_on
-        Clock.schedule_once(lambda dt: self._update_leds(), 0.01)
-        
+        self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
+                          json.dumps(self.last_state).encode('utf-8'), qos=1)
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
@@ -383,8 +374,8 @@ class LampiApp(App):
             self.mqtt_broker_bridged = False
 
     def receive_new_lamp_state(self, client, userdata, message):
-        new_state = json.loads(message.payload.decode('utf-8'))
-        Clock.schedule_once(lambda dt: self._update_ui(new_state), 0.01)
+        self.last_state = json.loads(message.payload.decode('utf-8'))
+        Clock.schedule_once(lambda dt: self._update_ui(self.last_state), 0.01)
 
     def _update_ui(self, new_state):
         if self._updated and new_state['client'] == MQTT_CLIENT_ID:
