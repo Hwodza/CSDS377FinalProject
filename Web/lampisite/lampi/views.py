@@ -87,26 +87,26 @@ class AddSenderView(LoginRequiredMixin, generic.FormView):
 #         return context
 
 class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'lampi/sender-device.html'
+    template_name = 'lampi/sender_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         device = get_object_or_404(
             SenderDevice, pk=kwargs['device_id'], user=self.request.user)
-
+        
         # Get time range from query parameter (default: 24 hours)
         time_range = self.request.GET.get('range', '24')
         hours = int(time_range)
-
+        
         # Get latest data point
         current_stats = device.data_points.order_by('-timestamp').first()
-
+        
         # Get data for charts based on selected time range
         time_threshold = timezone.now() - timedelta(hours=hours)
         chart_data = device.data_points.filter(
             timestamp__gte=time_threshold
         ).order_by('timestamp')
-
+        
         # Prepare chart data
         chart_context = {
             'timestamps': [data.timestamp.isoformat() for data in chart_data],
@@ -126,7 +126,7 @@ class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
                 {'value': '24', 'label': 'Last 24 hours'}
             ]
         }
-
+        
         # Prepare network data if available
         if current_stats:
             chart_context['network_rx'] = [stat.rx_kb for stat in
@@ -142,5 +142,5 @@ class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
             'chart_data': chart_context,
             'MIXPANEL_TOKEN': settings.MIXPANEL_TOKEN,
         })
-
+        
         return context
