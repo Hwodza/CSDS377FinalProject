@@ -240,8 +240,6 @@ class LampiApp(App):
     def on_hue(self, instance, value):
         if self._updating_ui:
             return
-        self._track_ui_event('Slider Change',
-                             {'slider': 'hue-slider', 'value': value})
         if self._publish_clock is None:
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self._update_leds(), 0.01)
@@ -249,8 +247,6 @@ class LampiApp(App):
     def on_saturation(self, instance, value):
         if self._updating_ui:
             return
-        self._track_ui_event('Slider Change',
-                             {'slider': 'saturation-slider', 'value': value})
         if self._publish_clock is None:
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self._update_leds(), 0.01)
@@ -258,8 +254,6 @@ class LampiApp(App):
     def on_brightness(self, instance, value):
         if self._updating_ui:
             return
-        self._track_ui_event('Slider Change',
-                             {'slider': 'brightness-slider', 'value': value})
         if self._publish_clock is None:
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self._update_leds(), 0.01)
