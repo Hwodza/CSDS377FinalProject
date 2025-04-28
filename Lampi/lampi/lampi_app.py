@@ -57,6 +57,10 @@ class SecondScreen(Screen):
                 f"CPU: {message['cpu_temp']}, "
                 f"MEM: {message['memory_stats']['memused_percent']}%"
             )
+            cpu_temp = float(message['cpu_temp'])
+            status = True
+            if cpu_temp > 99:
+                status = False
         except KeyError as e:
             # Print the error if the keys are missing
             print(f"Error extracting values for device '{device_name}': {e}")
@@ -66,7 +70,8 @@ class SecondScreen(Screen):
         if device_name not in self.devices:
             # Create a new DeviceBox if it doesn't exist
             device_box = DeviceBox(device_name=device_name,
-                                   message=shortened_message)
+                                   message=shortened_message,
+                                   status=status)
             self.devices[device_name] = device_box
             self.ids.device_list.add_widget(device_box)  # Add to the UI
         else:
