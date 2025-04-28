@@ -20,14 +20,8 @@ from paho.mqtt.client import Client
 
 from lamp_common import *
 import lampi.lampi_util
-from mixpanel import Mixpanel, BufferedConsumer
 
 MQTT_CLIENT_ID = "lamp_ui"
-
-try:
-    from .mixpanel_settings import MIXPANEL_TOKEN
-except (ModuleNotFoundError, ImportError) as e:
-    MIXPANEL_TOKEN = "UPDATE TOKEN IN mixpanel_settings.py"
 
 version_path = os.path.join(os.path.dirname(__file__), '__VERSION__')
 try:
@@ -169,7 +163,6 @@ class LampiApp(App):
     _brightness = NumericProperty()
     lamp_is_on = BooleanProperty()
     last_state = None
-    mp = Mixpanel(MIXPANEL_TOKEN, consumer=BufferedConsumer(max_size=5))
 
     def build(self):
         self.device_data = DeviceDataManager()
@@ -278,15 +271,6 @@ class LampiApp(App):
         if self._publish_clock is None:
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self._update_leds(), 0.01)
-
-    def _track_ui_event(self, event_name, additional_props={}):
-        device_id = lampi.lampi_util.get_device_id()
-
-        event_props = {'event_type': 'ui', 'interface': 'lampi',
-                       'device_id': device_id}
-        event_props.update(additional_props)
-
-        self.mp.track(device_id, event_name, event_props)
 
     def on_connect(self, client, userdata, flags, rc):
         self.mqtt.publish(client_state_topic(MQTT_CLIENT_ID), b"1",
