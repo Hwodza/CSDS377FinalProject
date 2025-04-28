@@ -355,7 +355,7 @@ class LampiApp(App):
 
     def flash_lamp_red(self):
         on_message = {'color': {'h': 0, 's': 1},
-                      'brightness': 100,
+                      'brightness': 1,
                       'on': True,
                       'client': MQTT_CLIENT_ID}
         off_message = {'color': {'h': 0, 's': 1},
