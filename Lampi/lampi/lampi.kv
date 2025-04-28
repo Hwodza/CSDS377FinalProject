@@ -151,7 +151,7 @@ ScreenManager:
             height: self.texture_size[1]
             
         Label:
-            text: root.message
+            text: root.cpu_temp
             size_hint_y: None
             height: self.texture_size[1]
 
@@ -178,11 +178,6 @@ ScreenManager:
         BoxLayout:
             orientation: 'vertical'
             spacing: 10
-            
-            Label:
-                id: status_label
-                text: 'Status: '
-                font_size: '18sp'
             
             Label:
                 id: details_label
