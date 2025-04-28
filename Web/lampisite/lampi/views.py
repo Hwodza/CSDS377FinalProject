@@ -87,26 +87,22 @@ class AddSenderView(LoginRequiredMixin, generic.FormView):
 #         return context
 
 class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'lampi/sender_detail.html'
+    template_name = 'lampi/senderdetail.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(SenderDetailView, self).get_context_data(**kwargs)
         device = get_object_or_404(
             SenderDevice, pk=kwargs['device_id'], user=self.request.user)
-        
-        # Get time range from query parameter (default: 24 hours)
-        time_range = self.request.GET.get('range', '24')
-        hours = int(time_range)
-        
-        # Get latest data point
+
+        # Get the latest data point
         current_stats = device.data_points.order_by('-timestamp').first()
-        
-        # Get data for charts based on selected time range
-        time_threshold = timezone.now() - timedelta(hours=hours)
+
+        # Get data for charts (last 24 hours)
+        time_threshold = timezone.now() - timedelta(hours=24)
         chart_data = device.data_points.filter(
             timestamp__gte=time_threshold
         ).order_by('timestamp')
-        
+
         # Prepare chart data
         chart_context = {
             'timestamps': [data.timestamp.isoformat() for data in chart_data],
@@ -116,25 +112,25 @@ class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
                 'percent': [data.memused_percent for data in chart_data],
             },
             'cpu_temp': [data.cputemp for data in chart_data],
-            'network_rx': [],
-            'network_tx': [],
-            'time_range': time_range,
-            'time_options': [
-                {'value': '1', 'label': 'Last 1 hour'},
-                {'value': '6', 'label': 'Last 6 hours'},
-                {'value': '12', 'label': 'Last 12 hours'},
-                {'value': '24', 'label': 'Last 24 hours'}
-            ]
+            'disk_stats': [],
+            'cpu_loads': [],
+            'network_stats': []
         }
-        
-        # Prepare network data if available
+
+        # Add related data if current_stats exists
         if current_stats:
-            chart_context['network_rx'] = [stat.rx_kb for stat in
-                                           current_stats.network_stats.all()]
-            chart_context['network_tx'] = [stat.tx_kb for stat in
-                                           current_stats.network_stats.all()]
-            chart_context['network_labels'] = [stat.iface for stat in
-                                               current_stats.network_stats.all()]
+            chart_context['disk_stats'] = [
+                {'device': stat.device, 'wait': stat.wait, 'util': stat.util}
+                for stat in current_stats.disk_stats.all()
+            ]
+            chart_context['cpu_loads'] = [
+                {'core': load.core, 'load': load.load}
+                for load in current_stats.cpu_loads.all()
+            ]
+            chart_context['network_stats'] = [
+                {'iface': stat.iface, 'rx_kb': stat.rx_kb, 'tx_kb': stat.tx_kb}
+                for stat in current_stats.network_stats.all()
+            ]
 
         context.update({
             'device': device,
@@ -142,5 +138,5 @@ class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
             'chart_data': chart_context,
             'MIXPANEL_TOKEN': settings.MIXPANEL_TOKEN,
         })
-        
+
         return context
