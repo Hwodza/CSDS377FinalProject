@@ -41,20 +41,20 @@
 
 </head>
 <body>
-    <div id="top-banner">
-        {% if user.is_authenticated %}
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn-link">Logout</button>
-            </form>
-            {% if user.is_superuser %}
-                <a href="{% url 'admin:index' %}">Admin</a>
+    <div id="outer-pane" class="centered-root">
+         <div>
+            {% if user.is_authenticated %}
+		<form action="{% url 'logout' %}" method="post">
+		    {% csrf_token %}
+		    <button type="submit" class="btn-link">Logout</button>
+		</form>
+               {% if user.is_superuser %}
+                   <a href="{% url 'admin:index' %}">Admin</a>
+               {% endif %}
+            {% else %}
+               <a href="{% url 'login' %}">Login</a>
             {% endif %}
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-        {% endif %}
-    </div>
-    <div>
+        </div>
         {% block content %}
         <p>Content Goes Here.</p>
         {% endblock %}
