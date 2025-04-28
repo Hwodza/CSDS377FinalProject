@@ -155,20 +155,6 @@ ScreenManager:
             size_hint_y: None
             height: self.texture_size[1]
 
-    Button:
-        background_normal: ''
-        background_down: ''
-        background_color: 0, 0, 0, 0  # Transparent
-        size_hint: 1, 1
-        on_press: app.selected_device = {
-            'name': root.device_name,
-            'message': root.message,
-            'status': root.status,
-            'cpu_temp': root.cpu_temp,
-            'mem_used': root.mem_used
-        }
-        app.screen_manager.current = "device_detail"
-
 
 <DeviceDetailScreen>:
     name: "device_detail"
@@ -211,7 +197,7 @@ ScreenManager:
                     height: self.texture_size[1]
                 
                 Label:
-                    text: "CPU Temperature: " + (app.selected_device['cpu_temp'] if app.selected_device else "N/A")
+                    text: "CPU Temperature: " + (app.selected_device['cputemp'] if app.selected_device else "N/A")
                     font_size: '18sp'
                     size_hint_y: None
                     height: self.texture_size[1]

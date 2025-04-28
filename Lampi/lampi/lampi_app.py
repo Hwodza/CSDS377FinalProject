@@ -44,6 +44,20 @@ class DeviceBox(BoxLayout):
     memused_percent = NumericProperty(0)
     cputemp = NumericProperty(0)
 
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            app = App.get_running_app()
+            app.selected_device = {
+                'name': self.device_name,
+                'message': self.message,
+                'status': self.status,
+                'cputemp': self.cputemp,
+                'memused_percent': self.memused_percent
+            }
+            app.screen_manager.current = "device_detail"
+            return True
+        return super().on_touch_down(touch)
+
 
 class DeviceDetailScreen(Screen):
     pass
