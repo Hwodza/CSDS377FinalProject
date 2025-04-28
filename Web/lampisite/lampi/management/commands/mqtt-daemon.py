@@ -123,6 +123,8 @@ class Command(BaseCommand):
                         hostname="localhost",
                         port=50001
                     )
+                print("Published data to lampi devices")
+                print(data)
             except Exception as e:
                 print("Error publishing association message: {}".format(e))
             print(f"Processed data from {device_id} at {timestamp}")
