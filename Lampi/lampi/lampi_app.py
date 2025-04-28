@@ -35,40 +35,74 @@ except IOError:
     LAMPI_APP_VERSION = 'Unknown'
 
 
+class DeviceDataManager:
+    def __init__(self):
+        self.devices = {}  # Stores all device data
+        self.current_detail_device = None  # Currently displayed device in detail view
+        self.callbacks = []  # Callbacks to notify when data changes
+
+    def update_device(self, device_name, data):
+        """Update device data and notify listeners"""
+        self.devices[device_name] = data
+
+        # Notify all registered callbacks
+        for callback in self.callbacks:
+            callback(device_name, data)
+
+    def register_callback(self, callback):
+        """Register a callback to be notified of data changes"""
+        self.callbacks.append(callback)
+
+    def unregister_callback(self, callback):
+        """Remove a callback"""
+        if callback in self.callbacks:
+            self.callbacks.remove(callback)
+
+
 class DeviceBox(BoxLayout):
     device_name = StringProperty("")
     message = StringProperty("")
     status = BooleanProperty(True)
-    shortened_message = StringProperty("")
+
+    def on_touch_down(self, touch):
+        """Handle clicks anywhere on the DeviceBox"""
+        if self.collide_point(*touch.pos):
+            app.show_device_details(self.device_name)
+            return True
+        return super().on_touch_down(touch)
+
+
+class JsonLabel(Label):
+    """Custom label for displaying JSON with syntax highlighting"""
+    pass
 
 
 class DeviceDetailScreen(Screen):
-    def update_details(self, device_name, message, status):
+    def on_device_updated(self, device_name, data):
+        """Called when device data is updated"""
+        if device_name == app.device_data.current_detail_device:
+            Clock.schedule_once(lambda dt: self.update_details(device_name, data))
+
+    def update_details(self, device_name, data):
+        """Update the detailed view with pretty JSON"""
         self.ids.device_name_label.text = device_name
-        
-        # Format the detailed message
+
         try:
-            # Try to parse as JSON if it's a string
-            if isinstance(message, str):
-                message = json.loads(message)
-            
-            # Format the details nicely
-            details = ""
-            if isinstance(message, dict):
-                for key, value in message.items():
-                    if isinstance(value, dict):
-                        details += f"{key}:\n"
-                        for subkey, subvalue in value.items():
-                            details += f"  {subkey}: {subvalue}\n"
-                    else:
-                        details += f"{key}: {value}\n"
-            else:
-                details = str(message)
-            
-            self.ids.details_label.text = details
-        except (json.JSONDecodeError, TypeError):
-            # If not JSON, just display as-is
-            self.ids.details_label.text = str(message)
+            # Convert to pretty-printed JSON
+            pretty_json = json.dumps(data, indent=4, sort_keys=True)
+            status = True  # You can add your status logic here if needed
+            status_text = "Online" if status else "Offline"
+            self.ids.status_label.text = f"Status: {status_text}"
+            self.ids.details_label.text = pretty_json
+
+            # Calculate required height for the JSON content
+            lines = pretty_json.count('\n') + 1
+            line_height = dp(20)  # Approximate height per line
+            self.ids.details_label.height = max(lines * line_height, self.ids.scroll_view.height)
+
+        except (TypeError, ValueError) as e:
+            self.ids.status_label.text = "Status: Data Error"
+            self.ids.details_label.text = f"Error formatting data:\n{str(data)}"
 
 
 class MainScreen(Screen):
@@ -78,46 +112,37 @@ class MainScreen(Screen):
 class SecondScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.devices = {}
+        self.device_boxes = {}  # Maps device names to their UI widgets
 
-    def update_device_message(self, device_name, message):
-        """Update the message for a specific device in the UI."""
+    def on_device_updated(self, device_name, data):
+        """Called when device data is updated"""
+        Clock.schedule_once(lambda dt: self._update_device_ui(device_name, data))
+
+    def _update_device_ui(self, device_name, data):
+        """Update the UI for a device"""
         try:
             # Extract CPU and memory usage if available
-            all_stats = (
-                f"cpu temp: {message['cpu_temp']}, "
-                f"memused%: {message['memory_stats']['memused_percent']}%"
-                f"kbmemfree: {message['memory_stats']['kbmemfree']}"
-                f"kbmemused: {message['memory_stats']['kbmemused']}"
-                f"disk_stats: {message['disk_stats']}"
-                f"cpu_load: {message['cpu_load']}"
-                f"network_stats: {message['network_stats']}"
-            )
             shortened_message = (
-                f"CPU Temp: {message['cpu_temp']}, "
-                f"MEM%: {message['memory_stats']['memused_percent']}%"
+                f"CPU: {data['cpu_temp']}, "
+                f"MEM: {data['memory_stats']['memused_percent']}%"
             )
-            cpu_temp = float(message['cpu_temp'])
-            status = True
-            if cpu_temp > 99:
-                status = False
-        except KeyError as e:
-            # Print the error if the keys are missing
-            print(f"Error extracting values for device '{device_name}': {e}")
-            # Fallback to string representation of the message
-            shortened_message = str(message)
+            cpu_temp = float(data['cpu_temp'])
+            status = cpu_temp <= 99  # True if temp is normal
+        except (KeyError, ValueError) as e:
+            shortened_message = str(data)
+            status = False
 
-        if device_name not in self.devices:
-            # Create a new DeviceBox if it doesn't exist
+        if device_name not in self.device_boxes:
+            # Create new DeviceBox
             device_box = DeviceBox(device_name=device_name,
-                                   shortened_message=shortened_message,
-                                   message=all_stats,
-                                   status=status)
-            self.devices[device_name] = device_box
-            self.ids.device_list.add_widget(device_box)  # Add to the UI
+                                 message=shortened_message,
+                                 status=status)
+            self.device_boxes[device_name] = device_box
+            self.ids.device_list.add_widget(device_box)
         else:
-            # Update the existing DeviceBox
-            self.devices[device_name].message = shortened_message
+            # Update existing DeviceBox
+            self.device_boxes[device_name].message = shortened_message
+            self.device_boxes[device_name].status = status
 
 
 class LampiApp(App):
@@ -131,19 +156,26 @@ class LampiApp(App):
     mp = Mixpanel(MIXPANEL_TOKEN, consumer=BufferedConsumer(max_size=5))
 
     def build(self):
+        self.device_data = DeviceDataManager()
         self.screen_manager = ScreenManager()
         self.main_screen = MainScreen(name="main")
         self.second_screen = SecondScreen(name="second")
         self.device_detail_screen = DeviceDetailScreen(name="device_detail")
+        self.device_data.register_callback(self.second_screen.on_device_updated)
         self.screen_manager.add_widget(self.main_screen)
         self.screen_manager.add_widget(self.second_screen)
         self.screen_manager.add_widget(self.device_detail_screen)
         return self.screen_manager
-    
-    def show_device_details(self, device_name, message, status):
+
+    def show_device_details(self, device_name):
         """Show the detailed view for a device"""
-        self.device_detail_screen.update_details(device_name, message, status)
-        self.screen_manager.current = "device_detail"
+        if device_name in self.device_data.devices:
+            self.device_data.current_detail_device = device_name
+            data = self.device_data.devices[device_name]
+            self.device_detail_screen.update_details(device_name, data)
+            self.screen_manager.current = "device_detail"
+            # Register for updates while detail screen is visible
+            self.device_data.register_callback(self.device_detail_screen.on_device_updated)
 
     def _get_hue(self):
         return self._hue
@@ -290,12 +322,12 @@ class LampiApp(App):
         print("Recieve sender messages topic parts: ", topic_parts)
         if len(topic_parts) == 3 and topic_parts[1] == "sender":
             device_name = topic_parts[2]
-            payload = json.loads(message.payload.decode('utf-8'))
-            second_screen = self.screen_manager.get_screen("second")
-            # Schedule the UI update on the main thread
-            Clock.schedule_once(
-                lambda dt: second_screen.update_device_message(
-                    device_name, payload))
+            try:
+                payload = json.loads(message.payload.decode('utf-8'))
+                # Update the central device data store
+                self.device_data.update_device(device_name, payload)
+            except json.JSONDecodeError:
+                print(f"Invalid JSON from {device_name}")
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
