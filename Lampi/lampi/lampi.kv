@@ -162,6 +162,12 @@ ScreenManager:
             size_hint_y: None
             height: self.texture_size[1]
             font_size: '14sp'
+            
+        Button:
+            text: 'View Details'
+            size_hint_y: None
+            height: 30
+            on_press: app.show_device_details(root.device_name)
 
 <DeviceDetailScreen>:
     name: 'device_detail'

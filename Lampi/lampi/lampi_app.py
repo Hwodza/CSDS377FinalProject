@@ -12,7 +12,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
-
+from kivy.app import App
 from paho.mqtt.client import Client
 
 from lamp_common import *
@@ -63,11 +63,14 @@ class DeviceBox(BoxLayout):
     device_name = StringProperty("")
     message = StringProperty("")
     status = BooleanProperty(True)
-
+    
     def on_touch_down(self, touch):
         """Handle clicks anywhere on the DeviceBox"""
         if self.collide_point(*touch.pos):
-            app.show_device_details(self.device_name)
+            # Get the app instance safely
+            app = App.get_running_app()
+            if app:
+                app.show_device_details(self.device_name)
             return True
         return super().on_touch_down(touch)
 
