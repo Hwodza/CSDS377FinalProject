@@ -346,14 +346,22 @@ class LampiApp(App):
                        'on': False,
                        'client': MQTT_CLIENT_ID}
         for _ in range(8):
-            self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
-                              json.dumps(on_message).encode('utf-8'), qos=1)
+            self._publish_clock = Clock.schedule_once(
+                lambda dt: self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
+                                             json.dumps(on_message)
+                                             .encode('utf-8'), qos=1), 0.01)
             time.sleep(1)
-            self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
-                              json.dumps(off_message).encode('utf-8'), qos=1)
+            self._publish_clock = Clock.schedule_once(
+                lambda dt: self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
+                                             json.dumps(off_message)
+                                             .encode('utf-8'), qos=1), 0.01)
             time.sleep(1)
-        self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
-                          json.dumps(self.last_state).encode('utf-8'), qos=1)
+        self._publish_clock = Clock.schedule_once(
+            lambda dt: self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
+                                         json.dumps(self.last_state)
+                                         .encode('utf-8'),
+                                         qos=1), 0.01)
+        self._publish_clock = None
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
