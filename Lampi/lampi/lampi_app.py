@@ -1,6 +1,7 @@
 import json
 import os
 import pigpio
+import time
 
 from kivy.app import App
 from kivy.properties import NumericProperty, AliasProperty, BooleanProperty, \
@@ -343,8 +344,30 @@ class LampiApp(App):
                 payload = json.loads(message.payload.decode('utf-8'))
                 # Update the central device data store
                 self.device_data.update_device(device_name, payload)
+                cpu_temp = payload.get('cpu_temp', None)
+                if cpu_temp is not None:
+                    cpu_temp = float(cpu_temp)
+                    if cpu_temp > 99:
+                        self.flash_lamp_red()
+
             except json.JSONDecodeError:
                 print(f"Invalid JSON from {device_name}")
+
+    def flash_lamp_red(self):
+        og_hue = self.hue
+        og_saturation = self.saturation
+        og_brightness = self.brightness
+        og_on = self.lamp_is_on
+        for i in range(20):
+            self.hue = 0
+            self.saturation = 1
+            self.brightness = 1
+            self.lamp_is_on = True
+            Clock.schedule_once(lambda dt: self._update_leds(), 0.01)
+            time.sleep(0.1)
+            self.lamp_is_on = False
+            Clock.schedule_once(lambda dt: self._update_leds(), 0.01)
+            time.sleep(0.1)
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
