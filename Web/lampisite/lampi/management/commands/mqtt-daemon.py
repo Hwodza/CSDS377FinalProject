@@ -118,9 +118,9 @@ class Command(BaseCommand):
                     paho.mqtt.publish.single(
                         "devices/{}/lamp/sender/{}".format(lampi.device_id,
                                                         device.name),
-                        json.dumps({'associated': True}),
-                        qos=2,
-                        retain=True,
+                        json.dumps(data),
+                        qos=1,
+                        retain=False,
                         hostname="localhost",
                         port=50001
                     )
