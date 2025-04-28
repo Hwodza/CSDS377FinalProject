@@ -124,7 +124,7 @@ class Command(BaseCommand):
                         port=50001
                     )
                 print("Published data to lampi devices")
-                print(json.dumps(data))
+                print(data)
             except Exception as e:
                 print("Error publishing association message: {}".format(e))
             print(f"Processed data from {device_id} at {timestamp}")
