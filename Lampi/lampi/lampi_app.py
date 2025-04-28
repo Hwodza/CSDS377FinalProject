@@ -14,6 +14,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
 from kivy.app import App
 from kivy.metrics import dp
+from kivy.uix.behaviors import ButtonBehavior
 from paho.mqtt.client import Client
 
 from lamp_common import *
@@ -60,20 +61,23 @@ class DeviceDataManager:
             self.callbacks.remove(callback)
 
 
-class DeviceBox(BoxLayout):
+class DeviceBox(ButtonBehavior, BoxLayout):
     device_name = StringProperty("")
     message = StringProperty("")
     status = BooleanProperty(True)
-    
-    def on_touch_down(self, touch):
-        """Handle clicks anywhere on the DeviceBox"""
-        if self.collide_point(*touch.pos):
-            # Get the app instance safely
-            app = App.get_running_app()
-            if app:
-                app.show_device_details(self.device_name)
-            return True
-        return super().on_touch_down(touch)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Set some button-like properties
+        self.background_normal = ''
+        self.background_down = ''
+        self.background_color = (1, 1, 1, 0)  # Transparent
+
+    def on_press(self):
+        """Handle the box being pressed"""
+        app = App.get_running_app()
+        if app:
+            app.show_device_details(self.device_name)
 
 
 class JsonLabel(Label):
