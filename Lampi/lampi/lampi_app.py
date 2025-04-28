@@ -39,28 +39,37 @@ class DeviceBox(BoxLayout):
     device_name = StringProperty("")
     message = StringProperty("")
     status = BooleanProperty(True)
-    kbmemfree = NumericProperty(0)
-    kbmemused = NumericProperty(0)
-    memused_percent = NumericProperty(0)
-    cputemp = NumericProperty(0)
-
-    def on_touch_down(self, touch):
-        if self.collide_point(*touch.pos):
-            app = App.get_running_app()
-            app.selected_device = {
-                'name': self.device_name,
-                'message': self.message,
-                'status': self.status,
-                'cputemp': self.cputemp,
-                'memused_percent': self.memused_percent
-            }
-            app.screen_manager.current = "device_detail"
-            return True
-        return super().on_touch_down(touch)
 
 
 class DeviceDetailScreen(Screen):
-    pass
+    def update_details(self, device_name, message, status):
+        self.ids.device_name_label.text = device_name
+        status_text = "Online" if status else "Offline"
+        self.ids.status_label.text = f"Status: {status_text}"
+        
+        # Format the detailed message
+        try:
+            # Try to parse as JSON if it's a string
+            if isinstance(message, str):
+                message = json.loads(message)
+            
+            # Format the details nicely
+            details = ""
+            if isinstance(message, dict):
+                for key, value in message.items():
+                    if isinstance(value, dict):
+                        details += f"{key}:\n"
+                        for subkey, subvalue in value.items():
+                            details += f"  {subkey}: {subvalue}\n"
+                    else:
+                        details += f"{key}: {value}\n"
+            else:
+                details = str(message)
+            
+            self.ids.details_label.text = details
+        except (json.JSONDecodeError, TypeError):
+            # If not JSON, just display as-is
+            self.ids.details_label.text = str(message)
 
 
 class MainScreen(Screen):
@@ -81,10 +90,6 @@ class SecondScreen(Screen):
                 f"MEM: {message['memory_stats']['memused_percent']}%"
             )
             cpu_temp = float(message['cpu_temp'])
-            kbmemfree = int(message['memory_stats']['kbmemfree'])
-            kbmemused = int(message['memory_stats']['kbmemused'])
-            memused_percent = float(message['memory_stats']['memused_percent'])
-
             status = True
             if cpu_temp > 99:
                 status = False
@@ -98,11 +103,7 @@ class SecondScreen(Screen):
             # Create a new DeviceBox if it doesn't exist
             device_box = DeviceBox(device_name=device_name,
                                    message=shortened_message,
-                                   status=status,
-                                   kbmemfree=kbmemfree,
-                                   kbmemused=kbmemused,
-                                   memused_percent=memused_percent,
-                                   cputemp=cpu_temp)
+                                   status=status)
             self.devices[device_name] = device_box
             self.ids.device_list.add_widget(device_box)  # Add to the UI
         else:
@@ -124,10 +125,16 @@ class LampiApp(App):
         self.screen_manager = ScreenManager()
         self.main_screen = MainScreen(name="main")
         self.second_screen = SecondScreen(name="second")
+        self.device_detail_screen = DeviceDetailScreen(name="device_detail")
         self.screen_manager.add_widget(self.main_screen)
         self.screen_manager.add_widget(self.second_screen)
-        self.screen_manager.add_widget(DeviceDetailScreen(name="device_detail"))
+        self.screen_manager.add_widget(self.device_detail_screen)
         return self.screen_manager
+    
+    def show_device_details(self, device_name, message, status):
+        """Show the detailed view for a device"""
+        self.device_detail_screen.update_details(device_name, message, status)
+        self.screen_manager.current = "device_detail"
 
     def _get_hue(self):
         return self._hue

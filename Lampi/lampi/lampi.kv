@@ -155,55 +155,46 @@ ScreenManager:
             size_hint_y: None
             height: self.texture_size[1]
 
+        Button:
+            text: 'View Details'
+            size_hint_y: None
+            height: 30
+            on_press: app.show_device_details(root.device_name, root.message, root.status)
 
 <DeviceDetailScreen>:
-    name: "device_detail"
+    name: 'device_detail'
     BoxLayout:
         orientation: 'vertical'
+        padding: 20
+        spacing: 10
         
-        # Header with back button
-        BoxLayout:
+        Label:
+            id: device_name_label
+            text: 'Device Details'
+            font_size: '24sp'
             size_hint_y: None
             height: 50
-            Button:
-                text: 'Back'
-                size_hint_x: None
-                width: 100
-                on_press: app.screen_manager.current = "second"
-            Label:
-                text: "Device Details"
-                font_size: '20sp'
         
-        # Device details content
-        ScrollView:
-            GridLayout:
-                cols: 1
-                size_hint_y: None
-                height: self.minimum_height
-                padding: 20
-                spacing: 10
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 10
+            
+            Label:
+                id: status_label
+                text: 'Status: '
+                font_size: '18sp'
+            
+            Label:
+                id: details_label
+                text: 'Details will appear here'
+                font_size: '16sp'
+                text_size: self.width, None
+                halign: 'left'
+                valign: 'top'
+                size_hint_y: 1
                 
-                # Display all device properties
-                Label:
-                    text: "Name: " + (app.selected_device['name'] if app.selected_device else "No device selected")
-                    font_size: '18sp'
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                
-                Label:
-                    text: "Message: " + (app.selected_device['message'] if app.selected_device else "")
-                    font_size: '18sp'
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                
-                Label:
-                    text: "CPU Temperature: " + (app.selected_device['cputemp'] if app.selected_device else "N/A")
-                    font_size: '18sp'
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                
-                Label:
-                    text: "Memory Used: " + (app.selected_device['memused_percent'] if app.selected_device else "N/A") + "%"
-                    font_size: '18sp'
-                    size_hint_y: None
-                    height: self.texture_size[1]
+        Button:
+            text: 'Back to List'
+            size_hint_y: None
+            height: 50
+            on_press: app.screen_manager.current = 'second'
