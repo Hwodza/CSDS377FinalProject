@@ -362,13 +362,13 @@ class LampiApp(App):
                        'brightness': 0,
                        'on': False,
                        'client': MQTT_CLIENT_ID}
-        for _ in range(20):
+        for _ in range(8):
             self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
                               json.dumps(on_message).encode('utf-8'), qos=1)
-            time.sleep(0.1)
+            time.sleep(1)
             self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
                               json.dumps(off_message).encode('utf-8'), qos=1)
-            time.sleep(0.1)
+            time.sleep(1)
         self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
                           json.dumps(self.last_state).encode('utf-8'), qos=1)
 
