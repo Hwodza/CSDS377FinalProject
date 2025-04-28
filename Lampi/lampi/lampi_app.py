@@ -39,9 +39,9 @@ except IOError:
 
 class DeviceDataManager:
     def __init__(self):
-        self.devices = {}  # Stores all device data
-        self.current_detail_device = None  # Currently displayed device in detail view
-        self.callbacks = []  # Callbacks to notify when data changes
+        self.devices = {}
+        self.current_detail_device = None
+        self.callbacks = []
 
     def update_device(self, device_name, data):
         """Update device data and notify listeners"""
@@ -114,7 +114,8 @@ class DeviceDetailScreen(Screen):
 
         except (TypeError, ValueError) as e:
             self.ids.status_label.text = "Status: Data Error"
-            self.ids.details_label.text = f"Error formatting data:\n{str(data)}"
+            self.ids.details_label.text = (f"Error formatting data:\n"
+                                           f"{str(data)}")
             self.ids.details_label.height = dp(100)  # Default height for error
 
 
@@ -129,7 +130,8 @@ class SecondScreen(Screen):
 
     def on_device_updated(self, device_name, data):
         """Called when device data is updated"""
-        Clock.schedule_once(lambda dt: self._update_device_ui(device_name, data))
+        Clock.schedule_once(lambda dt: self._update_device_ui(device_name,
+                                                              data))
 
     def _update_device_ui(self, device_name, data):
         """Update the UI for a device"""
@@ -148,8 +150,8 @@ class SecondScreen(Screen):
         if device_name not in self.device_boxes:
             # Create new DeviceBox
             device_box = DeviceBox(device_name=device_name,
-                                 message=shortened_message,
-                                 status=status)
+                                   message=shortened_message,
+                                   status=status)
             self.device_boxes[device_name] = device_box
             self.ids.device_list.add_widget(device_box)
         else:
@@ -174,7 +176,8 @@ class LampiApp(App):
         self.main_screen = MainScreen(name="main")
         self.second_screen = SecondScreen(name="second")
         self.device_detail_screen = DeviceDetailScreen(name="device_detail")
-        self.device_data.register_callback(self.second_screen.on_device_updated)
+        self.device_data.register_callback(
+            self.second_screen.on_device_updated)
         self.screen_manager.add_widget(self.main_screen)
         self.screen_manager.add_widget(self.second_screen)
         self.screen_manager.add_widget(self.device_detail_screen)
@@ -188,7 +191,8 @@ class LampiApp(App):
             self.device_detail_screen.update_details(device_name, data)
             self.screen_manager.current = "device_detail"
             # Register for updates while detail screen is visible
-            self.device_data.register_callback(self.device_detail_screen.on_device_updated)
+            self.device_data.register_callback(
+                self.device_detail_screen.on_device_updated)
 
     def _get_hue(self):
         return self._hue
