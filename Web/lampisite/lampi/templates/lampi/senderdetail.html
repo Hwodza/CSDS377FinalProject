@@ -58,7 +58,24 @@
             {% endif %}
         </div>
     </div>
-    
+    <!-- Time Range Selector -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <form method="get" class="d-flex align-items-center">
+                <label for="timeRange" class="me-2 mb-0">Time Range:</label>
+                <select name="range" id="timeRange" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                    {% for option in chart_data.time_options %}
+                    <option value="{{ option.value }}" {% if chart_data.time_range == option.value %}selected{% endif %}>
+                        {{ option.label }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <noscript>
+                    <button type="submit" class="btn btn-sm btn-primary ms-2">Apply</button>
+                </noscript>
+            </form>
+        </div>
+    </div>
     <!-- Charts Section -->
     <div class="card mb-4">
         <div class="card-header">
@@ -94,6 +111,47 @@
     // Function to initialize charts
     function initializeCharts() {
         {% if current_stats %}
+        const timeUnit = getTimeUnit({{ chart_data.time_range }});
+        
+        // Common options with dynamic time unit
+        function getChartOptions(title, yAxisLimits = {}) {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: title,
+                        font: { size: 14 }
+                    },
+                    legend: { position: 'bottom' },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: { 
+                            tooltipFormat: 'MMM D, h:mm a',
+                            unit: timeUnit
+                        },
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        min: yAxisLimits.min,
+                        max: yAxisLimits.max,
+                        title: { display: true, text: title.split(' (')[0] }
+                    }
+                }
+            };
+        }
+        
+        // Determine appropriate time unit based on selected range
+        function getTimeUnit(hours) {
+            if (hours <= 6) return 'minute';
+            if (hours <= 12) return 'hour';
+            return 'hour'; // default for 24 hours
+        }
         // Memory Chart
         const memoryCtx = document.getElementById('memoryChart').getContext('2d');
         memoryChart = new Chart(memoryCtx, {
@@ -249,9 +307,10 @@
         
         // Set up auto-refresh every second
         refreshInterval = setInterval(function() {
+            const timeRange = document.getElementById('timeRange').value;
             cleanupBeforeRefresh();
-            location.reload();
-        }, 1000);
+            window.location.search = `?range=${timeRange}`;
+        }, 5000);
     });
 
     // Clean up when page is unloading
