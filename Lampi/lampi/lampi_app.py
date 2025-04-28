@@ -354,8 +354,14 @@ class LampiApp(App):
                 print(f"Invalid JSON from {device_name}")
 
     def flash_lamp_red(self):
-        on_message = {'color': {'h': 0, 's': 1}, 'brightness': 100, 'on': True}
-        off_message = {'color': {'h': 0, 's': 1}, 'brightness': 0, 'on': False}
+        on_message = {'color': {'h': 0, 's': 1},
+                      'brightness': 100,
+                      'on': True,
+                      'client': MQTT_CLIENT_ID}
+        off_message = {'color': {'h': 0, 's': 1},
+                       'brightness': 0,
+                       'on': False,
+                       'client': MQTT_CLIENT_ID}
         for _ in range(20):
             self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
                               json.dumps(on_message).encode('utf-8'), qos=1)
