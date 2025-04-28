@@ -267,7 +267,6 @@ class LampiApp(App):
     def on_lamp_is_on(self, instance, value):
         if self._updating_ui:
             return
-        self._track_ui_event('Toggle Power', {'isOn': value})
         if self._publish_clock is None:
             self._publish_clock = Clock.schedule_once(
                 lambda dt: self._update_leds(), 0.01)
