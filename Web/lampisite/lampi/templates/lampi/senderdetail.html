@@ -89,6 +89,7 @@
 <script>
     // Global variables to store chart instances
     let memoryChart, cpuTempChart;
+    let refreshInterval;
     
     // Function to initialize charts
     function initializeCharts() {
@@ -105,7 +106,7 @@
                         data: {{ chart_data.memory_data.free|safe }},
                         borderColor: 'rgba(54, 162, 235, 1)',
                         backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                        tension: 0.3,
+                        tension: 0.0,
                         borderWidth: 2
                     },
                     {
@@ -113,7 +114,7 @@
                         data: {{ chart_data.memory_data.used|safe }},
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                        tension: 0.3,
+                        tension: 0.0,
                         borderWidth: 2
                     }
                 ]
@@ -170,7 +171,7 @@
                     data: {{ chart_data.cpu_temp|safe }},
                     borderColor: 'rgba(255, 159, 64, 1)',
                     backgroundColor: 'rgba(255, 159, 64, 0.1)',
-                    tension: 0.3,
+                    tension: 0.0,
                     borderWidth: 2,
                     fill: true
                 }]
@@ -219,29 +220,49 @@
     
     // Function to update the last refresh time display
     function updateRefreshTime() {
-        const now = new Date();
-        document.getElementById('lastRefreshTime').textContent = 
-            `Last refresh: ${now.toLocaleTimeString()}`;
+        const refreshElement = document.getElementById('lastRefreshTime');
+        if (refreshElement) {
+            const now = new Date();
+            refreshElement.textContent = `Last refresh: ${now.toLocaleTimeString()}`;
+        }
     }
-    
+
+    // Function to clean up before refresh
+    function cleanupBeforeRefresh() {
+        // Clear the interval
+        if (refreshInterval) {
+            clearInterval(refreshInterval);
+        }
+        // Destroy charts if they exist
+        if (memoryChart) {
+            memoryChart.destroy();
+        }
+        if (cpuTempChart) {
+            cpuTempChart.destroy();
+        }
+    }
+
     // Initialize everything when page loads
     document.addEventListener('DOMContentLoaded', function() {
         initializeCharts();
         updateRefreshTime();
         
         // Set up auto-refresh every second
-        setInterval(function() {
-            // Destroy existing charts before refresh to prevent memory leaks
-            if (memoryChart) memoryChart.destroy();
-            if (cpuTempChart) cpuTempChart.destroy();
-            
-            // Reload the page
+        refreshInterval = setInterval(function() {
+            cleanupBeforeRefresh();
             location.reload();
         }, 1000);
     });
+
+    // Clean up when page is unloading
+    window.addEventListener('beforeunload', cleanupBeforeRefresh);
     </script>
 
+
+
 <style>
+
+
 .chart-container {
     position: relative;
     height: 250px;
