@@ -45,8 +45,6 @@ class DeviceBox(BoxLayout):
 class DeviceDetailScreen(Screen):
     def update_details(self, device_name, message, status):
         self.ids.device_name_label.text = device_name
-        status_text = "Online" if status else "Offline"
-        self.ids.status_label.text = f"Status: {status_text}"
         
         # Format the detailed message
         try:
