@@ -112,7 +112,7 @@ class SecondScreen(Screen):
         if device_name not in self.devices:
             # Create a new DeviceBox if it doesn't exist
             device_box = DeviceBox(device_name=device_name,
-                                   shortened_messagemessage=shortened_message,
+                                   shortened_message=shortened_message,
                                    message=all_stats,
                                    status=status)
             self.devices[device_name] = device_box
