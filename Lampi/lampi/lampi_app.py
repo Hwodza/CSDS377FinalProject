@@ -347,7 +347,7 @@ class LampiApp(App):
                 self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
                                 json.dumps(message).encode('utf-8'), qos=1)
                 # Schedule the next toggle
-                Clock.schedule_once(lambda dt: toggle_flash(count - 1), 1)
+                Clock.schedule_once(lambda dt: toggle_flash(count - 1), 0.5)
             else:
                 # Restore the last state after flashing
                 self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
@@ -355,7 +355,7 @@ class LampiApp(App):
                                 qos=1)
 
         # Start the flashing sequence (8 toggles = 4 on/off cycles)
-        toggle_flash(8)
+        toggle_flash(20)
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
