@@ -15,7 +15,7 @@ MQTT_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
 MQTT_SENDER_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
                                  r'(?P<device_id>[0-9a-f]*)_sender_broker/'
                                  r'state')
-MQTT_SENDER_STATS_RE_PATTERN = r'senders\/(?P<device_id>[0-9a-f]*)\/stats\/'
+MQTT_SENDER_STATS_RE_PATTERN = r'senders\/(?P<device_id>[0-9a-f]*)\/sender\/stats'
 DEVICE_STATE_RE_PATTERN = r'devices\/(?P<device_id>[0-9a-f]*)\/lamp\/changed'
 
 
@@ -58,60 +58,59 @@ class Command(BaseCommand):
 
     def _monitor_for_new_stats(self, client, userdata, message):
         print("RECV: '{}' on '{}'".format(message.payload, message.topic))
-        if message.payload == b'1':
-            # broker connected
-            results = re.search(MQTT_SENDER_STATS_RE_PATTERN,
-                                message.topic.lower())
-            device_id = results.group('device_id')
-            try:
-                device = SenderDevice.objects.get(device_id=device_id)
+        # broker connected
+        results = re.search(MQTT_SENDER_STATS_RE_PATTERN,
+                            message.topic.lower())
+        device_id = results.group('device_id')
+        try:
+            device = SenderDevice.objects.get(device_id=device_id)
 
-                data = json.loads(message.payload.decode())
+            data = json.loads(message.payload.decode())
 
-                # Parse timestamp
-                timestamp = datetime.strptime(data['timestamp'],
-                                              '%Y-%m-%d %H:%M:%S')
+            # Parse timestamp
+            timestamp = datetime.strptime(data['timestamp'],
+                                          '%Y-%m-%d %H:%M:%S')
 
-                # Create DeviceData entry
-                device_data = DeviceData.objects.create(
-                    device=device,
-                    timestamp=timestamp,
-                    kbmemfree=data['memory_stats']['kbmemfree'],
-                    kbmemused=data['memory_stats']['kbmemused'],
-                    memused_percent=data['memory_stats']['memused_percent'],
-                    cputemp=data['cpu_temp']
+            # Create DeviceData entry
+            device_data = DeviceData.objects.create(
+                device=device,
+                timestamp=timestamp,
+                kbmemfree=data['memory_stats']['kbmemfree'],
+                kbmemused=data['memory_stats']['kbmemused'],
+                memused_percent=data['memory_stats']['memused_percent'],
+                cputemp=data['cpu_temp']
+            )
+
+            # Process disk stats
+            for disk in data['disk_stats']:
+                DiskStats.objects.create(
+                    device_data=device_data,
+                    device=disk['device'],
+                    wait=disk['wait'],
+                    util=disk['util']
                 )
 
-                # Process disk stats
-                for disk in data['disk_stats']:
-                    DiskStats.objects.create(
-                        device_data=device_data,
-                        device=disk['device'],
-                        wait=disk['wait'],
-                        util=disk['util']
-                    )
+            # Process CPU loads
+            for core, load in enumerate(data['cpu_load']):
+                CpuLoad.objects.create(
+                    device_data=device_data,
+                    core=core,
+                    load=load
+                )
 
-                # Process CPU loads
-                for core, load in enumerate(data['cpu_load']):
-                    CpuLoad.objects.create(
-                        device_data=device_data,
-                        core=core,
-                        load=load
-                    )
+            # Process network stats
+            for net in data['network_stats']:
+                NetworkStats.objects.create(
+                    device_data=device_data,
+                    iface=net['iface'],
+                    rx_kb=net['rx_kb'],
+                    tx_kb=net['tx_kb']
+                )
 
-                # Process network stats
-                for net in data['network_stats']:
-                    NetworkStats.objects.create(
-                        device_data=device_data,
-                        iface=net['iface'],
-                        rx_kb=net['rx_kb'],
-                        tx_kb=net['tx_kb']
-                    )
+            print(f"Processed data from {device_id} at {timestamp}")
 
-                print(f"Processed data from {device_id} at {timestamp}")
-
-            except Exception as e:
-                print(f"Error processing message: {e}")
+        except Exception as e:
+            print(f"Error processing message: {e}")
 
     def _monitor_for_new_devices(self, client, userdata, message):
         print("RECV: '{}' on '{}'".format(message.payload, message.topic))
