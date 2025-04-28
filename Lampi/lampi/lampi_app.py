@@ -91,14 +91,12 @@ class DeviceDetailScreen(Screen):
 
     def update_details(self, device_name, data):
         """Update the detailed view with pretty JSON"""
-        self.ids.device_name_label.text = device_name
 
         try:
             # Convert to pretty-printed JSON
             pretty_json = json.dumps(data, indent=4, sort_keys=True)
             status = True  # You can add your status logic here if needed
             status_text = "Online" if status else "Offline"
-            self.ids.status_label.text = f"Status: {status_text}"
             self.ids.details_label.text = pretty_json
 
             # Calculate required height for the JSON content
