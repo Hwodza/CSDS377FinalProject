@@ -13,6 +13,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
 from kivy.app import App
+from kivy.metrics import dp
 from paho.mqtt.client import Client
 
 from lamp_common import *
@@ -83,8 +84,10 @@ class JsonLabel(Label):
 class DeviceDetailScreen(Screen):
     def on_device_updated(self, device_name, data):
         """Called when device data is updated"""
+        app = App.get_running_app()
         if device_name == app.device_data.current_detail_device:
-            Clock.schedule_once(lambda dt: self.update_details(device_name, data))
+            Clock.schedule_once(lambda dt: self.update_details(device_name,
+                                                               data))
 
     def update_details(self, device_name, data):
         """Update the detailed view with pretty JSON"""
@@ -101,11 +104,16 @@ class DeviceDetailScreen(Screen):
             # Calculate required height for the JSON content
             lines = pretty_json.count('\n') + 1
             line_height = dp(20)  # Approximate height per line
-            self.ids.details_label.height = max(lines * line_height, self.ids.scroll_view.height)
+            required_height = lines * line_height
+            scroll_height = self.ids.scroll_view.height
+
+            # Set height to the larger of required height or scroll view height
+            self.ids.details_label.height = max(required_height, scroll_height)
 
         except (TypeError, ValueError) as e:
             self.ids.status_label.text = "Status: Data Error"
             self.ids.details_label.text = f"Error formatting data:\n{str(data)}"
+            self.ids.details_label.height = dp(100)  # Default height for error
 
 
 class MainScreen(Screen):
