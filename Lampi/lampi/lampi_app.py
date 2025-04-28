@@ -354,20 +354,26 @@ class LampiApp(App):
                 print(f"Invalid JSON from {device_name}")
 
     def flash_lamp_red(self):
-        og_hue = self.hue
-        og_saturation = self.saturation
-        og_brightness = self.brightness
+        og_hue = self._get_hue
+        og_saturation = self._get_saturation
+        og_brightness = self._get_brightness
         og_on = self.lamp_is_on
-        for i in range(20):
-            self.hue = 0
-            self.saturation = 1
-            self.brightness = 1
+        for _ in range(20):
+            self._set_hue(0)
+            self._set_saturation(1)
+            self._set_brightness(1)
             self.lamp_is_on = True
             Clock.schedule_once(lambda dt: self._update_leds(), 0.01)
             time.sleep(0.1)
             self.lamp_is_on = False
             Clock.schedule_once(lambda dt: self._update_leds(), 0.01)
             time.sleep(0.1)
+        self._set_hue(og_hue)
+        self._set_saturation(og_saturation)
+        self._set_brightness(og_brightness)
+        self.lamp_is_on = og_on
+        Clock.schedule_once(lambda dt: self._update_leds(), 0.01)
+        
 
     def receive_bridge_connection_status(self, client, userdata, message):
         # monitor if the MQTT bridge to our cloud broker is up
