@@ -185,22 +185,22 @@
         networkChart = new Chart(networkCtx, {
             type: 'line',
             data: {
-                labels: {{ chart_data.timestamps|safe }},
+                labels: timestamps,
                 datasets: [
                     {
                         label: 'Network RX (KB)',
-                        data: {{ chart_data.network_rx|safe }},
+                        data: {{ chart_data.network_stats|map(attribute='rx_kb')|list|safe }},
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                        tension: 0.3,
+                        tension: 0.0,
                         borderWidth: 2
                     },
                     {
                         label: 'Network TX (KB)',
-                        data: {{ chart_data.network_tx|safe }},
+                        data: {{ chart_data.network_stats|map(attribute='tx_kb')|list|safe }},
                         borderColor: 'rgba(255, 206, 86, 1)',
                         backgroundColor: 'rgba(255, 206, 86, 0.1)',
-                        tension: 0.3,
+                        tension: 0.0,
                         borderWidth: 2
                     }
                 ]
