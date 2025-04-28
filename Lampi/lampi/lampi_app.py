@@ -39,8 +39,7 @@ class DeviceBox(BoxLayout):
     device_name = StringProperty("")
     message = StringProperty("")
     status = BooleanProperty(True)
-    cpu_temp = NumericProperty(0.0)
-    memused_percent = NumericProperty(0.0)
+    shortened_message = StringProperty("")
 
 
 class DeviceDetailScreen(Screen):
@@ -87,7 +86,7 @@ class SecondScreen(Screen):
         """Update the message for a specific device in the UI."""
         try:
             # Extract CPU and memory usage if available
-            shortened_message = (
+            all_stats = (
                 f"cpu temp: {message['cpu_temp']}, "
                 f"memused%: {message['memory_stats']['memused_percent']}%"
                 f"kbmemfree: {message['memory_stats']['kbmemfree']}"
@@ -96,7 +95,10 @@ class SecondScreen(Screen):
                 f"cpu_load: {message['cpu_load']}"
                 f"network_stats: {message['network_stats']}"
             )
-            memused_percent = float(message['memory_stats']['memused_percent'])
+            shortened_message = (
+                f"CPU Temp: {message['cpu_temp']}, "
+                f"MEM%: {message['memory_stats']['memused_percent']}%"
+            )
             cpu_temp = float(message['cpu_temp'])
             status = True
             if cpu_temp > 99:
@@ -110,9 +112,8 @@ class SecondScreen(Screen):
         if device_name not in self.devices:
             # Create a new DeviceBox if it doesn't exist
             device_box = DeviceBox(device_name=device_name,
-                                   message=shortened_message,
-                                   cpu_temp=cpu_temp,
-                                   memused_percent=memused_percent,
+                                   shortened_messagemessage=shortened_message,
+                                   message=all_stats,
                                    status=status)
             self.devices[device_name] = device_box
             self.ids.device_list.add_widget(device_box)  # Add to the UI
