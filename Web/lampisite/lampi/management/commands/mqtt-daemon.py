@@ -8,6 +8,8 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from lampi.models import *
 from mixpanel import Mixpanel
+import paho.mqtt.publish
+
 
 
 MQTT_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
@@ -67,6 +69,9 @@ class Command(BaseCommand):
             device = SenderDevice.objects.get(device_id=device_id)
 
             data = json.loads(message.payload.decode())
+            if data["device_name"] is not None:
+                device.name = data["device_name"]
+                device.save()
 
             # Parse timestamp
             timestamp = datetime.strptime(data['timestamp'],
@@ -107,7 +112,20 @@ class Command(BaseCommand):
                     rx_kb=net['rx_kb'],
                     tx_kb=net['tx_kb']
                 )
-
+            try:
+                user_lampis = Lampi.objects.filter(user=device.user)
+                for lampi in user_lampis:
+                    paho.mqtt.publish.single(
+                        "devices/{}/lamp/sender/{}".format(lampi.device_id,
+                                                        device.name),
+                        json.dumps({'associated': True}),
+                        qos=2,
+                        retain=True,
+                        hostname="localhost",
+                        port=50001
+                    )
+            except Exception as e:
+                print("Error publishing association message: {}".format(e))
             print(f"Processed data from {device_id} at {timestamp}")
 
         except Exception as e:
