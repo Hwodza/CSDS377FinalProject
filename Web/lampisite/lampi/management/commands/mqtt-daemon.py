@@ -15,7 +15,8 @@ MQTT_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
 MQTT_SENDER_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
                                  r'(?P<device_id>[0-9a-f]*)_sender_broker/'
                                  r'state')
-MQTT_SENDER_STATS_RE_PATTERN = r'senders\/(?P<device_id>[0-9a-f]*)\/sender\/stats'
+MQTT_SENDER_STATS_RE_PATTERN = (r'senders\/(?P<device_id>[0-9a-f]*)\/sender'
+                                r'\/stats')
 DEVICE_STATE_RE_PATTERN = r'devices\/(?P<device_id>[0-9a-f]*)\/lamp\/changed'
 
 

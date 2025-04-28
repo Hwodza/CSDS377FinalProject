@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import timedelta
 from .models import Lampi, SenderDevice, DeviceData, DiskStats, CpuLoad, \
-NetworkStats
+    NetworkStats
 from django.conf import settings
 from lampi.forms import AddLampiForm, AddSenderForm
 from mixpanel import Mixpanel
