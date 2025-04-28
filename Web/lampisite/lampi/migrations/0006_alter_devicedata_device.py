@@ -14,6 +14,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='devicedata',
             name='device',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='data_points', to='lampi.senderdevice'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='data_points',
+                to='lampi.senderdevice'),
         ),
     ]

@@ -11,7 +11,6 @@ from mixpanel import Mixpanel
 import paho.mqtt.publish
 
 
-
 MQTT_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
                           r'(?P<device_id>[0-9a-f]*)_broker/state')
 MQTT_SENDER_BROKER_RE_PATTERN = (r'\$sys\/broker\/connection\/'
@@ -117,7 +116,7 @@ class Command(BaseCommand):
                 for lampi in user_lampis:
                     paho.mqtt.publish.single(
                         "devices/{}/lamp/sender/{}".format(lampi.device_id,
-                                                        device.name),
+                                                           device.name),
                         json.dumps(data),
                         qos=1,
                         retain=False,
