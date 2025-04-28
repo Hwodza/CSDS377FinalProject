@@ -39,6 +39,14 @@ class DeviceBox(BoxLayout):
     device_name = StringProperty("")
     message = StringProperty("")
     status = BooleanProperty(True)
+    kbmemfree = NumericProperty(0)
+    kbmemused = NumericProperty(0)
+    memused_percent = NumericProperty(0)
+    cputemp = NumericProperty(0)
+
+
+class DeviceDetailScreen(Screen):
+    pass
 
 
 class MainScreen(Screen):
@@ -59,6 +67,10 @@ class SecondScreen(Screen):
                 f"MEM: {message['memory_stats']['memused_percent']}%"
             )
             cpu_temp = float(message['cpu_temp'])
+            kbmemfree = int(message['memory_stats']['kbmemfree'])
+            kbmemused = int(message['memory_stats']['kbmemused'])
+            memused_percent = float(message['memory_stats']['memused_percent'])
+
             status = True
             if cpu_temp > 99:
                 status = False
@@ -72,7 +84,11 @@ class SecondScreen(Screen):
             # Create a new DeviceBox if it doesn't exist
             device_box = DeviceBox(device_name=device_name,
                                    message=shortened_message,
-                                   status=status)
+                                   status=status,
+                                   kbmemfree=kbmemfree,
+                                   kbmemused=kbmemused,
+                                   memused_percent=memused_percent,
+                                   cputemp=cpu_temp)
             self.devices[device_name] = device_box
             self.ids.device_list.add_widget(device_box)  # Add to the UI
         else:
@@ -96,6 +112,7 @@ class LampiApp(App):
         self.second_screen = SecondScreen(name="second")
         self.screen_manager.add_widget(self.main_screen)
         self.screen_manager.add_widget(self.second_screen)
+        self.screen_manager.add_widget(DeviceDetailScreen(name="device_detail"))
         return self.screen_manager
 
     def _get_hue(self):

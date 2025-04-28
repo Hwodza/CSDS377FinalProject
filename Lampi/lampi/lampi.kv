@@ -154,3 +154,71 @@ ScreenManager:
             text: root.message
             size_hint_y: None
             height: self.texture_size[1]
+
+    Button:
+        background_normal: ''
+        background_down: ''
+        background_color: 0, 0, 0, 0  # Transparent
+        size_hint: 1, 1
+        on_press: 
+            app.selected_device = {
+                'name': root.device_name,
+                'message': root.message,
+                'status': root.status,
+                'cpu_temp': root.cpu_temp,
+                'mem_used': root.mem_used
+            }
+            app.screen_manager.current = "device_detail"
+
+
+<DeviceDetailScreen>:
+    name: "device_detail"
+    BoxLayout:
+        orientation: 'vertical'
+        
+        # Header with back button
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Button:
+                text: 'Back'
+                size_hint_x: None
+                width: 100
+                on_press: app.screen_manager.current = "second"
+            Label:
+                text: "Device Details"
+                font_size: '20sp'
+        
+        # Device details content
+        ScrollView:
+            GridLayout:
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+                padding: 20
+                spacing: 10
+                
+                # Display all device properties
+                Label:
+                    text: "Name: " + (app.selected_device['name'] if app.selected_device else "No device selected")
+                    font_size: '18sp'
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                
+                Label:
+                    text: "Message: " + (app.selected_device['message'] if app.selected_device else "")
+                    font_size: '18sp'
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                
+                Label:
+                    text: "CPU Temperature: " + (app.selected_device['cpu_temp'] if app.selected_device else "N/A")
+                    font_size: '18sp'
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                
+                Label:
+                    text: "Memory Used: " + (app.selected_device['memused_percent'] if app.selected_device else "N/A") + "%"
+                    font_size: '18sp'
+                    size_hint_y: None
+                    height: self.texture_size[1]
