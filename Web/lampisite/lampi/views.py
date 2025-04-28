@@ -87,7 +87,7 @@ class AddSenderView(LoginRequiredMixin, generic.FormView):
 #         return context
 
 class SenderDetailView(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'lampi/sender-device.html'
+    template_name = 'lampi/senderdetail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
