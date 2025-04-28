@@ -38,6 +38,7 @@ except IOError:
 class DeviceBox(BoxLayout):
     device_name = StringProperty("")
     message = StringProperty("")
+    status = BooleanProperty(True)
 
 
 class MainScreen(Screen):
@@ -71,7 +72,7 @@ class SecondScreen(Screen):
             # Create a new DeviceBox if it doesn't exist
             device_box = DeviceBox(device_name=device_name,
                                    message=shortened_message,
-                                   hstatus=status)
+                                   status=status)
             self.devices[device_name] = device_box
             self.ids.device_list.add_widget(device_box)  # Add to the UI
         else:
