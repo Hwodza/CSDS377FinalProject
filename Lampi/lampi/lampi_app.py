@@ -71,7 +71,7 @@ class SecondScreen(Screen):
             # Create a new DeviceBox if it doesn't exist
             device_box = DeviceBox(device_name=device_name,
                                    message=shortened_message,
-                                   status=status)
+                                   hstatus=status)
             self.devices[device_name] = device_box
             self.ids.device_list.add_widget(device_box)  # Add to the UI
         else:
