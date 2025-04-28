@@ -160,15 +160,14 @@ ScreenManager:
         background_down: ''
         background_color: 0, 0, 0, 0  # Transparent
         size_hint: 1, 1
-        on_press: 
-            app.selected_device = {
-                'name': root.device_name,
-                'message': root.message,
-                'status': root.status,
-                'cpu_temp': root.cpu_temp,
-                'mem_used': root.mem_used
-            }
-            app.screen_manager.current = "device_detail"
+        on_press: app.selected_device = {
+            'name': root.device_name,
+            'message': root.message,
+            'status': root.status,
+            'cpu_temp': root.cpu_temp,
+            'mem_used': root.mem_used
+        }
+        app.screen_manager.current = "device_detail"
 
 
 <DeviceDetailScreen>:
