@@ -194,12 +194,12 @@ class LampiApp(App):
                                        self.receive_bridge_connection_status)
         self.mqtt.message_callback_add(TOPIC_LAMP_ASSOCIATED,
                                        self.receive_associated)
-        self.mqtt.message_callback_add("sender/#",
+        self.mqtt.message_callback_add("lamp/sender/+",
                                        self.receive_sender_messages)
         self.mqtt.subscribe(broker_bridge_connection_topic(), qos=1)
         self.mqtt.subscribe(TOPIC_LAMP_CHANGE_NOTIFICATION, qos=1)
         self.mqtt.subscribe(TOPIC_LAMP_ASSOCIATED, qos=2)
-        self.mqtt.subscribe("sender/#", qos=1)
+        self.mqtt.subscribe("lamp/sender/+", qos=1)
 
     def _poll_associated(self, dt):
         # this polling loop allows us to synchronize changes from the
@@ -234,8 +234,9 @@ class LampiApp(App):
     def receive_sender_messages(self, client, userdata, message):
         """Handle messages from devices on the topic sender/{devicename}."""
         topic_parts = message.topic.split('/')
-        if len(topic_parts) == 2 and topic_parts[0] == "sender":
-            device_name = topic_parts[1]
+        print("Recieve sender messages topic parts: ", topic_parts)
+        if len(topic_parts) == 3 and topic_parts[1] == "sender":
+            device_name = topic_parts[2]
             payload = json.loads(message.payload.decode('utf-8'))
             second_screen = self.screen_manager.get_screen("second")
             # Schedule the UI update on the main thread
