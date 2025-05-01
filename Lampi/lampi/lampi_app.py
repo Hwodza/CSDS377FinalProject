@@ -344,20 +344,20 @@ class LampiApp(App):
                     'brightness': self.last_state['brightness'],
                     'on': self.last_state['on'],
                     'client': "flaher"}
-        
+
         def toggle_flash(count):
             if count > 0:
                 # Alternate between on and off
                 message = on_message if count % 2 == 0 else off_message
                 self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
-                                json.dumps(message).encode('utf-8'), qos=1)
+                                  json.dumps(message).encode('utf-8'), qos=1)
                 # Schedule the next toggle
                 Clock.schedule_once(lambda dt: toggle_flash(count - 1), 0.5)
             else:
                 # Restore the last state after flashing
                 self.mqtt.publish(TOPIC_SET_LAMP_CONFIG,
-                                json.dumps(og_state).encode('utf-8'),
-                                qos=1)
+                                  json.dumps(og_state).encode('utf-8'),
+                                  qos=1)
 
         # Start the flashing sequence (8 toggles = 4 on/off cycles)
         toggle_flash(20)
