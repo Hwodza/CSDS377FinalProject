@@ -328,7 +328,7 @@ def main():
                        memory_stats['kbmemused'],
                        memory_stats['memused_percent'],
                        temp, disk_stats, cpu_load, network_stats)
-            publish_data({
+            final_data = {
                 "device_name": metadata['device_name'],
                 "timestamp": timestamp,
                 "cpu_temp": temp,
@@ -336,7 +336,10 @@ def main():
                 "memory_stats": memory_stats,
                 "disk_stats": disk_stats,
                 "network_stats": network_stats
-            })
+            }
+            publish_data(final_data)
+            print("Data published to MQTT broker.")
+            print(final_data)
             time.sleep(3)  # Adjust the interval as needed
 
 

@@ -1,0 +1,13 @@
+{% extends "lampi/base.html" %}
+
+{% block title %}Add Sender{% endblock %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Add Sender" />
+</form>
+{% endblock %}
+
+{% block page_event %}Add Sender{% endblock %}

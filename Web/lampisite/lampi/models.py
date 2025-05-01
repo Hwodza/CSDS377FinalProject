@@ -116,7 +116,7 @@ class DeviceData(models.Model):
     id = models.BigAutoField(primary_key=True)
     device = models.ForeignKey(SenderDevice,
                                on_delete=models.CASCADE,
-                               related_name='device_data')
+                               related_name='data_points')
     timestamp = models.DateTimeField()
     kbmemfree = models.IntegerField()
     kbmemused = models.IntegerField()
